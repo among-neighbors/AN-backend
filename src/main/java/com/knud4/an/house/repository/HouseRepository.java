@@ -15,39 +15,35 @@ import java.util.List;
 public class HouseRepository {
 
     private final EntityManager em;
-    private final LineRepository lineRepository;
 
     public void save(House house) {
         em.persist(house);
     }
 
-    public void updateHouseName(String lineName, String oldName, String updateName) {
-        House findHouse = findByName(lineName, oldName);
+    public void updateHouseName(Long lineId, String oldName, String updateName) {
+        House findHouse = findByName(lineId, oldName);
 
         findHouse.changeName(updateName);
     }
 
-    public House findByName(String lineName, String houseName) {
-        Line findLine = lineRepository.findByName(lineName);
+    public House findByName(Long lineId, String houseName) {
         return em.createQuery("select h from House h " +
-                        "where h.line = :line and h.name = :name", House.class)
-                .setParameter("line", findLine)
+                        "where h.line.id = :lineId and h.name = :name", House.class)
+                .setParameter("lineId", lineId)
                 .setParameter("name", houseName)
                 .getSingleResult();
     }
 
-    public List<House> findHousesByLineName(String lineName) {
-        Line findLine = lineRepository.findByName(lineName);
-        return em.createQuery("select h from House h where h.line = :line", House.class)
-                .setParameter("line", findLine)
+    public List<House> findHousesByLineName(Long lineId) {
+        return em.createQuery("select h from House h where h.line.id = :lineId", House.class)
+                .setParameter("lineId", lineId)
                 .getResultList();
     }
 
-    public void deleteByName(String lineName, String houseName) {
-        Line findLine = lineRepository.findByName(lineName);
+    public void deleteByName(Long lineId, String houseName) {
         em.createQuery("delete from House h where " +
-                "h.line = :line and h.name = :name")
-                .setParameter("line", findLine)
+                "h.line.id = :lineId and h.name = :name")
+                .setParameter("lineId", lineId)
                 .setParameter("name", houseName)
                 .executeUpdate();
     }

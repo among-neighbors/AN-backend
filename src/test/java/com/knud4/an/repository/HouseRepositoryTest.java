@@ -49,9 +49,11 @@ public class HouseRepositoryTest {
 
     @Test
     public void update() {
-        houseRepository.updateHouseName("103", "2000", "2001");
+        Line findLine = lineRepository.findByName("103");
+
+        houseRepository.updateHouseName(findLine.getId(), "2000", "2001");
         try {
-            houseRepository.findByName("103", "2000");
+            houseRepository.findByName(findLine.getId(), "2000");
             fail("수정 실패");
         } catch (Exception e) {
 
@@ -67,7 +69,9 @@ public class HouseRepositoryTest {
             houseRepository.save(createdHouse);
         });
 
-        List<House> findHouses = houseRepository.findHousesByLineName("103");
+        Line findLine = lineRepository.findByName("103");
+
+        List<House> findHouses = houseRepository.findHousesByLineName(findLine.getId());
 
         for (House house:
              findHouses) {
@@ -79,10 +83,12 @@ public class HouseRepositoryTest {
 
     @Test
     public void deleteHouse() {
-        houseRepository.deleteByName("103", "2000");
+        Line findLine = lineRepository.findByName("103");
+
+        houseRepository.deleteByName(findLine.getId(), "2000");
 
         try {
-            houseRepository.findByName("103", "2000");
+            houseRepository.findByName(findLine.getId(), "2000");
             fail("삭제 실패");
         } catch (Exception e) {
 
