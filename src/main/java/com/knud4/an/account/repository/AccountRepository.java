@@ -35,6 +35,9 @@ public class AccountRepository {
                 .stream().findFirst();
     }
 
+    public Account findAccountById(Long id) {
+        return em.find(Account.class, id);
+    }
 
     public List<Profile> findProfilesByAccountId(Long accountId) {
         return em.createQuery("select p from Profile p " +
@@ -53,12 +56,8 @@ public class AccountRepository {
                 .stream().findFirst();
     }
 
-    public Optional<Profile> findProfileByID(Long profileId) {
-        return em.createQuery("select p from Profile p " +
-                        "where p.id = :profileId", Profile.class)
-                .setParameter("profileId", profileId)
-                .getResultList()
-                .stream().findFirst();
+    public Profile findProfileByID(Long profileId) {
+        return em.find(Profile.class, profileId);
     }
 
 

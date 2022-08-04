@@ -108,9 +108,9 @@ public class AccountRepositoryTest {
 
         accountRepository.saveProfile(profile);
 
-        Optional<Profile> findProfile = accountRepository.findProfileByID(profile.getId());
+        Profile findProfile = accountRepository.findProfileByID(profile.getId());
 
-        assertThat(findProfile.get()).isEqualTo(profile);
+        assertThat(findProfile).isEqualTo(profile);
     }
 
 
