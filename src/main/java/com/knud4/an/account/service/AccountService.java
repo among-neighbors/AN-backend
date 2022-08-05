@@ -26,7 +26,7 @@ public class AccountService {
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
     }
 
-    public Account findByAccountByUserName(String userName) {
+    public Account findAccountByUserName(String userName) {
         return accountRepository.findAccountByUsername(userName)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
     }
@@ -39,7 +39,7 @@ public class AccountService {
         return accountRepository.findProfilesByAccountId(id);
     }
 
-    public Profile findProfileById(Long accountId, String profileName) {
+    public Profile findProfileByAccountIdAndProfileName(Long accountId, String profileName) {
         return accountRepository.findProfileByAccountIDAndProfileName(accountId, profileName)
                 .orElseThrow(() -> new NotFoundException("프로필이 존재하지 않습니다."));
     }
