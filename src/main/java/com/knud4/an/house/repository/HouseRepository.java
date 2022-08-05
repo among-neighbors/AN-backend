@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,32 +21,21 @@ public class HouseRepository {
         em.persist(house);
     }
 
-    public void updateHouseName(Long lineId, String oldName, String updateName) {
-        House findHouse = findByName(lineId, oldName);
+    public House findById(Long id) { return em.find(House.class, id); }
 
-        findHouse.changeName(updateName);
-    }
-
-    public House findByName(Long lineId, String houseName) {
+    public Optional<House> findByLineIdAndHouseName(Long lineId, String houseName) {
         return em.createQuery("select h from House h " +
                         "where h.line.id = :lineId and h.name = :name", House.class)
                 .setParameter("lineId", lineId)
                 .setParameter("name", houseName)
-                .getSingleResult();
+                .getResultList().stream()
+                .findFirst();
     }
 
-    public List<House> findHousesByLineName(Long lineId) {
+    public List<House> findHousesByLineId(Long lineId) {
         return em.createQuery("select h from House h where h.line.id = :lineId", House.class)
                 .setParameter("lineId", lineId)
                 .getResultList();
-    }
-
-    public void deleteByName(Long lineId, String houseName) {
-        em.createQuery("delete from House h where " +
-                "h.line.id = :lineId and h.name = :name")
-                .setParameter("lineId", lineId)
-                .setParameter("name", houseName)
-                .executeUpdate();
     }
 
     public List<House> findAll() {
