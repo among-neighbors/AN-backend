@@ -4,6 +4,7 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Gender;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.repository.AccountRepository;
+import com.knud4.an.exceptions.NotFoundException;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
@@ -43,13 +44,13 @@ public class AccountRepositoryTest {
 
         lineRepository.save(line);
 
+        Line findLine = lineRepository.findByName("103")
+                .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
+
         this.house = House.builder()
                 .name("2000")
+                .line(findLine)
                 .build();
-
-        Line findLine = lineRepository.findByName("103");
-
-        house.setLine(findLine);
 
         houseRepository.save(house);
     }
@@ -58,8 +59,10 @@ public class AccountRepositoryTest {
     public void createAccount() {
 //      예외처리 필요
 
-        Line findLine = lineRepository.findByName("103");
-        House findHouse = houseRepository.findByName(findLine.getId(), "2000");
+        Line findLine = lineRepository.findByName("103")
+                .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
+        House findHouse = houseRepository.findByLineIdAndHouseName(findLine.getId(), "2000")
+                .orElseThrow(() -> new NotFoundException("세대를 찾을 수 없습니다."));
 
 //        이메일 인증
 //        ID 중복 확인
@@ -83,8 +86,10 @@ public class AccountRepositoryTest {
 
     @Test
     public void addProfile() {
-        Line findLine = lineRepository.findByName("103");
-        House findHouse = houseRepository.findByName(findLine.getId(), "2000");
+        Line findLine = lineRepository.findByName("103")
+                .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
+        House findHouse = houseRepository.findByLineIdAndHouseName(findLine.getId(), "2000")
+                .orElseThrow(() -> new NotFoundException("세대를 찾을 수 없습니다."));
 
         Account account = Account.builder()
                 .email("abc@abc.com")
