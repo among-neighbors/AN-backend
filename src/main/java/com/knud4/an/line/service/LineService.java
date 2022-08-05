@@ -1,8 +1,9 @@
 package com.knud4.an.line.service;
 
-import com.knud4.an.line.dto.CreateLineDTO;
-import com.knud4.an.line.dto.FindLineDTO;
-import com.knud4.an.line.dto.UpdateLineDTO;
+import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.line.dto.CreateLineForm;
+import com.knud4.an.line.dto.CreateLineResponse;
+import com.knud4.an.line.dto.FindLineResponse;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.repository.LineRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,42 +21,28 @@ public class LineService {
     private final LineRepository lineRepository;
 
     @Transactional
-    public void createLine(CreateLineDTO createLineDTO) {
+    public Long createLine(CreateLineForm createLineForm) {
 //        Manager 체크 로직 추가
 
         Line line = Line.builder()
-                .name(createLineDTO.getName())
+                .name(createLineForm.getName())
                 .build();
 
         lineRepository.save(line);
+
+        return line.getId();
     }
 
-    public FindLineDTO findByLineName(String findName) {
-        Line findLine = lineRepository.findByName(findName);
-
-        FindLineDTO findLineDTO = new FindLineDTO();
-        findLineDTO.setName(findLine.getName());
-
-        return findLineDTO;
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id);
     }
 
-    public List<FindLineDTO> findAllLines() {
-        List<Line> lines = lineRepository.findAll();
-        List<FindLineDTO> findLineDTOS = new ArrayList<>();
-
-        for (Line line : lines) {
-            FindLineDTO findLineDTO = new FindLineDTO();
-            findLineDTO.setName(line.getName());
-
-            findLineDTOS.add(findLineDTO);
-        }
-
-        return findLineDTOS;
+    public Line findLineByName(String findName) {
+        return lineRepository.findByName(findName)
+                .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
     }
 
-    @Transactional
-    public void updateLineName(UpdateLineDTO updateLineDTO) {
-        //        Manager 체크 로직 추가
-        lineRepository.updateName(updateLineDTO.oldName, updateLineDTO.changeName);
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 }
