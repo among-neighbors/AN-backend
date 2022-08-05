@@ -1,7 +1,6 @@
 package com.knud4.an.service;
 
 import com.knud4.an.line.dto.CreateLineForm;
-import com.knud4.an.line.dto.FindLineResponse;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.service.LineService;
 import static org.junit.jupiter.api.Assertions.*;
