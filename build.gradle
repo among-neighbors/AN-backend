@@ -33,6 +33,14 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+//    none commit
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
+
+    implementation group: 'org.json', name: 'json', version: '20220320'
+
+
     runtimeOnly 'com.h2database:h2'
 
     compileOnly 'org.projectlombok:lombok'
