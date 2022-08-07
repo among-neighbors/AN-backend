@@ -3,7 +3,7 @@ package com.knud4.an.account.service;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.repository.AccountRepository;
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,17 +1,15 @@
 package com.knud4.an.house.service;
 
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.house.dto.CreateHouseForm;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.repository.LineRepository;
-import com.knud4.an.line.service.LineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

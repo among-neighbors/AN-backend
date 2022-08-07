@@ -4,7 +4,7 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Gender;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.repository.AccountRepository;
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
 
