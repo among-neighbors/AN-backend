@@ -1,4 +1,4 @@
-package com.knud4.an.auth.dto;
+package com.knud4.an.auth.dto.profile;
 
 import com.knud4.an.account.entity.Gender;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,6 @@ public class AddProfileForm {
     private Integer age;
     @NotNull
     private String pin;
-
-//    @NotNull
-//    private Gender gender;
+    @NotNull
+    private Gender gender;
 }
