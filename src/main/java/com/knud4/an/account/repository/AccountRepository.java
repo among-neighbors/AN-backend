@@ -60,5 +60,17 @@ public class AccountRepository {
         return em.find(Profile.class, profileId);
     }
 
+    public Boolean accountExistsByEmail(String email) {
+        return em.createQuery("select count(a) > 0 from Account a " +
+                "where a.email = :email", Boolean.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
 
+    public boolean accountExistsByUsername(String username) {
+        return em.createQuery("select count(a) > 0 from Account a " +
+                        "where a.username = :username", Boolean.class)
+                .setParameter("username", username)
+                .getSingleResult();
+    }
 }
