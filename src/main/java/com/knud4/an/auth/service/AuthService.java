@@ -2,41 +2,55 @@ package com.knud4.an.auth.service;
 
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
+import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.account.service.AccountService;
-import com.knud4.an.auth.dto.AddProfileForm;
-import com.knud4.an.auth.dto.SignInAccountForm;
-import com.knud4.an.auth.dto.SignInProfileForm;
-import com.knud4.an.auth.dto.SignUpAccountForm;
-import com.knud4.an.exceptions.NotAuthenticatedException;
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.auth.dto.profile.AddProfileForm;
+import com.knud4.an.auth.dto.account.SignInAccountForm;
+import com.knud4.an.auth.dto.profile.SignInProfileForm;
+import com.knud4.an.auth.dto.account.SignUpAccountForm;
+import com.knud4.an.exception.NotAuthenticatedException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
-import com.knud4.an.house.service.HouseService;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.repository.LineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final AccountService accountService;
+
     private final AccountRepository accountRepository;
     private final HouseRepository houseRepository;
     private final LineRepository lineRepository;
 
+    private boolean isDuplicateAccountEmail(String email) {
+        return accountRepository.accountExistsByEmail(email);
+    }
+
+    private boolean isDuplicateAccountUsername(String username) {
+        return accountRepository.accountExistsByEmail(username);
+    }
+
     @Transactional
-    public Long SignUpAccount(SignUpAccountForm form) {
-//        이메일 중복 검사
-//        유저 이름 중복 검사
-//        패스워드 암호화
+    public Long signUpAccount(SignUpAccountForm form) throws RuntimeException {
+
+        if (isDuplicateAccountEmail(form.getEmail())) {
+            throw new IllegalStateException("이미 존재하는 이메일 입니다.");
+        }
+        if (isDuplicateAccountUsername(form.getUsername())) {
+            throw new IllegalStateException("이미 존재하는 아이디 입니다.");
+        }
+
         Line line = lineRepository.findByName(form.getLineName())
                 .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
 
@@ -45,10 +59,11 @@ public class AuthService {
 
         Account account = Account.builder()
                 .username(form.getUsername())
-                .password(form.getPasswd())
+                .password(passwordEncoder.encode(form.getPasswd()))
                 .email(form.getEmail())
                 .line(line)
                 .house(house)
+                .role(Role.ROLE_USER)
                 .build();
 
         accountRepository.saveAccount(account);
@@ -56,42 +71,54 @@ public class AuthService {
         return account.getId();
     }
 
-    public Account SignInAccount(SignInAccountForm form) {
-        Account findAccount = accountService.findAccountByUserName(form.getUsername());
+    public Account signInAccount(SignInAccountForm form) throws NotFoundException {
+        Account findAccount = accountRepository.findAccountByUsername(form.getUsername())
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
 
-//        암호 검증
+        if (!passwordEncoder.matches(form.getPasswd(), findAccount.getPassword())) {
+            throw new NotFoundException("비밀번호가 잘못되었습니다.");
+        }
 
         return findAccount;
     }
 
     @Transactional
-    public Long AddProfile(AddProfileForm form, Long accountIdFromToken) {
-        if (!form.getAccountId().equals(accountIdFromToken)) {
+    public Long AddProfile(AddProfileForm form, String accountEmailFromToken) throws RuntimeException{
+
+        Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
+                .orElseThrow(() -> new NotAuthenticatedException("계정 정보가 잘못되었습니다."));
+
+        if (!form.getAccountId().equals(account.getId())) {
             throw new NotAuthenticatedException("계정 정보가 잘못되었습니다.");
         }
 
-        Account findAccount = accountService.findAccountByAccountId(accountIdFromToken);
         Profile profile = Profile.builder()
                 .name(form.getName())
-                .account(findAccount)
-                .pin(form.getPin())
+                .account(account)
+                .pin(passwordEncoder.encode(form.getPin()))
                 .age(form.getAge())
+                .gender(form.getGender())
                 .build();
-
-//        pin 번호 암호화
 
         accountRepository.saveProfile(profile);
 
         return profile.getId();
     }
 
-    public Profile SignInProfile(SignInProfileForm form, Long accountIdFromToken) {
-        if (!form.getAccountId().equals(accountIdFromToken)) {
+    public Profile signInProfile(SignInProfileForm form, String accountEmailFromToken) throws RuntimeException{
+
+        Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
+                .orElseThrow(() -> new NotAuthenticatedException("계정 정보가 잘못되었습니다."));
+
+        if (!form.getAccountId().equals(account.getId())) {
             throw new NotAuthenticatedException("계정 정보가 잘못되었습니다.");
         }
 
         Profile findProfile = accountService.findProfileById(form.getProfileId());
-//        pin 번호 검증
+
+        if (!passwordEncoder.matches(form.getPin(), findProfile.getPin())) {
+            throw new NotFoundException("판 번호가 잘못되었습니다.");
+        }
 
         return findProfile;
     }
