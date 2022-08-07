@@ -34,11 +34,12 @@ public class Account {
     private Role role = Role.ROLE_NOT_SIGNED;
 
     @Builder
-    public Account(House house, Line line, String email, String username, String password) {
+    public Account(House house, Line line, String email, String username, String password, Role role) {
         this.house = house;
         this.line = line;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 }
