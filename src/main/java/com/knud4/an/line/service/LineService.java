@@ -1,6 +1,6 @@
 package com.knud4.an.line.service;
 
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.line.dto.CreateLineForm;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.repository.LineRepository;
@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

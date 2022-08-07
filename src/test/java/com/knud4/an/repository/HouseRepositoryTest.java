@@ -1,6 +1,6 @@
 package com.knud4.an.repository;
 
-import com.knud4.an.exceptions.NotFoundException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
