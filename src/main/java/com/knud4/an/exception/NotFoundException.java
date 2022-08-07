@@ -1,4 +1,4 @@
-package com.knud4.an.exceptions;
+package com.knud4.an.exception;
 
 public class NotFoundException extends RuntimeException {
 
