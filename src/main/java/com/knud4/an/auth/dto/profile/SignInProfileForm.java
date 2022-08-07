@@ -1,4 +1,4 @@
-package com.knud4.an.auth.dto;
+package com.knud4.an.auth.dto.profile;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
