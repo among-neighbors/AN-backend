@@ -22,15 +22,8 @@ public class House {
     private Line line;
 
     @Builder
-    public House(String name) {
+    public House(String name, Line line) {
         this.name = name;
-    }
-
-    public void setLine(Line line) {
         this.line = line;
-    }
-
-    public void changeName(String name) {
-        this.name = name;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,20 +18,13 @@ public class LineRepository {
         em.persist(line);
     }
 
-    public void updateName(String oldName, String updateName) {
-        Line findLine = findByName(oldName);
-        findLine.changeName(updateName);
-    }
+    public Line findById(Long id) { return em.find(Line.class, id); }
 
-    public void deleteByName(String lineName) {
-        em.createQuery("delete from Line l where l.name = :name")
-                .setParameter("name", lineName).executeUpdate();
-    }
-
-    public Line findByName(String lineName) {
+    public Optional<Line> findByName(String lineName) {
         return em.createQuery("select l from Line l where l.name = :name", Line.class)
                 .setParameter("name", lineName)
-                .getSingleResult();
+                .getResultList().stream()
+                .findFirst();
     }
 
     public List<Line> findAll() {

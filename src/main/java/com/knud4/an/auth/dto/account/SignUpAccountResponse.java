@@ -1,4 +1,4 @@
-package com.knud4.an.line.dto;
+package com.knud4.an.auth.dto.account;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateLineDTO {
-    public String oldName;
-    public String changeName;
+public class SignUpAccountResponse {
+    private Long accountId;
 }
