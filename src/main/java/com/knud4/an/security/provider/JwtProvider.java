@@ -17,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -28,6 +29,9 @@ public class JwtProvider implements AuthenticationProvider {
 
     private static final long TOKEN_VALIDATION_SECOND = 1000L * 60 * 120;
     private static final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60 * 60 * 48;
+
+    public static final String ACCOUNT_TOKEN_NAME = "account_token";
+    public static final String PROFILE_TOKEN_NAME = "profile_token";
 
 
     @Value("${spring.jwt.secret}")
@@ -49,18 +53,35 @@ public class JwtProvider implements AuthenticationProvider {
         return verifiedToken.getClaim("email").asString();
     }
 
+    public Long getProfileIdFromToken(String token) {
+        DecodedJWT verifiedToken = validateToken(token);
+        return verifiedToken.getClaim("profile_id").asLong();
+    }
+
     private JWTVerifier getTokenValidator() {
         return JWT.require(getSigningKey(SECRET_KEY))
                 .withIssuer(ISSUER)
                 .build();
     }
 
-    public String generateToken(Map<String, String> payload) {
+    public String generateAccountToken(String email, String accountId) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("email", email);
+        payload.put("account_id", accountId);
         return doGenerateToken(TOKEN_VALIDATION_SECOND, payload);
     }
 
-    public String generateRefreshToken(Map<String, String> payload) {
+    public String generateAccountRefreshToken(String email, String accountId) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("email", email);
+        payload.put("account_id", accountId);
         return doGenerateToken(REFRESH_TOKEN_VALIDATION_TIME, payload);
+    }
+
+    public String generateProfileToken(String profileId) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("profile_id", profileId);
+        return doGenerateToken(TOKEN_VALIDATION_SECOND, payload);
     }
 
     private String doGenerateToken(long expireTime, Map<String, String> payload) {
