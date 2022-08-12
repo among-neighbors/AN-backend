@@ -33,23 +33,23 @@ public class AuthService {
     private final HouseRepository houseRepository;
     private final LineRepository lineRepository;
 
-    private boolean isDuplicateAccountEmail(String email) {
-        return accountRepository.accountExistsByEmail(email);
+    private void validateAccountEmailDuplicated(String email) {
+        if (accountRepository.accountExistsByEmail(email)) {
+            throw new IllegalStateException("이미 존재하는 이메일 입니다.");
+        }
     }
 
-    private boolean isDuplicateAccountUsername(String username) {
-        return accountRepository.accountExistsByEmail(username);
+    private void validateAccountUsernameDuplicated(String username) {
+        if (accountRepository.accountExistsByEmail(username)) {
+            throw new IllegalStateException("이미 존재하는 아이디 입니다.");
+        }
     }
 
     @Transactional
     public Long signUpAccount(SignUpAccountForm form) throws RuntimeException {
 
-        if (isDuplicateAccountEmail(form.getEmail())) {
-            throw new IllegalStateException("이미 존재하는 이메일 입니다.");
-        }
-        if (isDuplicateAccountUsername(form.getUsername())) {
-            throw new IllegalStateException("이미 존재하는 아이디 입니다.");
-        }
+        validateAccountEmailDuplicated(form.getEmail());
+        validateAccountUsernameDuplicated(form.getUsername());
 
         Line line = lineRepository.findByName(form.getLineName())
                 .orElseThrow(() -> new NotFoundException("라인을 찾을 수 없습니다."));
@@ -76,7 +76,7 @@ public class AuthService {
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(form.getPasswd(), findAccount.getPassword())) {
-            throw new NotFoundException("비밀번호가 잘못되었습니다.");
+            throw new NotAuthenticatedException("비밀번호가 잘못되었습니다.");
         }
 
         return findAccount;
@@ -86,10 +86,10 @@ public class AuthService {
     public Long AddProfile(AddProfileForm form, String accountEmailFromToken) throws RuntimeException{
 
         Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
-                .orElseThrow(() -> new NotAuthenticatedException("계정 정보가 잘못되었습니다."));
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
 
-        if (!form.getAccountId().equals(account.getId())) {
-            throw new NotAuthenticatedException("계정 정보가 잘못되었습니다.");
+        if (accountRepository.profileExistsByName(form.getName())) {
+            throw new IllegalArgumentException("프로필 이름이 중복되었습니다");
         }
 
         Profile profile = Profile.builder()
@@ -110,14 +110,13 @@ public class AuthService {
         Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
                 .orElseThrow(() -> new NotAuthenticatedException("계정 정보가 잘못되었습니다."));
 
-        if (!form.getAccountId().equals(account.getId())) {
-            throw new NotAuthenticatedException("계정 정보가 잘못되었습니다.");
+        Profile findProfile = accountService.findProfileById(form.getProfileId());
+        if (findProfile == null || !findProfile.getAccount().getId().equals(account.getId())) {
+            throw new NotFoundException("프로필을 찾을 수 없습니다.");
         }
 
-        Profile findProfile = accountService.findProfileById(form.getProfileId());
-
         if (!passwordEncoder.matches(form.getPin(), findProfile.getPin())) {
-            throw new NotFoundException("판 번호가 잘못되었습니다.");
+            throw new NotFoundException("핀 번호가 잘못되었습니다.");
         }
 
         return findProfile;

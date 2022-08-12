@@ -73,4 +73,11 @@ public class AccountRepository {
                 .setParameter("username", username)
                 .getSingleResult();
     }
+
+    public boolean profileExistsByName(String profileName) {
+        return em.createQuery("select count(p) > 0 from Profile p " +
+                "where p.name = :profileName", Boolean.class)
+                .setParameter("profileName", profileName)
+                .getSingleResult();
+    }
 }
