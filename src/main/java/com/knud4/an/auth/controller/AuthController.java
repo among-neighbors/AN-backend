@@ -33,7 +33,7 @@ public class AuthController {
     private final JwtProvider jwtProvider;
     private final CookieUtil cookieUtil;
 
-    @PostMapping("/api/v1/account/sign-in")
+    @PostMapping("/api/v1/auth/account/sign-in")
     public ApiSuccessResult<SignUpAccountResponse> signUpAccount (
             @RequestBody @Valid SignUpAccountForm form) throws RuntimeException {
 
@@ -41,7 +41,7 @@ public class AuthController {
         return ApiUtil.success(new SignUpAccountResponse(id));
     }
 
-    @PostMapping("/api/v1/account/login")
+    @PostMapping("/api/v1/auth/account/login")
     public ApiSuccessResult<SignInAccountResponse> signInAccount (
             @RequestBody @Valid SignInAccountForm form,
             HttpServletResponse res) throws RuntimeException {
@@ -57,7 +57,7 @@ public class AuthController {
                 (account.getId(), account.getLine().getId(), account.getHouse().getId())) ;
     }
 
-    @PostMapping("/api/v1/profile/add")
+    @PostMapping("/api/v1/auth/profile/add")
     public ApiSuccessResult<AddProfileResponse> addProfile(
             @RequestBody @Valid AddProfileForm form,
             HttpServletRequest req) throws RuntimeException {
@@ -69,7 +69,7 @@ public class AuthController {
         return ApiUtil.success(new AddProfileResponse(profileId));
     }
 
-    @PostMapping("/api/v1/profile/login")
+    @PostMapping("/api/v1/auth/profile/login")
     public ApiSuccessResult<SignInProfileResponse> signInProfile(
             @RequestBody @Valid SignInProfileForm form,
             HttpServletRequest req,
