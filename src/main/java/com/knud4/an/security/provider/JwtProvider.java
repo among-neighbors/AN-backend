@@ -53,9 +53,20 @@ public class JwtProvider implements AuthenticationProvider {
         return verifiedToken.getClaim("email").asString();
     }
 
+    public Long getAccountIdFromToken(String token) {
+        DecodedJWT verifiedToken = validateToken(token);
+        for (String key : verifiedToken.getClaims().keySet()) {
+            System.out.println(key);
+            System.out.println(verifiedToken.getClaim(key).asString());
+            System.out.println();
+        }
+
+        return Long.parseLong(verifiedToken.getClaim("account_id").asString());
+    }
+
     public Long getProfileIdFromToken(String token) {
         DecodedJWT verifiedToken = validateToken(token);
-        return verifiedToken.getClaim("profile_id").asLong();
+        return Long.parseLong(verifiedToken.getClaim("profile_id").asString());
     }
 
     private JWTVerifier getTokenValidator() {
