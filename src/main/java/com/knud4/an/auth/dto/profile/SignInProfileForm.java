@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class SignInProfileForm {
     @NotNull
-    private Long accountId;
-    @NotNull
     private Long profileId;
     @NotNull
     private String pin;

@@ -43,18 +43,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 String emailFromToken = jwtProvider.getEmailFromToken(token);
                 authenticate = jwtProvider
                         .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
-
                 SecurityContextHolder.getContext().setAuthentication(authenticate);
             } catch(Exception e) {
-                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                res.setContentType("application/json");
-                res.setCharacterEncoding("UTF-8");
-
-                JSONObject resJson = new JSONObject();
-                resJson.put("code", 401);
-                resJson.put("message", e.getMessage());
-
-                res.getWriter().write(resJson.toString());
             }
         }
 

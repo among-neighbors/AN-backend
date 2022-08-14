@@ -31,4 +31,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body(error);
     }
+
+    @ExceptionHandler({
+            Exception.class
+    })
+    protected ResponseEntity<?> handleNormalException(Exception e) {
+        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(error);
+    }
 }
