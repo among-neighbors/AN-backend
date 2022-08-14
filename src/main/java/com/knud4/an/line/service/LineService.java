@@ -18,8 +18,11 @@ public class LineService {
     private final LineRepository lineRepository;
 
     @Transactional
-    public Long createLine(CreateLineForm createLineForm) {
+    public Long createLine(CreateLineForm createLineForm) throws RuntimeException {
 //        Manager 체크 로직 추가
+        if (lineRepository.existsByName(createLineForm.getName())) {
+            throw new IllegalStateException("이미 존재하는 라인 입니다.");
+        }
 
         Line line = Line.builder()
                 .name(createLineForm.getName())
