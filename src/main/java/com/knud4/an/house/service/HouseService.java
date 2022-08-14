@@ -24,6 +24,10 @@ public class HouseService {
     public Long createHouse(CreateHouseForm createHouseForm) {
         Line findLine = getFindLine(createHouseForm.getLineName());
 
+        if(houseRepository.existHouseByNameAndLineId(createHouseForm.getHouseName(), findLine.getId())) {
+            throw new IllegalStateException("이미 존재하는 세대 입니다.");
+        }
+
         House createHouse = House.builder()
                 .name(createHouseForm.getHouseName())
                 .line(findLine)

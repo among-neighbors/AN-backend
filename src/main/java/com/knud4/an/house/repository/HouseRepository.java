@@ -42,4 +42,12 @@ public class HouseRepository {
         return em.createQuery("select h from House h", House.class)
                 .getResultList();
     }
+
+    public boolean existHouseByNameAndLineId(String houseName, Long lineId) {
+        return em.createQuery("select count(h)>0 from House h " +
+                "where h.line.id = :lineId and h.name = :houseName", Boolean.class)
+                .setParameter("lineId", lineId)
+                .setParameter("houseName", houseName)
+                .getSingleResult();
+    }
 }

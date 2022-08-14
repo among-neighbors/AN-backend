@@ -30,4 +30,11 @@ public class LineRepository {
     public List<Line> findAll() {
         return em.createQuery("select l from Line l", Line.class).getResultList();
     }
+
+    public boolean existsByName(String lineName) {
+        return em.createQuery("select count(l)>0 from Line l " +
+                "where l.name = :name", Boolean.class)
+                .setParameter("name", lineName)
+                .getSingleResult();
+    }
 }
