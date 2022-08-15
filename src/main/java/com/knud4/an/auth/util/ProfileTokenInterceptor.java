@@ -1,0 +1,35 @@
+package com.knud4.an.auth.util;
+
+import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.security.provider.JwtProvider;
+import com.knud4.an.utils.jwt.JwtExtractor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@Component
+@RequiredArgsConstructor
+public class ProfileTokenInterceptor implements HandlerInterceptor {
+
+    private final JwtProvider jwtProvider;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Object handler) throws Exception {
+        String profileToken = JwtExtractor.extractJwt(request);
+
+        String email = jwtProvider.getEmailFromToken(profileToken);
+        Long profileId = jwtProvider.getProfileIdFromToken(profileToken);
+        Long accountId = jwtProvider.getAccountIdFromToken(profileToken);
+
+        request.setAttribute("email", email);
+        request.setAttribute("accountId", accountId);
+        request.setAttribute("profileId", profileId);
+
+        return true;
+    }
+}

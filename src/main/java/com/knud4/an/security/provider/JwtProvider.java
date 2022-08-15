@@ -49,28 +49,36 @@ public class JwtProvider implements AuthenticationProvider {
     }
 
     public String getEmailFromToken(String token) {
-        DecodedJWT verifiedToken = validateToken(token);
-        return verifiedToken.getClaim("email").asString();
+        DecodedJWT verifiedToken = validateToken(token, getAccountTokenValidator());
+        String result = verifiedToken.getClaim("email").asString();
+        return result;
     }
 
     public Long getAccountIdFromToken(String token) {
-        DecodedJWT verifiedToken = validateToken(token);
-        for (String key : verifiedToken.getClaims().keySet()) {
-            System.out.println(key);
-            System.out.println(verifiedToken.getClaim(key).asString());
-            System.out.println();
-        }
-
-        return Long.parseLong(verifiedToken.getClaim("account_id").asString());
+        DecodedJWT verifiedToken = validateToken(token, getAccountTokenValidator());
+        String result = verifiedToken.getClaim("account_id").asString();
+        return Long.parseLong(result);
     }
 
     public Long getProfileIdFromToken(String token) {
-        DecodedJWT verifiedToken = validateToken(token);
-        return Long.parseLong(verifiedToken.getClaim("profile_id").asString());
+        DecodedJWT verifiedToken = validateToken(token, getProfileTokenValidator());
+        String result = verifiedToken.getClaim("profile_id").asString();
+        return Long.parseLong(result);
     }
 
-    private JWTVerifier getTokenValidator() {
+    private JWTVerifier getAccountTokenValidator() {
         return JWT.require(getSigningKey(SECRET_KEY))
+                .withClaimPresence("email")
+                .withClaimPresence("account_id")
+                .withIssuer(ISSUER)
+                .build();
+    }
+
+    private JWTVerifier getProfileTokenValidator() {
+        return JWT.require(getSigningKey(SECRET_KEY))
+                .withClaimPresence("email")
+                .withClaimPresence("account_id")
+                .withClaimPresence("profile_id")
                 .withIssuer(ISSUER)
                 .build();
     }
@@ -89,9 +97,11 @@ public class JwtProvider implements AuthenticationProvider {
         return doGenerateToken(REFRESH_TOKEN_VALIDATION_TIME, payload);
     }
 
-    public String generateProfileToken(String profileId) {
+    public String generateProfileToken(String accountEmail, String accountId, String profileId) {
         Map<String, String> payload = new HashMap<>();
+        payload.put("email", accountEmail);
         payload.put("profile_id", profileId);
+        payload.put("account_id", accountId);
         return doGenerateToken(TOKEN_VALIDATION_SECOND, payload);
     }
 
@@ -105,14 +115,22 @@ public class JwtProvider implements AuthenticationProvider {
                 .sign(getSigningKey(SECRET_KEY));
     }
 
-    private DecodedJWT validateToken(String token) throws JWTVerificationException {
-        JWTVerifier validator = getTokenValidator();
+    private DecodedJWT validateToken(String token, JWTVerifier validator) throws JWTVerificationException {
         return validator.verify(token);
     }
 
-    public boolean isTokenExpired(String token) {
+    public boolean isAccountTokenExpired(String token) {
         try {
-            DecodedJWT decodedJWT = validateToken(token);
+            DecodedJWT decodedJWT = validateToken(token, getAccountTokenValidator());
+            return false;
+        } catch (JWTVerificationException e) {
+            return true;
+        }
+    }
+
+    public boolean isProfileTokenExpired(String token) {
+        try {
+            DecodedJWT decodedJWT = validateToken(token, getProfileTokenValidator());
             return false;
         } catch (JWTVerificationException e) {
             return true;

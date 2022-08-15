@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtProfileAuthenticationFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
 
@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         token = JwtExtractor.extractJwt(req);
 
-        if(token != null && !jwtProvider.isAccountTokenExpired(token)) {
+        if(token != null && !jwtProvider.isProfileTokenExpired(token)) {
             try {
                 String emailFromToken = jwtProvider.getEmailFromToken(token);
                 authenticate = jwtProvider
