@@ -19,17 +19,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal
             (Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ApiErrorResult<String> error = ApiUtil.error(status.value(), ex.getMessage());
-
         return super.handleExceptionInternal(ex, error, headers, status, request);
     }
 
     @ExceptionHandler({
             IllegalStateException.class,
-            NotFoundException.class,
             NotAuthenticatedException.class})
     protected ResponseEntity<?> handleIllegalStateException(Exception e) {
         ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<?> handleNotFoundException(Exception e) {
+        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(error);
     }
 
     @ExceptionHandler({
