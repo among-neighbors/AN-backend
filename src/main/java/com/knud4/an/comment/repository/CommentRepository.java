@@ -17,9 +17,10 @@ public class CommentRepository {
         em.persist(comment);
     }
 
-    // 커뮤니티 글 아이디로 모든 댓글 조회 구현 필요
     public List<Comment> findAllByCommunityId(Long communityId) {
-        return null;
+        return em.createQuery("select c from Comment c where c.community = :communityId", Comment.class)
+                .setParameter("communityId", communityId)
+                .getResultList();
     }
 
     public void delete(Comment comment) {

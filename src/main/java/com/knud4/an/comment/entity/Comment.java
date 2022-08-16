@@ -1,6 +1,7 @@
 package com.knud4.an.comment.entity;
 
 import com.knud4.an.Base.BaseEntity;
+import com.knud4.an.community.entity.Community;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +20,8 @@ public class Comment extends BaseEntity {
 
     // Member와의 연관관계 설정 필요
 
-    // Community와의 연관관계 설정 필요
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Community community;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Community community;
 
     private Long likes;
 }
