@@ -1,6 +1,6 @@
-package com.knud4.an.auth.util;
+package com.knud4.an.interceptor;
 
-import com.knud4.an.exception.NotFoundException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +22,16 @@ public class AccountTokenInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
         String accountToken = JwtExtractor.extractJwt(request);
 
-        String email = jwtProvider.getEmailFromToken(accountToken);
-        Long accountId = jwtProvider.getAccountIdFromToken(accountToken);
+        try {
+            String email = jwtProvider.getEmailFromToken(accountToken);
+            Long accountId = jwtProvider.getAccountIdFromToken(accountToken);
 
-        request.setAttribute("accountId", accountId);
-        request.setAttribute("email", email);
+            request.setAttribute("accountId", accountId);
+            request.setAttribute("email", email);
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+
         return true;
     }
 }
