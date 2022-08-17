@@ -1,6 +1,7 @@
 package com.knud4.an.config;
 
-import com.knud4.an.exception.CustomAccessDeniedHandler;
+import com.knud4.an.exception.handler.JwtAccessDeniedHandler;
+import com.knud4.an.exception.handler.JwtNotAuthenticatedHandler;
 import com.knud4.an.security.filter.JwtAuthenticationFilter;
 import com.knud4.an.security.filter.JwtProfileAuthenticationFilter;
 import com.knud4.an.utils.cookie.CookieUtil;
@@ -10,17 +11,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @EnableWebSecurity
 public class SecurityConfigure {
@@ -50,14 +44,6 @@ public class SecurityConfigure {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/profile/**").hasRole("USER")
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                    @Override
-                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                        response.sendError(403, "인증 토큰 정보가 잘못되었습니다.");
-                    }
-                })
-                .and()
                 .addFilterBefore(jwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -74,14 +60,6 @@ public class SecurityConfigure {
                 .authorizeRequests()
                 .antMatchers("/api/v1/profile/**").hasRole("USER")
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                    @Override
-                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                        response.sendError(403, "인증 토큰 정보가 잘못되었습니다.");
-                    }
-                })
-                .and()
                 .addFilterBefore(jwtProfileAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -95,6 +73,10 @@ public class SecurityConfigure {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new JwtNotAuthenticatedHandler())
+                .accessDeniedHandler(new JwtAccessDeniedHandler())
                 .and();
     }
 }

@@ -17,16 +17,14 @@ import com.knud4.an.utils.cookie.CookieUtil;
 import com.knud4.an.security.provider.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.http.HttpResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,15 +53,15 @@ public class AuthController {
 
         String accessToken = jwtProvider.generateAccountToken(account.getEmail(), account.getId()+"");
 
-        Cookie cookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accessToken);
-        res.addCookie(cookie);
+        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accessToken);
+        res.addHeader("Set-Cookie", cookie.toString());
 
         return ApiUtil.success(new SignInAccountResponse
                 (account.getId(), account.getLine().getId(), account.getHouse().getId())) ;
     }
 
     @Operation(summary = "프로필 추가")
-    @PostMapping("/api/v1/auth/profile/add")
+    @PostMapping("/api/v1/auth/profile/new")
     public ApiSuccessResult<AddProfileResponse> addProfile(
             @RequestBody @Valid AddProfileForm form,
             HttpServletRequest req) throws RuntimeException {
@@ -90,8 +88,8 @@ public class AuthController {
                 profile.getAccount().getEmail(),
                 profile.getAccount().getId()+"",
                 profile.getId() + "");
-        Cookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, accessToken);
-        res.addCookie(cookie);
+        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, accessToken);
+        res.addHeader("Set-Cookie", cookie.toString());
 
         return ApiUtil.success(new SignInProfileResponse(
                 profile.getAccount().getId(), profile.getId(), profile.getName()
