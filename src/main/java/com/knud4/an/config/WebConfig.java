@@ -1,7 +1,7 @@
 package com.knud4.an.config;
 
-import com.knud4.an.auth.util.AccountTokenInterceptor;
-import com.knud4.an.auth.util.ProfileTokenInterceptor;
+import com.knud4.an.interceptor.AccountTokenInterceptor;
+import com.knud4.an.interceptor.ProfileTokenInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -18,10 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOrigins("https://localhost:5173")
                 .allowedMethods("GET", "POST", "DELETE", "PUT")
                 .allowedHeaders("*")
-                .exposedHeaders("*");
+                .exposedHeaders("*")
+                .allowCredentials(true);
     }
 
     @Override

@@ -1,5 +1,6 @@
-package com.knud4.an.auth.util;
+package com.knud4.an.interceptor;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
@@ -21,15 +22,17 @@ public class ProfileTokenInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
         String profileToken = JwtExtractor.extractJwt(request);
+        try {
+            String email = jwtProvider.getEmailFromToken(profileToken);
+            Long profileId = jwtProvider.getProfileIdFromToken(profileToken);
+            Long accountId = jwtProvider.getAccountIdFromToken(profileToken);
 
-        String email = jwtProvider.getEmailFromToken(profileToken);
-        Long profileId = jwtProvider.getProfileIdFromToken(profileToken);
-        Long accountId = jwtProvider.getAccountIdFromToken(profileToken);
-
-        request.setAttribute("email", email);
-        request.setAttribute("accountId", accountId);
-        request.setAttribute("profileId", profileId);
-
+            request.setAttribute("email", email);
+            request.setAttribute("accountId", accountId);
+            request.setAttribute("profileId", profileId);
+        } catch (JWTVerificationException e) {
+            return false;
+        }
         return true;
     }
 }
