@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @MappedSuperclass
 @NoArgsConstructor
-public class Board extends BaseEntity {
+public abstract class Board extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -27,12 +27,19 @@ public class Board extends BaseEntity {
 
     private Range range;
 
-    @Builder
-    public Board(String title, String content, Profile writer, Range range) {
+    protected void setTitle(String title) {
         this.title = title;
-        this.content = content;
-        this.writer = writer;
-        this.range = range;
     }
 
+    protected void setContent(String content) {
+        this.content = content;
+    }
+
+    protected void setWriter(Profile writer) {
+        this.writer = writer;
+    }
+
+    protected void setRange(Range range) {
+        this.range = range;
+    }
 }

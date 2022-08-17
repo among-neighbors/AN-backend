@@ -16,7 +16,7 @@ public class CommunityRepository {
 
     private final EntityManager em;
 
-    public void create(Community community) {
+    public void save(Community community) {
         em.persist(community);
     }
 
@@ -41,7 +41,7 @@ public class CommunityRepository {
     }
 
     public List<Community> findWithinPeriod(LocalDateTime from, LocalDateTime to) {
-        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to", Community.class)
+        return em.createQuery("select c from Community c where c.createdDate >= :from and c.createdDate <= :to", Community.class)
                 .setParameter("from", from)
                 .setParameter("to", to)
                 .getResultList();

@@ -30,12 +30,17 @@ public class Community extends Board {
     private Long likes;
 
     @Builder
-    public Community(String title, String content, Profile writer, Range range, Category category, List<Comment> comments, Long commentCnt, Long likes) {
-        super(title, content, writer, range);
+    public Community(String title, String content, Profile writer,
+                     Range range, Category category, List<Comment> comments,
+                     Long commentCnt, Long likes) {
+        this.setContent(content);
+        this.setTitle(title);
+        this.setWriter(writer);
+        this.setRange(range);
+
         this.category = category;
         this.comments = comments;
         this.commentCnt = commentCnt;
         this.likes = likes;
     }
-
 }

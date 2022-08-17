@@ -19,7 +19,11 @@ public class Notice extends Board {
 
     @Builder
     public Notice(String title, String content, Profile writer, Range range, LocalDateTime expiredDate) {
-        super(title, content, writer, range);
+        this.setContent(content);
+        this.setTitle(title);
+        this.setWriter(writer);
+        this.setRange(range);
+
         this.expiredDate = expiredDate;
     }
 }
