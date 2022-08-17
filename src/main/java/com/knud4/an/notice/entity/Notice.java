@@ -1,7 +1,10 @@
 package com.knud4.an.notice.entity;
 
+import com.knud4.an.account.entity.Profile;
 import com.knud4.an.board.Board;
+import com.knud4.an.board.Range;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,4 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notice extends Board {
     private LocalDateTime expiredDate;
+
+    @Builder
+    public Notice(String title, String content, Profile writer, Range range, LocalDateTime expiredDate) {
+        super(title, content, writer, range);
+        this.expiredDate = expiredDate;
+    }
 }

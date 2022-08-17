@@ -1,10 +1,14 @@
 package com.knud4.an.community.entity;
 
+import com.knud4.an.account.entity.Profile;
 import com.knud4.an.board.Board;
+import com.knud4.an.board.Range;
 import com.knud4.an.comment.entity.Comment;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -24,4 +28,14 @@ public class Community extends Board {
     private Long commentCnt;
 
     private Long likes;
+
+    @Builder
+    public Community(String title, String content, Profile writer, Range range, Category category, List<Comment> comments, Long commentCnt, Long likes) {
+        super(title, content, writer, range);
+        this.category = category;
+        this.comments = comments;
+        this.commentCnt = commentCnt;
+        this.likes = likes;
+    }
+
 }
