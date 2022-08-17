@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommunityRepository {
 
-    private EntityManager em;
+    private final EntityManager em;
 
     public void create(Community community) {
         em.persist(community);
