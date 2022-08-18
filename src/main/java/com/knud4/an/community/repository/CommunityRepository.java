@@ -39,8 +39,53 @@ public class CommunityRepository {
                 .getResultList();
     }
 
+    public List<Community> findByRange(Range range, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByRangeAndLine(Range range, String lineName, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
     public List<Community> findByCategory(Category category, int page, int count) {
         return em.createQuery("select c from Community c where c.category = :category order by c.id desc", Community.class)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByRangeAndCategory(Range range, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.category = :category order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByRangeAndLineAndCategory(Range range, String lineName, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("lineName", lineName)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByLineAndCatetory(String lineName, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+                .setParameter("lineName", lineName)
                 .setParameter("category", category)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
