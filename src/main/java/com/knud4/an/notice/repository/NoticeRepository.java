@@ -1,6 +1,5 @@
 package com.knud4.an.notice.repository;
 
-import com.knud4.an.board.Range;
 import com.knud4.an.notice.entity.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -37,16 +36,16 @@ public class NoticeRepository {
                 .getResultList();
     }
 
-    public List<Notice> findByRange(Range range) {
-        return em.createQuery("select n from Notice n where n.range = :range", Notice.class)
-                .setParameter("range", range)
+    public List<Notice> findByLine(String lineId) {
+        return em.createQuery("select n from Notice n where n.releaseLine = :lineId", Notice.class)
+                .setParameter("lineId", lineId)
                 .getResultList();
     }
 
-    // 특정 날짜 게시물 vs 특정 날짜 이후 게시물 논의 필요
-    public List<Notice> findAfterCreatedDate(LocalDateTime createdDate) {
-        return em.createQuery("select n from Notice n where n.createdDate >= :createdDate", Notice.class)
-                .setParameter("createdDate", createdDate)
+    public List<Notice> findWithinPeriod(LocalDateTime from, LocalDateTime to) {
+        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to", Notice.class)
+                .setParameter("from", from)
+                .setParameter("to", to)
                 .getResultList();
     }
 

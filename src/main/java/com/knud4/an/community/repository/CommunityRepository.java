@@ -1,6 +1,6 @@
 package com.knud4.an.community.repository;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.community.entity.Range;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +28,9 @@ public class CommunityRepository {
         return em.createQuery("select c from Community c", Community.class).getResultList();
     }
 
-    public List<Community> findByRange(Range range) {
-        return em.createQuery("select c from Community c where c.range = :range", Community.class)
-                .setParameter("range", range)
+    public List<Community> findByLine(Long lineId) {
+        return em.createQuery("select c from Community c where c.writer.account.line = :lineId", Community.class)
+                .setParameter("lineId", lineId)
                 .getResultList();
     }
 

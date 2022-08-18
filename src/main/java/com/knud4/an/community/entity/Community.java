@@ -2,7 +2,7 @@ package com.knud4.an.community.entity;
 
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.board.Board;
-import com.knud4.an.board.Range;
+import com.knud4.an.comment.entity.Comment;
 import com.knud4.an.comment.entity.CommunityComment;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,17 +28,19 @@ public class Community extends Board {
 
     private Long likes;
 
+    private Range range;
+
     @Builder
     public Community(String title, String content, Profile writer,
-                     Range range, Category category,
-                     Long commentCnt, Long likes) {
+                     Category category, Long commentCnt, Long likes, Range range) {
         this.setContent(content);
         this.setTitle(title);
         this.setWriter(writer);
-        this.setRange(range);
 
         this.category = category;
         this.commentCnt = commentCnt;
         this.likes = likes;
+        this.range = range;
     }
+
 }
