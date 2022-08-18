@@ -2,11 +2,9 @@ package com.knud4.an.board;
 
 import com.knud4.an.Base.BaseEntity;
 import com.knud4.an.account.entity.Profile;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.knud4.an.community.entity.Range;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -25,8 +23,6 @@ public abstract class Board extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Profile writer;
 
-    private Range range;
-
     protected void setTitle(String title) {
         this.title = title;
     }
@@ -39,7 +35,4 @@ public abstract class Board extends BaseEntity {
         this.writer = writer;
     }
 
-    protected void setRange(Range range) {
-        this.range = range;
-    }
 }
