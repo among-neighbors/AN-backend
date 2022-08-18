@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeRepository {
 
-    private EntityManager em;
+    private final EntityManager em;
 
     public void save(Notice notice) {
         em.persist(notice);
@@ -26,26 +26,35 @@ public class NoticeRepository {
         return em.find(Notice.class, id);
     }
 
-    public List<Notice> findAll() {
-        return em.createQuery("select n from Notice n", Notice.class).getResultList();
+    public List<Notice> findAll(int page, int count) {
+        return em.createQuery("select n from Notice n order by n.id desc", Notice.class)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
     }
 
-    public List<Notice> findBeforeExpire(LocalDateTime expiredDate) {
-        return em.createQuery("select n from Notice n where n.expiredDate <= :expiredDate", Notice.class)
+    public List<Notice> findBeforeExpire(LocalDateTime expiredDate, int page, int count) {
+        return em.createQuery("select n from Notice n where n.expiredDate <= :expiredDate order by n.id desc", Notice.class)
                 .setParameter("expiredDate", expiredDate)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Notice> findByLine(Long lineId) {
-        return em.createQuery("select n from Notice n where n.releaseLine = :lineId", Notice.class)
+    public List<Notice> findByLine(Long lineId, int page, int count) {
+        return em.createQuery("select n from Notice n where n.releaseLine = :lineId order by n.id desc", Notice.class)
                 .setParameter("lineId", lineId)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Notice> findWithinPeriod(LocalDateTime from, LocalDateTime to) {
-        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to", Notice.class)
+    public List<Notice> findWithinPeriod(LocalDateTime from, LocalDateTime to, int page, int count) {
+        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to order by n.id desc", Notice.class)
                 .setParameter("from", from)
                 .setParameter("to", to)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
