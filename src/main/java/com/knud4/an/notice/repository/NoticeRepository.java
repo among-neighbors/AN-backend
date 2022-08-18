@@ -36,7 +36,7 @@ public class NoticeRepository {
                 .getResultList();
     }
 
-    public List<Notice> findByLine(String lineId) {
+    public List<Notice> findByLine(Long lineId) {
         return em.createQuery("select n from Notice n where n.releaseLine = :lineId", Notice.class)
                 .setParameter("lineId", lineId)
                 .getResultList();
