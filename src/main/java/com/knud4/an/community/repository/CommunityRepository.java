@@ -24,26 +24,80 @@ public class CommunityRepository {
         return em.find(Community.class, id);
     }
 
-    public List<Community> findAll() {
-        return em.createQuery("select c from Community c", Community.class).getResultList();
+    public List<Community> findAll(int page, int count) {
+        return em.createQuery("select c from Community c order by c.id desc", Community.class)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
     }
 
-    public List<Community> findByLine(String lineName) {
-        return em.createQuery("select c from Community c where c.writerLine = :lineName", Community.class)
+    public List<Community> findByLine(String lineName, int page, int count) {
+        return em.createQuery("select c from Community c where c.writerLine = :lineName order by c.id desc", Community.class)
                 .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Community> findByCategory(Category category) {
-        return em.createQuery("select c from Community c where c.category = :category", Community.class)
+    public List<Community> findByRange(Range range, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByRangeAndLine(Range range, String lineName, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByCategory(Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.category = :category order by c.id desc", Community.class)
                 .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Community> findWithinPeriod(LocalDateTime from, LocalDateTime to) {
-        return em.createQuery("select c from Community c where c.createdDate >= :from and c.createdDate <= :to", Community.class)
+    public List<Community> findByRangeAndCategory(Range range, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.category = :category order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByRangeAndLineAndCategory(Range range, String lineName, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+                .setParameter("range", range)
+                .setParameter("lineName", lineName)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findByLineAndCatetory(String lineName, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+                .setParameter("lineName", lineName)
+                .setParameter("category", category)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findWithinPeriod(LocalDateTime from, LocalDateTime to, int page, int count) {
+        return em.createQuery("select c from Community c where c.createdDate >= :from and c.createdDate <= :to order by c.id desc", Community.class)
                 .setParameter("from", from)
                 .setParameter("to", to)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 }
