@@ -28,9 +28,9 @@ public class CommunityRepository {
         return em.createQuery("select c from Community c", Community.class).getResultList();
     }
 
-    public List<Community> findByLine(Long lineId) {
-        return em.createQuery("select c from Community c where c.writer.account.line = :lineId", Community.class)
-                .setParameter("lineId", lineId)
+    public List<Community> findByLine(String lineName) {
+        return em.createQuery("select c from Community c where c.writerLine = :lineName", Community.class)
+                .setParameter("lineName", lineName)
                 .getResultList();
     }
 

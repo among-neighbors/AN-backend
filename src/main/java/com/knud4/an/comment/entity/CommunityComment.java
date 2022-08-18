@@ -29,8 +29,4 @@ public class CommunityComment extends Comment {
         this.setWriter(writer);
     }
 
-    private void setCommunity(Community community) {
-        community.getComments().add(this);
-        this.community = community;
-    }
 }
