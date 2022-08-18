@@ -24,13 +24,8 @@ public class ReportComment extends Comment {
 
     @Builder
     public ReportComment(Report report, String text, Profile writer) {
-        setReport(report);
+        this.report = report;
         this.setText(text);
         this.setWriter(writer);
-    }
-
-    private void setReport(Report report) {
-        report.getComments().add(this);
-        this.report = report;
     }
 }
