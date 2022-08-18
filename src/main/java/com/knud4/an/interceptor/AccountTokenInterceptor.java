@@ -29,7 +29,6 @@ public class AccountTokenInterceptor implements HandlerInterceptor {
             request.setAttribute("accountId", accountId);
             request.setAttribute("email", email);
         } catch (JWTVerificationException e) {
-            return false;
         }
 
         return true;

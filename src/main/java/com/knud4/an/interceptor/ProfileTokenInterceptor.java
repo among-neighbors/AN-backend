@@ -31,7 +31,6 @@ public class ProfileTokenInterceptor implements HandlerInterceptor {
             request.setAttribute("accountId", accountId);
             request.setAttribute("profileId", profileId);
         } catch (JWTVerificationException e) {
-            return false;
         }
         return true;
     }

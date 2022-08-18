@@ -22,7 +22,7 @@ public class Account {
     @JoinColumn(name = "house_id")
     private House house;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id")
     private Line line;
 

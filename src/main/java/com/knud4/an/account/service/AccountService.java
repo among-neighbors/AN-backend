@@ -32,7 +32,7 @@ public class AccountService {
     }
 
     public Profile findProfileById(Long id) {
-        return accountRepository.findProfileByID(id);
+        return accountRepository.findProfileById(id);
     }
 
     public List<Profile> findProfilesByAccountId(Long id) {
@@ -40,7 +40,7 @@ public class AccountService {
     }
 
     public Profile findProfileByAccountIdAndProfileName(Long accountId, String profileName) {
-        return accountRepository.findProfileByAccountIDAndProfileName(accountId, profileName)
+        return accountRepository.findProfileByAccountIdAndProfileName(accountId, profileName)
                 .orElseThrow(() -> new NotFoundException("프로필이 존재하지 않습니다."));
     }
 }
