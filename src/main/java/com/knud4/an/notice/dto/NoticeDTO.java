@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class NoticeDTO {
         this.expiredDate = notice.getExpiredDate();
         this.range = notice.getRange();
         this.createdDate = notice.getCreatedDate();
-//        this.writer = notice.getWriter().getName();
+        this.writer = notice.getWriter().getName();
     }
 
     public static List<NoticeDTO> entityListToDTOList(List<Notice> notices) {
