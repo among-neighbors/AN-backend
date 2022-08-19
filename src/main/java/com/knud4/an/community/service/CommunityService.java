@@ -6,7 +6,7 @@ import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
-import com.knud4.an.community.entity.Range;
+import com.knud4.an.board.Range;
 import com.knud4.an.community.repository.CommunityRepository;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;

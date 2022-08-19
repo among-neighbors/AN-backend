@@ -1,7 +1,7 @@
 package com.knud4.an.community.dto;
 
 import com.knud4.an.community.entity.Category;
-import com.knud4.an.community.entity.Range;
+import com.knud4.an.board.Range;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
