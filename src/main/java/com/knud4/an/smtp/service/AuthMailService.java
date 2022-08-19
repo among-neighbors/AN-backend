@@ -1,5 +1,6 @@
 package com.knud4.an.smtp.service;
 
+import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,8 @@ import java.util.Random;
 public class AuthMailService {
     private final RedisUtil redisUtil;
     private final JavaMailSender mailSender;
+
+    private final AccountRepository accountRepository;
 
     @Value("${group.email}")
     private String SERVER_EMAIL;
@@ -36,7 +39,10 @@ public class AuthMailService {
         }
     }
 
-    private void doSendAuthenticationCode(String email, boolean resend) {
+    private void doSendAuthenticationCode(String email, boolean resend) throws IllegalStateException{
+        if (accountRepository.accountExistsByEmail(email)) {
+            throw new IllegalStateException("이미 존재하는 이메일 입니다.");
+        }
 //        인증 코드 생성
         String code = generateCode(4);
 //        레디스 캐싱 (email, 인증코드)

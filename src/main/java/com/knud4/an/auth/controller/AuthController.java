@@ -11,8 +11,9 @@ import com.knud4.an.auth.dto.profile.AddProfileResponse;
 import com.knud4.an.auth.dto.profile.SignInProfileForm;
 import com.knud4.an.auth.dto.profile.SignInProfileResponse;
 import com.knud4.an.auth.service.AuthService;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
-import com.knud4.an.utils.api.ApiUtil.ApiSuccessResult;
+import com.knud4.an.utils.api.ApiUtil.*;
 import com.knud4.an.utils.cookie.CookieUtil;
 import com.knud4.an.security.provider.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,4 +97,13 @@ public class AuthController {
                 profile.getAccount().getId(), profile.getId(), profile.getName()
         ));
     }
+
+    @Operation(summary = "이메일 인증 코드 입력")
+    @PostMapping("/api/v1/auth/verify-code")
+    public ApiSuccessResult<String> verifyCode(@RequestParam(name = "email") String email,
+                                               @RequestParam(name = "code") String code) throws NotFoundException {
+        authService.verifySignUpCode(email, code);
+        return ApiUtil.success("인증이 완료되었습니다.");
+    }
+
 }
