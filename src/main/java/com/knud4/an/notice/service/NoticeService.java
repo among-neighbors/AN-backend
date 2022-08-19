@@ -25,10 +25,7 @@ public class NoticeService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public Long createNotice(CreateNoticeForm form, Profile writer, Account account) {
-        if(account.getRole() != Role.ROLE_MANAGER) {
-            throw new NotAuthenticatedException("작성 권한이 없습니다.");
-        }
+    public Long createNotice(CreateNoticeForm form, Profile writer) {
         Notice notice = Notice.builder()
                 .writer(writer)
                 .title(form.getTitle())
@@ -57,6 +54,8 @@ public class NoticeService {
 
     public List<Notice> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
+        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count);
+
         List<Notice> findNotices = noticeRepository.findByRange(Range.ALL, page, count);
         findNotices.addAll(noticeRepository.findByRangeAndLine(Range.LINE, account.getLine().getName(), page, count));
         return findNotices;
