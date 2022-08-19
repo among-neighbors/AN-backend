@@ -15,6 +15,7 @@ import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
 import com.knud4.an.line.repository.LineRepository;
+import com.knud4.an.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthService {
 
+    private final RedisUtil redisUtil;
     private final PasswordEncoder passwordEncoder;
 
     private final AccountService accountService;
@@ -32,6 +34,8 @@ public class AuthService {
     private final AccountRepository accountRepository;
     private final HouseRepository houseRepository;
     private final LineRepository lineRepository;
+
+    private final String VERIFIED_PREFIX = "vf::";
 
     private void validateAccountEmailDuplicated(String email) {
         if (accountRepository.accountExistsByEmail(email)) {
@@ -47,6 +51,10 @@ public class AuthService {
 
     @Transactional
     public Long signUpAccount(SignUpAccountForm form) throws RuntimeException {
+        Boolean isVerified = (Boolean) redisUtil.get(VERIFIED_PREFIX + form.getEmail());
+        if (isVerified == null || !isVerified) {
+            throw new NotAuthenticatedException("이메일 인증이 필요합니다.");
+        }
 
         validateAccountEmailDuplicated(form.getEmail());
         validateAccountUsernameDuplicated(form.getUsername());
@@ -67,6 +75,7 @@ public class AuthService {
                 .build();
 
         accountRepository.saveAccount(account);
+        redisUtil.del(VERIFIED_PREFIX+form.getEmail());
 
         return account.getId();
     }
@@ -122,4 +131,14 @@ public class AuthService {
         return findProfile;
     }
 
+    public void verifySignUpCode(String email, String code) throws NotFoundException {
+        String savedCode = (String) redisUtil.get(email);
+        if (!code.equals(savedCode)) {
+            throw new NotFoundException("코드가 잘못되었습니다.");
+        } else {
+            redisUtil.del(email);
+            redisUtil.set(VERIFIED_PREFIX + email, true);
+            redisUtil.expire(VERIFIED_PREFIX + email, 3600);
+        }
+    }
 }
