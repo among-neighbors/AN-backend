@@ -1,6 +1,6 @@
 package com.knud4.an.community.repository;
 
-import com.knud4.an.community.entity.Range;
+import com.knud4.an.board.Range;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
 import lombok.RequiredArgsConstructor;

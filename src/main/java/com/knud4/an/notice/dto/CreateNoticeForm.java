@@ -1,17 +1,17 @@
-package com.knud4.an.community.dto;
+package com.knud4.an.notice.dto;
 
-import com.knud4.an.community.entity.Category;
 import com.knud4.an.board.Range;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCommunityForm {
+public class CreateNoticeForm {
 
     @NotNull
     private String title;
@@ -20,9 +20,10 @@ public class CreateCommunityForm {
     private String content;
 
     @NotNull
-    private Category category;
+    private LocalDateTime expiredDate;
 
     @NotNull
     private Range range;
 
+    private String releaseLine;
 }

@@ -1,5 +1,6 @@
 package com.knud4.an.notice.repository;
 
+import com.knud4.an.board.Range;
 import com.knud4.an.notice.entity.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NoticeRepository {
 
-    private EntityManager em;
+    private final EntityManager em;
 
     public void save(Notice notice) {
         em.persist(notice);
@@ -26,26 +27,52 @@ public class NoticeRepository {
         return em.find(Notice.class, id);
     }
 
-    public List<Notice> findAll() {
-        return em.createQuery("select n from Notice n", Notice.class).getResultList();
+    public List<Notice> findAll(int page, int count) {
+        return em.createQuery("select n from Notice n order by n.id desc", Notice.class)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
     }
 
-    public List<Notice> findBeforeExpire(LocalDateTime expiredDate) {
-        return em.createQuery("select n from Notice n where n.expiredDate <= :expiredDate", Notice.class)
+    public List<Notice> findBeforeExpire(LocalDateTime expiredDate, int page, int count) {
+        return em.createQuery("select n from Notice n where n.expiredDate <= :expiredDate order by n.id desc", Notice.class)
                 .setParameter("expiredDate", expiredDate)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Notice> findByLine(Long lineId) {
-        return em.createQuery("select n from Notice n where n.releaseLine = :lineId", Notice.class)
-                .setParameter("lineId", lineId)
+    public List<Notice> findByLine(String releaseLine, int page, int count) {
+        return em.createQuery("select n from Notice n where n.releaseLine = :releaseLine order by n.id desc", Notice.class)
+                .setParameter("releaseLine", releaseLine)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Notice> findWithinPeriod(LocalDateTime from, LocalDateTime to) {
-        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to", Notice.class)
+    public List<Notice> findByRange(Range range, int page, int count) {
+        return em.createQuery("select n from Notice n where n.range = :range order by n.id desc", Notice.class)
+                .setParameter("range", range)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Notice> findByRangeAndLine(Range range, String releaseLine, int page, int count) {
+        return em.createQuery("select n from Notice n where n.range = :range and n.releaseLine = :releaseLine order by n.id desc", Notice.class)
+                .setParameter("range", range)
+                .setParameter("releaseLine", releaseLine)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Notice> findWithinPeriod(LocalDateTime from, LocalDateTime to, int page, int count) {
+        return em.createQuery("select n from Notice n where n.createdDate >= :from and n.createdDate <= :to order by n.id desc", Notice.class)
                 .setParameter("from", from)
                 .setParameter("to", to)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
                 .getResultList();
     }
 
