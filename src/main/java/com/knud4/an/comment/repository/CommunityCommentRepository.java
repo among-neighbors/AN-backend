@@ -25,7 +25,7 @@ public class CommunityCommentRepository {
                 .getResultList();
     }
 
-    public Long findCountByCommunityId(Long communityId) {
+    public Long findCommentCountByCommunityId(Long communityId) {
         return em.createQuery("select count(c) from CommunityComment c where c.community = :communityId", Long.class)
                 .setParameter("communityId", communityId)
                 .getSingleResult();
