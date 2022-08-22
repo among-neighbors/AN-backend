@@ -25,7 +25,7 @@ public class ReportCommentRepository {
                 .getResultList();
     }
 
-    public Long findCountByReportId(Long reportId) {
+    public Long findCommentCountByReportId(Long reportId) {
         return em.createQuery("select count(r) from ReportComment r where r.report = :reportId", Long.class)
                 .setParameter("reportId", reportId)
                 .getSingleResult();
