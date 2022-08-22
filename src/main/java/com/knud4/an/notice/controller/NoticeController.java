@@ -28,9 +28,9 @@ public class NoticeController {
     @PostMapping("/api/v1/profile/notice/new")
     public ApiSuccessResult<Long> createNotice(@Valid @RequestBody CreateNoticeForm form,
                                                        HttpServletRequest req) {
-        Long profileId = (Long) req.getAttribute("profileId");
-        Profile profile = accountService.findProfileById(profileId);
-        Long noticeId = noticeService.createNotice(form, profile);
+        Long accountId = (Long) req.getAttribute("accountId");
+        Account account = accountService.findAccountByAccountId(accountId);
+        Long noticeId = noticeService.createNotice(form, account);
         return ApiUtil.success(noticeId);
     }
 
