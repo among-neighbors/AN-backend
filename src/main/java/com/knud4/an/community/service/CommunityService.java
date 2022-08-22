@@ -25,7 +25,7 @@ public class CommunityService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public Long createCommunity(CreateCommunityForm form, Profile writer, Account account) {
+    public Long createCommunity(CreateCommunityForm form, Account writer, Profile profile) {
         Community community = Community.builder()
                 .writer(writer)
                 .title(form.getTitle())
@@ -33,7 +33,7 @@ public class CommunityService {
                 .category(form.getCategory())
                 .range(form.getRange())
                 .likes(0L)
-                .account(account)
+                .profile(profile)
                 .build();
         communityRepository.save(community);
         return community.getId();
@@ -46,7 +46,7 @@ public class CommunityService {
         }
         if(findCommunity.getRange() == Range.LINE) {
             Account account = accountRepository.findAccountById(accountId);
-            if(!findCommunity.getWriterLine().equals(account.getLine().getName())) {
+            if(!findCommunity.getWriter().getLine().equals(account.getLine())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
             }
         }
