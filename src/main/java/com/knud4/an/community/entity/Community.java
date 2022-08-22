@@ -20,11 +20,15 @@ public class Community extends Board {
 
     private Long likes;
 
-    private String writerLine;
+    private String writerLineName;
+
+    private String writerHouseName;
+
+    private String writerName;
 
     @Builder
-    public Community(String title, String content, Profile writer,
-                     Category category, Long likes, Range range, Account account) {
+    public Community(String title, String content, Account writer,
+                     Category category, Long likes, Range range, Profile profile) {
         this.setContent(content);
         this.setTitle(title);
         this.setWriter(writer);
@@ -32,7 +36,9 @@ public class Community extends Board {
 
         this.category = category;
         this.likes = likes;
-        this.writerLine = account.getLine().getName();
+        this.writerLineName = writer.getLine().getName();
+        this.writerHouseName = writer.getHouse().getName();
+        this.writerName = profile.getName();
     }
 
 }

@@ -32,7 +32,7 @@ public class CommunityRepository {
     }
 
     public List<Community> findByLine(String lineName, int page, int count) {
-        return em.createQuery("select c from Community c where c.writerLine = :lineName order by c.id desc", Community.class)
+        return em.createQuery("select c from Community c where c.writerLineName = :lineName order by c.id desc", Community.class)
                 .setParameter("lineName", lineName)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
@@ -48,7 +48,7 @@ public class CommunityRepository {
     }
 
     public List<Community> findByRangeAndLine(Range range, String lineName, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName order by c.id desc", Community.class)
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLineName = :lineName order by c.id desc", Community.class)
                 .setParameter("range", range)
                 .setParameter("lineName", lineName)
                 .setFirstResult((page-1)*count)
@@ -74,7 +74,7 @@ public class CommunityRepository {
     }
 
     public List<Community> findByRangeAndLineAndCategory(Range range, String lineName, Category category, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range and c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+        return em.createQuery("select c from Community c where c.range = :range and c.writerLineName = :lineName and c.category = :category order by c.id desc", Community.class)
                 .setParameter("range", range)
                 .setParameter("lineName", lineName)
                 .setParameter("category", category)
@@ -84,7 +84,7 @@ public class CommunityRepository {
     }
 
     public List<Community> findByLineAndCatetory(String lineName, Category category, int page, int count) {
-        return em.createQuery("select c from Community c where c.writerLine = :lineName and c.category = :category order by c.id desc", Community.class)
+        return em.createQuery("select c from Community c where c.writerLineName = :lineName and c.category = :category order by c.id desc", Community.class)
                 .setParameter("lineName", lineName)
                 .setParameter("category", category)
                 .setFirstResult((page-1)*count)
