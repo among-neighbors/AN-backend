@@ -3,7 +3,9 @@ package com.knud4.an.security.provider;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.knud4.an.security.details.AccountDetails;
@@ -30,8 +32,8 @@ public class JwtProvider implements AuthenticationProvider {
     private static final long TOKEN_VALIDATION_SECOND = 1000L * 60 * 120;
     private static final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60 * 60 * 48;
 
-    public static final String ACCOUNT_TOKEN_NAME = "account_token";
-    public static final String PROFILE_TOKEN_NAME = "profile_token";
+    public static final String ACCOUNT_TOKEN_NAME = "account_refresh_token";
+    public static final String PROFILE_TOKEN_NAME = "profile_refresh_token";
 
 
     @Value("${spring.jwt.secret}")
@@ -74,11 +76,30 @@ public class JwtProvider implements AuthenticationProvider {
                 .build();
     }
 
+    private JWTVerifier getAccountRefreshTokenValidator() {
+        return JWT.require(getSigningKey(SECRET_KEY))
+                .withClaimPresence("email")
+                .withClaimPresence("account_id")
+                .acceptExpiresAt(REFRESH_TOKEN_VALIDATION_TIME)
+                .withIssuer(ISSUER)
+                .build();
+    }
+
     private JWTVerifier getProfileTokenValidator() {
         return JWT.require(getSigningKey(SECRET_KEY))
                 .withClaimPresence("email")
                 .withClaimPresence("account_id")
                 .withClaimPresence("profile_id")
+                .withIssuer(ISSUER)
+                .build();
+    }
+
+    private JWTVerifier getProfileRefreshTokenValidator() {
+        return JWT.require(getSigningKey(SECRET_KEY))
+                .withClaimPresence("email")
+                .withClaimPresence("account_id")
+                .withClaimPresence("profile_id")
+                .acceptExpiresAt(REFRESH_TOKEN_VALIDATION_TIME/2)
                 .withIssuer(ISSUER)
                 .build();
     }
@@ -105,6 +126,72 @@ public class JwtProvider implements AuthenticationProvider {
         return doGenerateToken(TOKEN_VALIDATION_SECOND, payload);
     }
 
+    public String generateProfileRefreshToken(String accountEmail, String accountId, String profileId) {
+        Map<String, String> payload = new HashMap<>();
+        payload.put("email", accountEmail);
+        payload.put("profile_id", profileId);
+        payload.put("account_id", accountId);
+        return doGenerateToken(REFRESH_TOKEN_VALIDATION_TIME, payload);
+    }
+
+    public String reIssueAccountToken(String refreshToken) {
+        DecodedJWT decodedJWT = validateToken(refreshToken, getAccountRefreshTokenValidator());
+
+        String email = decodedJWT.getClaim("email").asString();
+        String accountId = decodedJWT.getClaim("account_id").asString();
+
+        return generateAccountToken(email, accountId);
+    }
+
+    public String reIssueAccountRefreshToken(String refreshToken) {
+        // 아예 invalid 한 경우(refresh 토큰이 아니거나 만료된 경우에는 예외)
+        try {
+            validateToken(refreshToken, getAccountTokenValidator());
+        } catch (InvalidClaimException e) {
+            throw new IllegalStateException("토큰이 올바르지 않습니다.");
+        } catch (TokenExpiredException e) {
+            try {
+                DecodedJWT decodedJWT = validateToken(refreshToken, getAccountRefreshTokenValidator());
+                String email = decodedJWT.getClaim("email").asString();
+                String accountId = decodedJWT.getClaim("account_id").asString();
+                return generateAccountRefreshToken(email, accountId);
+            } catch (TokenExpiredException e2) {
+                throw new IllegalStateException("토큰이 만료되었습니다.");
+            }
+        }
+        return null;
+    }
+
+    public String reIssueProfileToken(String refreshToken) {
+        DecodedJWT decodedJWT = validateToken(refreshToken, getProfileRefreshTokenValidator());
+
+        String email = decodedJWT.getClaim("email").asString();
+        String accountId = decodedJWT.getClaim("account_id").asString();
+        String profileId = decodedJWT.getClaim("profile_id").asString();
+
+        return generateProfileToken(email, accountId, profileId);
+    }
+
+    public String reIssueProfileRefreshToken(String refreshToken) {
+        try {
+            validateToken(refreshToken, getProfileTokenValidator());
+        } catch (InvalidClaimException e) {
+            throw new IllegalStateException("토큰이 올바르지 않습니다.");
+        } catch (TokenExpiredException e) {
+            try {
+                DecodedJWT decodedJWT = validateToken(refreshToken, getProfileRefreshTokenValidator());
+                String email = decodedJWT.getClaim("email").asString();
+                String accountId = decodedJWT.getClaim("account_id").asString();
+                String profileId = decodedJWT.getClaim("profile_id").asString();
+                return generateProfileRefreshToken(email, accountId, profileId);
+            } catch (TokenExpiredException e2) {
+                throw new IllegalStateException("토큰이 만료되었습니다.");
+            }
+        }
+
+        return null;
+    }
+
     private String doGenerateToken(long expireTime, Map<String, String> payload) {
 
         return JWT.create()
@@ -121,7 +208,7 @@ public class JwtProvider implements AuthenticationProvider {
 
     public boolean isAccountTokenExpired(String token) {
         try {
-            DecodedJWT decodedJWT = validateToken(token, getAccountTokenValidator());
+            validateToken(token, getAccountTokenValidator());
             return false;
         } catch (JWTVerificationException e) {
             return true;
@@ -130,7 +217,7 @@ public class JwtProvider implements AuthenticationProvider {
 
     public boolean isProfileTokenExpired(String token) {
         try {
-            DecodedJWT decodedJWT = validateToken(token, getProfileTokenValidator());
+            validateToken(token, getProfileTokenValidator());
             return false;
         } catch (JWTVerificationException e) {
             return true;
