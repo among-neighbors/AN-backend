@@ -2,6 +2,7 @@ package com.knud4.an.community.service;
 
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
+import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
@@ -55,6 +56,7 @@ public class CommunityService {
 
     public List<Community> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
+        if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count);
         List<Community> findCommunities = communityRepository.findByRange(Range.ALL, page, count);
         findCommunities.addAll(communityRepository.findByRangeAndLine(Range.LINE, account.getLine().getName(), page, count));
         return findCommunities;
