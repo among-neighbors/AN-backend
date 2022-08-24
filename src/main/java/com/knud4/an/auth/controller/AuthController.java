@@ -2,6 +2,7 @@ package com.knud4.an.auth.controller;
 
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
+import com.knud4.an.auth.dto.TokenDTO;
 import com.knud4.an.auth.dto.account.SignInAccountForm;
 import com.knud4.an.auth.dto.account.SignInAccountResponse;
 import com.knud4.an.auth.dto.account.SignUpAccountForm;
@@ -19,10 +20,7 @@ import com.knud4.an.security.provider.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,12 +52,12 @@ public class AuthController {
         Account account = authService.signInAccount(form);
 
         String accessToken = jwtProvider.generateAccountToken(account.getEmail(), account.getId()+"");
+        String refreshToken = jwtProvider.generateAccountRefreshToken(account.getEmail(), account.getId() + "");
 
-        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accessToken);
+        ResponseCookie cookie = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, refreshToken);
         res.addHeader("Set-Cookie", cookie.toString());
 
-        return ApiUtil.success(new SignInAccountResponse
-                (account.getId(), account.getLine().getId(), account.getHouse().getId())) ;
+        return ApiUtil.success(new SignInAccountResponse(account, accessToken, refreshToken));
     }
 
     @Operation(summary = "프로필 추가")
@@ -90,12 +88,16 @@ public class AuthController {
                 profile.getAccount().getEmail(),
                 profile.getAccount().getId()+"",
                 profile.getId() + "");
-        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, accessToken);
+
+        String refreshToken = jwtProvider.generateProfileRefreshToken(
+                profile.getAccount().getEmail(),
+                profile.getAccount().getId() + "",
+                profile.getId() + "");
+
+        ResponseCookie cookie = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, refreshToken);
         res.addHeader("Set-Cookie", cookie.toString());
 
-        return ApiUtil.success(new SignInProfileResponse(
-                profile.getAccount().getId(), profile.getId(), profile.getName()
-        ));
+        return ApiUtil.success(new SignInProfileResponse(profile, accessToken, refreshToken));
     }
 
     @Operation(summary = "이메일 인증 코드 입력")
@@ -106,4 +108,38 @@ public class AuthController {
         return ApiUtil.success("인증이 완료되었습니다.");
     }
 
+    @Operation(summary = "계정 토큰 재발급")
+    @PostMapping("/api/v1/auth/account-token")
+    public ApiSuccessResult<TokenDTO> reIssueAccountToken(HttpServletRequest req, HttpServletResponse res) {
+//      쿠키로 전달된 refresh 토큰 확인
+        String refreshToken = cookieUtil.getCookie(req, "account_refresh_token").getValue();
+//      refresh token 이 유효한 상태면 access token 발급
+        String accessToken = jwtProvider.reIssueAccountToken(refreshToken);
+
+        String reIssuedRefreshToken = jwtProvider.reIssueAccountRefreshToken(refreshToken);
+        if (reIssuedRefreshToken != null) {
+            ResponseCookie refreshTokenCookie
+                    = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, reIssuedRefreshToken);
+            res.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        }
+        return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));
+    }
+
+    @Operation(summary = "프로필 토큰 재발급")
+    @PostMapping("/api/v1/auth/profile-token")
+    public ApiSuccessResult<TokenDTO> reIssueProfileToken(HttpServletRequest req, HttpServletResponse res) {
+//      쿠키로 전달된 refresh 토큰 확인
+        String refreshToken = cookieUtil.getCookie(req, "profile_refresh_token").getValue();
+//      유효한 상태면 access token 발급
+        String accessToken = jwtProvider.reIssueProfileToken(refreshToken);
+
+        String reIssuedRefreshToken = jwtProvider.reIssueProfileRefreshToken(refreshToken);
+//      갱신 가능한 상태면 재발급
+        if (reIssuedRefreshToken != null) {
+            ResponseCookie refreshTokenCookie
+                    = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, reIssuedRefreshToken);
+            res.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        }
+        return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));
+    }
 }

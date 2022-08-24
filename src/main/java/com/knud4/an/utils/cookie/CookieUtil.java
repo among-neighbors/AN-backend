@@ -1,5 +1,6 @@
 package com.knud4.an.utils.cookie;
 
+import com.knud4.an.exception.NotFoundException;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class CookieUtil {
 
     private final int COOKIE_VALIDATION_SECOND = 1000 * 60 * 60 * 48;
 
-    public ResponseCookie createCookie(String name, String value, int maxAge) {
+    public ResponseCookie createRefreshTokenCookie(String name, String value, int maxAge) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .path("/")
@@ -21,7 +22,7 @@ public class CookieUtil {
                 .build();
     }
 
-    public ResponseCookie createCookie(String name, String value) {
+    public ResponseCookie createRefreshTokenCookie(String name, String value) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .path("/")
@@ -33,12 +34,15 @@ public class CookieUtil {
 
     public ResponseCookie getCookie(HttpServletRequest req, String name) {
         Cookie[] findCookies = req.getCookies();
-        if (findCookies == null) return null;
+        if (findCookies == null) {
+         throw new NotFoundException("전달된 쿠키가 없습니다.");
+        }
         for (Cookie cookie : findCookies) {
             if (cookie.getName().equals(name)) {
                 return ResponseCookie.from(name, cookie.getValue()).build();
             }
         }
-        return null;
+
+        throw new NotFoundException("쿠키를 찾을 수 없습니다.");
     }
 }
