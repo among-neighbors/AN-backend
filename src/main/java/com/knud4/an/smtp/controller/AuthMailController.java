@@ -1,5 +1,6 @@
 package com.knud4.an.smtp.controller;
 
+import com.knud4.an.auth.dto.CodeMailDTO;
 import com.knud4.an.smtp.service.AuthMailService;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
@@ -17,16 +18,16 @@ public class AuthMailController {
     @Operation(summary = "인증 메일 발송")
     @PostMapping("/api/v1/mail/code")
     public ApiSuccessResult<String> sendAuthenticationCode(
-            @RequestBody String email) throws IllegalStateException {
-        authMailService.sendAuthenticationCode(email);
+            @RequestBody CodeMailDTO dto) throws IllegalStateException {
+        authMailService.sendAuthenticationCode(dto.getEmail());
         return ApiUtil.success("성공적으로 메일이 발송되었습니다.");
     }
 
     @Operation(summary = "인증 메일 재발송")
     @PostMapping("/api/v1/mail/code/resend")
     public ApiSuccessResult<String> resendAuthenticationCode(
-            @RequestBody String email) throws IllegalStateException {
-        authMailService.resendAuthenticationCode(email);
+            @RequestBody CodeMailDTO dto) throws IllegalStateException {
+        authMailService.resendAuthenticationCode(dto.getEmail());
         return ApiUtil.success("성공적으로 메일이 발송되었습니다.");
     }
 }

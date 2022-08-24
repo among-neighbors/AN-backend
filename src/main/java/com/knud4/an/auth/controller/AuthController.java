@@ -3,7 +3,7 @@ package com.knud4.an.auth.controller;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.auth.dto.TokenDTO;
-import com.knud4.an.auth.dto.codeVerificationDTO;
+import com.knud4.an.auth.dto.CodeVerificationDTO;
 import com.knud4.an.auth.dto.account.SignInAccountForm;
 import com.knud4.an.auth.dto.account.SignInAccountResponse;
 import com.knud4.an.auth.dto.account.SignUpAccountForm;
@@ -103,7 +103,7 @@ public class AuthController {
 
     @Operation(summary = "이메일 인증 코드 입력")
     @PostMapping("/api/v1/auth/verify-code")
-    public ApiSuccessResult<String> verifyCode(@RequestBody @Valid codeVerificationDTO verification) throws NotFoundException {
+    public ApiSuccessResult<String> verifyCode(@RequestBody @Valid CodeVerificationDTO verification) throws NotFoundException {
         authService.verifySignUpCode(verification.getEmail(), verification.getCode());
         return ApiUtil.success("인증이 완료되었습니다.");
     }

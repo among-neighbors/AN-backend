@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class codeVerificationDTO {
+public class CodeVerificationDTO {
     @NotNull
     private String email;
     @NotNull
