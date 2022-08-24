@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,7 @@ public class ReportController {
     private final AccountService accountService;
 
     @Operation(summary = "민원 생성")
-    @PostMapping("/api/v1/report/new")
+    @PostMapping("/api/v1/reports/new")
     public ApiSuccessResult<Long> createReport(@Valid @RequestBody CreateReportForm form,
                                                HttpServletRequest req) {
         String accountEmail = (String) req.getAttribute("email");
@@ -34,26 +33,26 @@ public class ReportController {
     }
 
     @Operation(summary = "민원 전체 조회")
-    @GetMapping("/api/v1/manager/report/all")
+    @GetMapping("/api/v1/manager/reports")
     public ApiSuccessResult<List<ReportDTO>> findAll(@RequestParam(name = "page") int page,
                                                      @RequestParam(name = "count") int count) {
         return ApiUtil.success(reportService.findAll(page, count));
     }
 
-    @Operation(summary = "민원 조회 (계정)")
-    @GetMapping("/api/v1/report")
+    @Operation(summary = "민원 전체 조회 (계정)")
+    @GetMapping("/api/v1/reports")
     public ApiSuccessResult<List<ReportDTO>> findByAccountId(@RequestParam(name = "page") int page,
                                                              @RequestParam(name = "count") int count,
                                                              HttpServletRequest req) {
-        Long accountId = (Long) req.getAttribute("account_id");
+        Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(reportService.findByAccountId(page, count, accountId));
     }
 
     @Operation(summary = "민원 상세 조회 (id)")
-    @GetMapping("/api/v1/report/{id}")
+    @GetMapping("/api/v1/reports/{id}")
     public ApiSuccessResult<ReportDTO> findById(@PathVariable(name = "id") Long id,
                                                 HttpServletRequest req) {
-        Long accountId = (Long) req.getAttribute("account_id");
+        Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(reportService.findReportById(id, accountId));
     }
 

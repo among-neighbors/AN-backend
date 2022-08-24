@@ -23,7 +23,7 @@ public class LineController {
     private final JwtProvider jwtProvider;
 
     @Operation(summary = "라인 추가")
-    @PostMapping("/api/v1/line/new")
+    @PostMapping("/api/v1/manager/lines/new")
     public ApiSuccessResult<CreateLineResponse> createLine
             (@Valid @RequestBody CreateLineForm form) throws RuntimeException{
         Long lineId = lineService.createLine(form);
@@ -32,7 +32,7 @@ public class LineController {
     }
 
     @Operation(summary = "라인 목록 조회")
-    @GetMapping("/api/v1/line")
+    @GetMapping("/api/v1/lines")
     public ApiSuccessResult<LineListDTO> findAllLines() {
         return ApiUtil.success(new LineListDTO(lineService.findAllLines()));
     }

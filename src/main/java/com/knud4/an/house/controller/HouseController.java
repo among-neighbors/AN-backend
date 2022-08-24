@@ -17,7 +17,7 @@ public class HouseController {
     private final HouseService houseService;
 
     @Operation(summary = "세대 추가")
-    @PostMapping("/api/v1/house/new")
+    @PostMapping("/api/v1/manager/houses/new")
     public ApiSuccessResult<Long> createHouse(@RequestBody @Valid CreateHouseForm form) {
         Long houseId = houseService.createHouse(form);
 
@@ -25,7 +25,7 @@ public class HouseController {
     }
 
     @Operation(summary = "세대 목록 조회")
-    @GetMapping("/api/v1/house")
+    @GetMapping("/api/v1/houses")
     public ApiSuccessResult<HouseListResponse> searchHouseList(@RequestParam(name = "lineName") String lineName) {
         return ApiUtil.success(new HouseListResponse(houseService.findHousesByLineName(lineName)));
     }
