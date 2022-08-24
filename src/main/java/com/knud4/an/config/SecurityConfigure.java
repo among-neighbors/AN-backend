@@ -34,15 +34,15 @@ public class SecurityConfigure {
 
     @Bean
     public SecurityFilterChain accountFilterChain(HttpSecurity http,
-                                           JwtProvider jwtProvider,
-                                           CookieUtil cookieUtil) throws Exception {
+                                           JwtProvider jwtProvider) throws Exception {
         return setJwtHttpSecurity(http)
                 .requestMatchers()
-                .antMatchers("/api/v1/auth/profile/**")
-                .antMatchers("/api/v1/account/**")
+                .antMatchers("/api/v1/auth/profiles/**")
+                .antMatchers("/api/v1/accounts/**")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/profile/**").hasRole("USER")
+                .antMatchers("/api/v1/auth/profiles/**").hasAnyRole("USER", "MANAGER")
+                .antMatchers("/api/v1/accounts/**").hasAnyRole("USER", "MANAGER")
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
@@ -51,14 +51,13 @@ public class SecurityConfigure {
 
     @Bean
     public SecurityFilterChain profileFilterChain(HttpSecurity http,
-                                           JwtProvider jwtProvider,
-                                           CookieUtil cookieUtil) throws Exception {
+                                           JwtProvider jwtProvider) throws Exception {
         return setJwtHttpSecurity(http)
                 .requestMatchers()
-                .antMatchers("/api/v1/profile/**")
+                .antMatchers("/api/v1/profiles/**")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/profile/**").hasRole("USER")
+                .antMatchers("/api/v1/profiles/**").hasRole("USER")
                 .and()
                 .addFilterBefore(jwtProfileAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
@@ -73,6 +72,7 @@ public class SecurityConfigure {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/api/v1/manager/**").hasRole("MANAGER")
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new JwtNotAuthenticatedHandler())

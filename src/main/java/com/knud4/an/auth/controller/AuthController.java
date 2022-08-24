@@ -3,6 +3,7 @@ package com.knud4.an.auth.controller;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.auth.dto.TokenDTO;
+import com.knud4.an.auth.dto.codeVerificationDTO;
 import com.knud4.an.auth.dto.account.SignInAccountForm;
 import com.knud4.an.auth.dto.account.SignInAccountResponse;
 import com.knud4.an.auth.dto.account.SignUpAccountForm;
@@ -35,7 +36,7 @@ public class AuthController {
     private final CookieUtil cookieUtil;
 
     @Operation(summary = "계정 가입")
-    @PostMapping("/api/v1/auth/account/new")
+    @PostMapping("/api/v1/auth/accounts/new")
     public ApiSuccessResult<SignUpAccountResponse> signUpAccount (
             @RequestBody @Valid SignUpAccountForm form) throws RuntimeException {
 
@@ -44,7 +45,7 @@ public class AuthController {
     }
 
     @Operation(summary = "계정 로그인")
-    @PostMapping("/api/v1/auth/account/login")
+    @PostMapping("/api/v1/auth/accounts/login")
     public ApiSuccessResult<SignInAccountResponse> signInAccount (
             @RequestBody @Valid SignInAccountForm form,
             HttpServletResponse res) throws RuntimeException {
@@ -61,7 +62,7 @@ public class AuthController {
     }
 
     @Operation(summary = "프로필 추가")
-    @PostMapping("/api/v1/auth/profile/new")
+    @PostMapping("/api/v1/auth/profiles/new")
     public ApiSuccessResult<AddProfileResponse> addProfile(
             @RequestBody @Valid AddProfileForm form,
             HttpServletRequest req) throws RuntimeException {
@@ -74,7 +75,7 @@ public class AuthController {
     }
 
     @Operation(summary = "프로필 로그인")
-    @PostMapping("/api/v1/auth/profile/login")
+    @PostMapping("/api/v1/auth/profiles/login")
     public ApiSuccessResult<SignInProfileResponse> signInProfile(
             @RequestBody @Valid SignInProfileForm form,
             HttpServletRequest req,
@@ -102,9 +103,8 @@ public class AuthController {
 
     @Operation(summary = "이메일 인증 코드 입력")
     @PostMapping("/api/v1/auth/verify-code")
-    public ApiSuccessResult<String> verifyCode(@RequestParam(name = "email") String email,
-                                               @RequestParam(name = "code") String code) throws NotFoundException {
-        authService.verifySignUpCode(email, code);
+    public ApiSuccessResult<String> verifyCode(@RequestBody @Valid codeVerificationDTO verification) throws NotFoundException {
+        authService.verifySignUpCode(verification.getEmail(), verification.getCode());
         return ApiUtil.success("인증이 완료되었습니다.");
     }
 

@@ -1,5 +1,7 @@
-package com.knud4.an.exception;
+package com.knud4.an.exception.handler;
 
+import com.knud4.an.exception.NotAuthenticatedException;
+import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import org.springframework.http.HttpHeaders;
