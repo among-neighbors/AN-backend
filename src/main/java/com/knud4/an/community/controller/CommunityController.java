@@ -6,6 +6,7 @@ import com.knud4.an.account.service.AccountService;
 import com.knud4.an.board.Range;
 import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
+import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.service.CommunityService;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
@@ -41,11 +42,18 @@ public class CommunityController {
     public ApiUtil.ApiSuccessResult<List<CommunityDTO>> findAll(@RequestParam(name = "page") int page,
                                                                 @RequestParam(name = "count") int count,
                                                                 @RequestParam(name = "range") Range range,
+                                                                @RequestParam(name = "category") Category category,
                                                                 HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        if(range.equals(Range.LINE))
-            return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAllMyLine(page, count, accountId)));
-        return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAll(page, count, accountId)));
+        if(category.equals(Category.ALL)) {
+            if (range.equals(Range.LINE))
+                return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAllMyLine(page, count, accountId)));
+            return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAll(page, count, accountId)));
+        }
+        if (range.equals(Range.LINE))
+            return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findMyLineByCategory(category, page, count, accountId)));
+        return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findByCategory(category, page, count, accountId)));
+
     }
 
     @Operation(summary = "커뮤니티글 상세 조회 (id)")

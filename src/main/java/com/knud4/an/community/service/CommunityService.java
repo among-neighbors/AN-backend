@@ -69,6 +69,9 @@ public class CommunityService {
 
     public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
+        if(account.getRole().equals(Role.ROLE_MANAGER)) {
+            return communityRepository.findByCategory(category, page, count);
+        }
         List<Community> findCommunities = communityRepository.findByRangeAndCategory(Range.ALL, category, page, count);
         findCommunities.addAll(communityRepository.findByRangeAndLineAndCategory(Range.LINE, account.getLine().getName(), category, page, count));
         return findCommunities;
