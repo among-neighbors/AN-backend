@@ -25,7 +25,7 @@ public class NoticeService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public Long createNotice(CreateNoticeForm form, Account writer) {
+    public Long createNotice(CreateNoticeForm form, Profile writer) {
         Notice notice = Notice.builder()
                 .writer(writer)
                 .title(form.getTitle())

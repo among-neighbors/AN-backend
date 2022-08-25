@@ -2,6 +2,7 @@ package com.knud4.an.board;
 
 import com.knud4.an.Base.BaseEntity;
 import com.knud4.an.account.entity.Account;
+import com.knud4.an.account.entity.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +20,10 @@ public abstract class Board extends BaseEntity {
 
     private String content;
 
-    private Range range;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    private Account writer;
+    private Profile writer;
+
+    private Range range;
 
     protected void setTitle(String title) {
         this.title = title;
@@ -32,11 +33,8 @@ public abstract class Board extends BaseEntity {
         this.content = content;
     }
 
-    protected void setWriter(Account writer) {
-        this.writer = writer;
-    }
-
-    public void setRange(Range range) {
+    protected void setWriter(Profile writer) {this.writer = writer;}
+    protected void setRange(Range range) {
         this.range = range;
     }
 }

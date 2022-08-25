@@ -26,7 +26,7 @@ public class CommunityService {
     private final AccountRepository accountRepository;
 
     @Transactional
-    public Long createCommunity(CreateCommunityForm form, Account writer, Profile profile) {
+    public Long createCommunity(CreateCommunityForm form, Profile writer) {
         Community community = Community.builder()
                 .writer(writer)
                 .title(form.getTitle())
@@ -34,7 +34,6 @@ public class CommunityService {
                 .category(form.getCategory())
                 .range(form.getRange())
                 .likes(0L)
-                .profile(profile)
                 .build();
         communityRepository.save(community);
         return community.getId();
@@ -47,7 +46,7 @@ public class CommunityService {
         }
         if(findCommunity.getRange() == Range.LINE) {
             Account account = accountRepository.findAccountById(accountId);
-            if(!findCommunity.getWriter().getLine().equals(account.getLine())) {
+            if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
             }
         }
@@ -69,6 +68,9 @@ public class CommunityService {
 
     public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
+        if(account.getRole().equals(Role.ROLE_MANAGER)) {
+            return communityRepository.findByCategory(category, page, count);
+        }
         List<Community> findCommunities = communityRepository.findByRangeAndCategory(Range.ALL, category, page, count);
         findCommunities.addAll(communityRepository.findByRangeAndLineAndCategory(Range.LINE, account.getLine().getName(), category, page, count));
         return findCommunities;
@@ -77,5 +79,9 @@ public class CommunityService {
     public List<Community> findMyLineByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
         return communityRepository.findByLineAndCatetory(account.getLine().getName(), category, page, count);
+    }
+
+    public List<Community> findAllMine(int page, int count, Long profileId) {
+        return communityRepository.findAllMine(profileId, page, count);
     }
 }

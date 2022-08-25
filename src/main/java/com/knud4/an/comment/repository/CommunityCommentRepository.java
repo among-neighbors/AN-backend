@@ -18,7 +18,7 @@ public class CommunityCommentRepository {
     }
 
     public List<CommunityComment> findAllByCommunityId(Long communityId, int page, int count) {
-        return em.createQuery("select c from CommunityComment c where c.community = :communityId", CommunityComment.class)
+        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
                 .setParameter("communityId", communityId)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
@@ -26,7 +26,7 @@ public class CommunityCommentRepository {
     }
 
     public Long findCommentCountByCommunityId(Long communityId) {
-        return em.createQuery("select count(c) from CommunityComment c where c.community = :communityId", Long.class)
+        return em.createQuery("select count(c) from CommunityComment c where c.community.id = :communityId", Long.class)
                 .setParameter("communityId", communityId)
                 .getSingleResult();
     }

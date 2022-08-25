@@ -39,7 +39,7 @@ public class NoticeDTO {
         this.range = notice.getRange();
         this.createdDate = notice.getCreatedDate();
         this.releaseLine = notice.getReleaseLine();
-        this.writer = notice.getWriter().getUsername();
+        this.writer = notice.getWriter().getName();
     }
 
     public static List<NoticeDTO> entityListToDTOList(List<Notice> notices) {
