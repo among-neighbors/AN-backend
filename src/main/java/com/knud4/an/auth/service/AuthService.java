@@ -44,7 +44,7 @@ public class AuthService {
     }
 
     private void validateAccountUsernameDuplicated(String username) {
-        if (accountRepository.accountExistsByEmail(username)) {
+        if (accountRepository.accountExistsByUsername(username)) {
             throw new IllegalStateException("이미 존재하는 아이디 입니다.");
         }
     }
@@ -97,8 +97,8 @@ public class AuthService {
         Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
 
-        if (accountRepository.profileExistsByName(form.getName())) {
-            throw new IllegalArgumentException("프로필 이름이 중복되었습니다");
+        if (accountRepository.profileExistsByName(form.getName(), account.getId())) {
+            throw new IllegalStateException("프로필 이름이 중복되었습니다");
         }
 
         Profile profile = Profile.builder()

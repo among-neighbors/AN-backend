@@ -74,10 +74,12 @@ public class AccountRepository {
                 .getSingleResult();
     }
 
-    public boolean profileExistsByName(String profileName) {
+    public boolean profileExistsByName(String profileName, Long accountId) {
         return em.createQuery("select count(p) > 0 from Profile p " +
-                "where p.name = :profileName", Boolean.class)
+                "where p.name = :profileName " +
+                        "and p.account.id = :accountId", Boolean.class)
                 .setParameter("profileName", profileName)
+                .setParameter("accountId", accountId)
                 .getSingleResult();
     }
 }
