@@ -1,5 +1,6 @@
 package com.knud4.an.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knud4.an.exception.handler.JwtAccessDeniedHandler;
 import com.knud4.an.exception.handler.JwtNotAuthenticatedHandler;
 import com.knud4.an.security.filter.JwtAuthenticationFilter;
@@ -88,8 +89,8 @@ public class SecurityConfig {
 //                .antMatchers("/api/v1/manager/**").hasRole("MANAGER")
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new JwtNotAuthenticatedHandler())
-                .accessDeniedHandler(new JwtAccessDeniedHandler())
+                .authenticationEntryPoint(new JwtNotAuthenticatedHandler(new ObjectMapper()))
+                .accessDeniedHandler(new JwtAccessDeniedHandler(new ObjectMapper()))
                 .and();
     }
 }
