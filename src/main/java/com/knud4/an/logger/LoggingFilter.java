@@ -3,6 +3,7 @@ package com.knud4.an.logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@Order(1)
 @Component
 public class LoggingFilter extends OncePerRequestFilter {
     protected static final Logger log = LoggerFactory.getLogger(LoggingFilter.class);
