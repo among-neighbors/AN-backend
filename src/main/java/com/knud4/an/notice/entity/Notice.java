@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,7 +23,7 @@ public class Notice extends Board {
     private String releaseLine;
 
     @Builder
-    public Notice(String title, String content, Account writer, Range range, LocalDateTime expiredDate, String releaseLine) {
+    public Notice(String title, String content, Profile writer, Range range, LocalDateTime expiredDate, String releaseLine) {
         this.setContent(content);
         this.setTitle(title);
         this.setWriter(writer);

@@ -39,7 +39,7 @@ public class CommunityDTO {
         this.range = community.getRange();
         this.writerLineName = community.getWriterLineName();
         this.writerHouseName = community.getWriterHouseName();
-        this.writerName = community.getWriterName();
+        this.writerName = community.getWriter().getName();
     }
 
     public static List<CommunityDTO> entityListToDTOList(List<Community> communities) {

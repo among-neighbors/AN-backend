@@ -18,7 +18,7 @@ public class ReportCommentRepository {
     }
 
     public List<ReportComment> findAllByReportId(Long reportId, int page, int count) {
-        return em.createQuery("select r from ReportComment r where r.report = :reportId", ReportComment.class)
+        return em.createQuery("select r from ReportComment r where r.report.id = :reportId", ReportComment.class)
                 .setParameter("reportId", reportId)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
@@ -26,7 +26,7 @@ public class ReportCommentRepository {
     }
 
     public Long findCommentCountByReportId(Long reportId) {
-        return em.createQuery("select count(r) from ReportComment r where r.report = :reportId", Long.class)
+        return em.createQuery("select count(r) from ReportComment r where r.report.id = :reportId", Long.class)
                 .setParameter("reportId", reportId)
                 .getSingleResult();
     }

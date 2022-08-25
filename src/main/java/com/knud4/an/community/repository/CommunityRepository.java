@@ -39,6 +39,14 @@ public class CommunityRepository {
                 .getResultList();
     }
 
+    public List<Community> findAllMine(Long profileId, int page, int count) {
+        return em.createQuery("select c from Community c where c.writer.id = :profileId", Community.class)
+                .setParameter("profileId", profileId)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
     public List<Community> findByRange(Range range, int page, int count) {
         return em.createQuery("select c from Community c where c.range = :range order by c.id desc", Community.class)
                 .setParameter("range", range)
