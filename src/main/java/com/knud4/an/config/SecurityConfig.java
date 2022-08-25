@@ -4,7 +4,6 @@ import com.knud4.an.exception.handler.JwtAccessDeniedHandler;
 import com.knud4.an.exception.handler.JwtNotAuthenticatedHandler;
 import com.knud4.an.security.filter.JwtAuthenticationFilter;
 import com.knud4.an.security.filter.JwtProfileAuthenticationFilter;
-import com.knud4.an.utils.cookie.CookieUtil;
 import com.knud4.an.security.provider.JwtProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -17,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-public class SecurityConfigure {
+public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -39,10 +38,17 @@ public class SecurityConfigure {
                 .requestMatchers()
                 .antMatchers("/api/v1/auth/profiles/**")
                 .antMatchers("/api/v1/accounts/**")
+                .antMatchers("/api/v1/reports/**")
+                .antMatchers(HttpMethod.GET,"/api/v1/communities/**")
+                .antMatchers(HttpMethod.GET,"/api/v1/notices/**")
+                .antMatchers(HttpMethod.GET,"/api/v1/comments/**")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/profiles/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers("/api/v1/accounts/**").hasAnyRole("USER", "MANAGER")
+                .antMatchers(HttpMethod.GET,"/api/v1/communities/**").hasAnyRole("USER", "MANAGER")
+                .antMatchers(HttpMethod.GET,"/api/v1/notices/**").hasAnyRole("USER", "MANAGER")
+                .antMatchers(HttpMethod.GET,"/api/v1/comments/**").hasAnyRole("USER", "MANAGER")
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)
@@ -55,9 +61,11 @@ public class SecurityConfigure {
         return setJwtHttpSecurity(http)
                 .requestMatchers()
                 .antMatchers("/api/v1/profiles/**")
+                .antMatchers("/api/v1/**/new")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/profiles/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST,"/api/v1/**/new").hasAnyRole("USER", "MANAGER")
                 .and()
                 .addFilterBefore(jwtProfileAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class)

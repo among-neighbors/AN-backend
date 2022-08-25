@@ -24,7 +24,7 @@ public class CommentController {
     private final AccountService accountService;
 
     @Operation(summary = "커뮤니티 댓글 생성")
-    @PostMapping("/api/v1/profile/comment/community/new")
+    @PostMapping("/api/v1/comments/communities/new")
     public ApiUtil.ApiSuccessResult<Long> createCommunityComment(@Valid @RequestBody CreateCommentForm form,
                                                                  HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -34,7 +34,7 @@ public class CommentController {
     }
 
     @Operation(summary = "커뮤니티 댓글 조회 (community_id)")
-    @GetMapping("/api/v1/profile/comment/community/{id}")
+    @GetMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<List<CommentDTO>> findAllByCommunityId(@PathVariable(name = "id") Long id,
                                                                               @RequestParam(name = "page") int page,
                                                                               @RequestParam(name = "count") int count) {
@@ -42,7 +42,7 @@ public class CommentController {
     }
 
     @Operation(summary = "민원 댓글 생성")
-    @PostMapping("/api/v1/profile/comment/report/new")
+    @PostMapping("/api/v1/comments/reports/new")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
                                                               HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -52,7 +52,7 @@ public class CommentController {
     }
 
     @Operation(summary = "민원 댓글 조회 (report_id)")
-    @GetMapping("/api/v1/profile/comment/report/{id}")
+    @GetMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<List<CommentDTO>> findAllByReportId(@PathVariable Long id,
                                                                         @RequestParam int page,
                                                                         @RequestParam int count) {

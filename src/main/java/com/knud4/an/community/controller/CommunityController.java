@@ -3,6 +3,7 @@ package com.knud4.an.community.controller;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
+import com.knud4.an.board.Range;
 import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.service.CommunityService;
@@ -24,7 +25,7 @@ public class CommunityController {
     private final AccountService accountService;
 
     @Operation(summary = "커뮤니티글 생성")
-    @PostMapping("/api/vi/profile/community/new")
+    @PostMapping("/api/v1/communities/new")
     public ApiUtil.ApiSuccessResult<Long> createCommunity(@Valid @RequestBody CreateCommunityForm form,
                                                           HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
@@ -36,16 +37,19 @@ public class CommunityController {
     }
 
     @Operation(summary = "커뮤니티글 전체 조회")
-    @GetMapping("/api/vi/profile/community/all")
+    @GetMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<List<CommunityDTO>> findAll(@RequestParam(name = "page") int page,
                                                                 @RequestParam(name = "count") int count,
+                                                                @RequestParam(name = "range") Range range,
                                                                 HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
+        if(range.equals(Range.LINE))
+            return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAllMyLine(page, count, accountId)));
         return ApiUtil.success(CommunityDTO.entityListToDTOList(communityService.findAll(page, count, accountId)));
     }
 
     @Operation(summary = "커뮤니티글 상세 조회 (id)")
-    @GetMapping("/api/vi/profile/community/{id}")
+    @GetMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
