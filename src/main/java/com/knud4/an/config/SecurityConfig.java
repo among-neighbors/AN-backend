@@ -37,6 +37,7 @@ public class SecurityConfig {
                                            JwtProvider jwtProvider) throws Exception {
         return setJwtHttpSecurity(http)
                 .requestMatchers()
+                .antMatchers("/api/v1/manager/**")
                 .antMatchers("/api/v1/auth/profiles/**")
                 .antMatchers("/api/v1/accounts/**")
                 .antMatchers("/api/v1/reports/**")
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,"/api/v1/comments/**")
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/v1/manager/**").hasRole("MANAGER")
                 .antMatchers("/api/v1/auth/profiles/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers("/api/v1/accounts/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers(HttpMethod.GET,"/api/v1/communities/**").hasAnyRole("USER", "MANAGER")
@@ -86,7 +88,6 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                .antMatchers("/api/v1/manager/**").hasRole("MANAGER")
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new JwtNotAuthenticatedHandler(new ObjectMapper()))

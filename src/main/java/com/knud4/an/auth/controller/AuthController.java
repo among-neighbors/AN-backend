@@ -101,6 +101,28 @@ public class AuthController {
         return ApiUtil.success(new SignInProfileResponse(profile, accessToken, refreshToken));
     }
 
+    @Operation(summary = "계정 로그아웃")
+    @GetMapping("/api/v1/auth/accounts/logout")
+    public ApiSuccessResult<String> signOutAccount(
+            HttpServletResponse res) {
+        ResponseCookie deleteCookie
+                = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, null, 0);
+        res.addHeader("Set-Cookie", deleteCookie.toString());
+
+        return ApiUtil.success("성공적으로 로그아웃 했습니다.");
+    }
+
+    @Operation(summary = "프로필 로그아웃")
+    @GetMapping("/api/v1/auth/profiles/logout")
+    public ApiSuccessResult<String> signOutProfile(
+            HttpServletResponse res) {
+        ResponseCookie deleteCookie
+                = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, null, 0);
+        res.addHeader("Set-Cookie", deleteCookie.toString());
+
+        return ApiUtil.success("성공적으로 로그아웃 했습니다.");
+    }
+
     @Operation(summary = "이메일 인증 코드 입력")
     @PostMapping("/api/v1/auth/verify-code")
     public ApiSuccessResult<String> verifyCode(@RequestBody @Valid CodeVerificationDTO verification) throws NotFoundException {
