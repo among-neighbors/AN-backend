@@ -40,10 +40,8 @@ public class CommunityService {
     }
 
     public Community findCommunityById(Long communityId, Long accountId) {
-        Community findCommunity = communityRepository.findOne(communityId);
-        if(findCommunity == null) {
-            throw new NotFoundException("커뮤니티글을 찾을 수 없습니다.");
-        }
+        Community findCommunity = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         if(findCommunity.getRange() == Range.LINE) {
             Account account = accountRepository.findAccountById(accountId);
             if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {

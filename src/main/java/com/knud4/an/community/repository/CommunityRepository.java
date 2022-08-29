@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,8 +21,8 @@ public class CommunityRepository {
         em.persist(community);
     }
 
-    public Community findOne(Long id) {
-        return em.find(Community.class, id);
+    public Optional<Community> findById(Long id) {
+        return Optional.ofNullable(em.find(Community.class, id));
     }
 
     public List<Community> findAll(int page, int count) {

@@ -23,10 +23,8 @@ public class CommunityCommentService {
 
     @Transactional
     public Long createCommunityComment(CreateCommentForm form, Profile writer) {
-        Community community = communityRepository.findOne(form.getBoardId());
-        if(community == null) {
-            throw new NotFoundException("커뮤니티글을 찾을 수 없습니다.");
-        }
+        Community community = communityRepository.findById(form.getBoardId())
+                .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         CommunityComment comment = CommunityComment.builder()
                 .writer(writer)
                 .text(form.getText())
