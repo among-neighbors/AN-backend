@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,6 +16,10 @@ public class ReportCommentRepository {
 
     public void save(ReportComment comment) {
         em.persist(comment);
+    }
+
+    public Optional<ReportComment> findById(Long id) {
+        return Optional.ofNullable(em.find(ReportComment.class, id));
     }
 
     public List<ReportComment> findAllByReportId(Long reportId, int page, int count) {
