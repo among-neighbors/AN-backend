@@ -41,6 +41,13 @@ public class CommentController {
         return ApiUtil.success(CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id)));
     }
 
+    @Operation(summary = "커뮤니티 댓글 삭제")
+    @DeleteMapping("/api/v1/comments/communities/{id}")
+    public ApiUtil.ApiSuccessResult<String> deleteCommunityComment(@PathVariable(name = "id") Long id) {
+        communityCommentService.deleteById(id);
+        return ApiUtil.success("삭제되었습니다.");
+    }
+
     @Operation(summary = "민원 댓글 생성")
     @PostMapping("/api/v1/comments/reports/new")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
@@ -57,5 +64,12 @@ public class CommentController {
                                                                         @RequestParam int page,
                                                                         @RequestParam int count) {
         return ApiUtil.success(CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id)));
+    }
+
+    @Operation(summary = "민원 댓글 삭제")
+    @DeleteMapping("/api/v1/comments/reports/{id}")
+    public ApiUtil.ApiSuccessResult<String> deleteReportComment(@PathVariable(name = "id") Long id) {
+        reportCommentService.deleteById(id);
+        return ApiUtil.success("삭제되었습니다.");
     }
 }

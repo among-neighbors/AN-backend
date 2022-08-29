@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,6 +16,16 @@ public class CommunityCommentRepository {
 
     public void save(CommunityComment comment) {
         em.persist(comment);
+    }
+
+    public Optional<CommunityComment> findById(Long id) {
+        return Optional.ofNullable(em.find(CommunityComment.class, id));
+    }
+
+    public List<CommunityComment> findAllByCommunityId(Long communityId) {
+        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
+                .setParameter("communityId", communityId)
+                .getResultList();
     }
 
     public List<CommunityComment> findAllByCommunityId(Long communityId, int page, int count) {
@@ -29,5 +40,9 @@ public class CommunityCommentRepository {
         return em.createQuery("select count(c) from CommunityComment c where c.community.id = :communityId", Long.class)
                 .setParameter("communityId", communityId)
                 .getSingleResult();
+    }
+
+    public void delete(CommunityComment comment) {
+        em.remove(comment);
     }
 }

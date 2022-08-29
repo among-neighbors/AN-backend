@@ -39,4 +39,15 @@ public class CommunityCommentService {
     public List<CommunityComment> findAllByCommunityId(int page, int count, Long communityId) {
         return commentRepository.findAllByCommunityId(communityId, page, count);
     }
+
+    public void deleteById(Long id) {
+        commentRepository.delete(
+                commentRepository.findById(id).orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."))
+        );
+    }
+
+    public void deleteAllByCommunityId(Long communityId) {
+        List<CommunityComment> communityComments = commentRepository.findAllByCommunityId(communityId);
+        for(CommunityComment comment : communityComments) commentRepository.delete(comment);
+    }
 }
