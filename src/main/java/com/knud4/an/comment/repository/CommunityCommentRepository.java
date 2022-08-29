@@ -22,6 +22,12 @@ public class CommunityCommentRepository {
         return Optional.ofNullable(em.find(CommunityComment.class, id));
     }
 
+    public List<CommunityComment> findAllByCommunityId(Long communityId) {
+        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
+                .setParameter("communityId", communityId)
+                .getResultList();
+    }
+
     public List<CommunityComment> findAllByCommunityId(Long communityId, int page, int count) {
         return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
                 .setParameter("communityId", communityId)

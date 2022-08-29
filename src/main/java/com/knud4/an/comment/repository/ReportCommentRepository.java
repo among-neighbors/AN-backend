@@ -22,6 +22,12 @@ public class ReportCommentRepository {
         return Optional.ofNullable(em.find(ReportComment.class, id));
     }
 
+    public List<ReportComment> findAllByReportId(Long reportId) {
+        return em.createQuery("select r from ReportComment r where r.report.id = :reportId", ReportComment.class)
+                .setParameter("reportId", reportId)
+                .getResultList();
+    }
+
     public List<ReportComment> findAllByReportId(Long reportId, int page, int count) {
         return em.createQuery("select r from ReportComment r where r.report.id = :reportId", ReportComment.class)
                 .setParameter("reportId", reportId)
