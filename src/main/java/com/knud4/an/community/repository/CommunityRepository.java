@@ -114,4 +114,8 @@ public class CommunityRepository {
         return em.createQuery("select count(c) from Community c", Long.class)
                 .getSingleResult();
     }
+
+    public void delete(Community community) {
+        em.remove(community);
+    }
 }

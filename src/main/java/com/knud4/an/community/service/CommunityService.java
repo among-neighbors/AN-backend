@@ -4,6 +4,9 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
+import com.knud4.an.comment.entity.CommunityComment;
+import com.knud4.an.comment.repository.CommunityCommentRepository;
+import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
@@ -23,6 +26,9 @@ import java.util.List;
 public class CommunityService {
 
     private final CommunityRepository communityRepository;
+
+    private final CommunityCommentRepository commentRepository;
+
     private final AccountRepository accountRepository;
 
     @Transactional
@@ -86,5 +92,18 @@ public class CommunityService {
     public boolean isLastPage(int page, int count) {
         Long communityCnt = communityRepository.findCommunityCount();
         return (long) (page + 2) * count >= communityCnt;
+    }
+
+    public void delete(Long id, Long profileId) {
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        Profile profile = accountRepository.findProfileById(profileId);
+
+        if(!community.getWriter().equals(profile))
+            throw new NotAuthenticatedException("삭제 권한이 없습니다.");
+
+        List<CommunityComment> comments = commentRepository.findAllByCommunityId(id);
+        for(CommunityComment comment : comments) commentRepository.delete(comment);
+        communityRepository.delete(community);
     }
 }

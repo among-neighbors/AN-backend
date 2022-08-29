@@ -1,9 +1,9 @@
 package com.knud4.an.community.controller;
 
-import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.board.Range;
+import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CommunityListDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
@@ -24,6 +24,8 @@ import java.util.List;
 public class CommunityController {
 
     private final CommunityService communityService;
+
+    private final CommunityCommentService commentService;
     private final AccountService accountService;
 
     @Operation(summary = "커뮤니티글 생성")
@@ -75,5 +77,14 @@ public class CommunityController {
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new CommunityDTO(communityService.findCommunityById(id, accountId)));
+    }
+
+    @Operation(summary = "커뮤니티글 삭제")
+    @DeleteMapping("/api/v1/communities/{id}")
+    public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
+                                               HttpServletRequest req) {
+        Long profileId = (Long) req.getAttribute("profileId");
+        communityService.delete(id, profileId);
+        return ApiUtil.success("삭제되었습니다.");
     }
 }

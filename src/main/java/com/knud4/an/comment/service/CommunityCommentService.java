@@ -44,8 +44,4 @@ public class CommunityCommentService {
         );
     }
 
-    public void deleteAllByCommunityId(Long communityId) {
-        List<CommunityComment> communityComments = commentRepository.findAllByCommunityId(communityId);
-        for(CommunityComment comment : communityComments) commentRepository.delete(comment);
-    }
 }
