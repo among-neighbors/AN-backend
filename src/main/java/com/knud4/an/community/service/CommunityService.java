@@ -78,7 +78,7 @@ public class CommunityService {
 
     public List<Community> findMyLineByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByLineAndCatetory(account.getLine().getName(), category, page, count);
+        return communityRepository.findByLineAndCategory(account.getLine().getName(), category, page, count);
     }
 
     public List<Community> findAllMine(int page, int count, Long profileId) {

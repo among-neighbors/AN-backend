@@ -91,7 +91,7 @@ public class CommunityRepository {
                 .getResultList();
     }
 
-    public List<Community> findByLineAndCatetory(String lineName, Category category, int page, int count) {
+    public List<Community> findByLineAndCategory(String lineName, Category category, int page, int count) {
         return em.createQuery("select c from Community c where c.writerLineName = :lineName and c.category = :category order by c.id desc", Community.class)
                 .setParameter("lineName", lineName)
                 .setParameter("category", category)
