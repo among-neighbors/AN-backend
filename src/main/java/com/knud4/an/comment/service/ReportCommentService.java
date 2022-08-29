@@ -44,4 +44,10 @@ public class ReportCommentService {
     public List<ReportComment> findAllByReportId(int page, int count, Long reportId) {
         return commentRepository.findAllByReportId(reportId, page, count);
     }
+
+    public void deleteById(Long id) {
+        commentRepository.delete(
+                commentRepository.findById(id).orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."))
+        );
+    }
 }

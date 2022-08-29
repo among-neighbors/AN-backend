@@ -35,4 +35,8 @@ public class ReportCommentRepository {
                 .setParameter("reportId", reportId)
                 .getSingleResult();
     }
+
+    public void delete(ReportComment comment) {
+        em.remove(comment);
+    }
 }

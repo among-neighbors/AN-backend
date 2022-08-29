@@ -35,4 +35,8 @@ public class CommunityCommentRepository {
                 .setParameter("communityId", communityId)
                 .getSingleResult();
     }
+
+    public void delete(CommunityComment comment) {
+        em.remove(comment);
+    }
 }
