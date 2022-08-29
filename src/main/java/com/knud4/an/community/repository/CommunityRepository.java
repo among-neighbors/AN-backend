@@ -108,4 +108,9 @@ public class CommunityRepository {
                 .setMaxResults(count)
                 .getResultList();
     }
+
+    public Long findCommunityCount() {
+        return em.createQuery("select count(c) from Community c", Long.class)
+                .getSingleResult();
+    }
 }

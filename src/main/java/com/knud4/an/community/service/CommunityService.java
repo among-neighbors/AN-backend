@@ -84,4 +84,9 @@ public class CommunityService {
     public List<Community> findAllMine(int page, int count, Long profileId) {
         return communityRepository.findAllMine(profileId, page, count);
     }
+
+    public boolean isLastPage(int page, int count) {
+        Long communityCnt = communityRepository.findCommunityCount();
+        return (long) (page + 2) * count >= communityCnt;
+    }
 }
