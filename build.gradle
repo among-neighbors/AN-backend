@@ -29,25 +29,38 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0'
 
+//    jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.2'
 
+//    validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-//    none commit
+//    for StringUtil class
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+//    spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-test'
 
     implementation group: 'org.json', name: 'json', version: '20220320'
 
+//    swagger
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.9'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.6.9'
 
+//    redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+//    smtp
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+//    database
     runtimeOnly 'com.h2database:h2'
+
+//    WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

@@ -99,7 +99,7 @@ public class JwtProvider implements AuthenticationProvider {
                 .withClaimPresence("email")
                 .withClaimPresence("account_id")
                 .withClaimPresence("profile_id")
-                .acceptExpiresAt(REFRESH_TOKEN_VALIDATION_TIME/2)
+                .acceptExpiresAt(REFRESH_TOKEN_VALIDATION_TIME)
                 .withIssuer(ISSUER)
                 .build();
     }
