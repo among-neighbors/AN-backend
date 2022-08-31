@@ -4,6 +4,9 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
+import com.knud4.an.comment.entity.CommunityComment;
+import com.knud4.an.comment.repository.CommunityCommentRepository;
+import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
@@ -23,6 +26,9 @@ import java.util.List;
 public class CommunityService {
 
     private final CommunityRepository communityRepository;
+
+    private final CommunityCommentRepository commentRepository;
+
     private final AccountRepository accountRepository;
 
     @Transactional
@@ -40,10 +46,8 @@ public class CommunityService {
     }
 
     public Community findCommunityById(Long communityId, Long accountId) {
-        Community findCommunity = communityRepository.findOne(communityId);
-        if(findCommunity == null) {
-            throw new NotFoundException("커뮤니티글을 찾을 수 없습니다.");
-        }
+        Community findCommunity = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         if(findCommunity.getRange() == Range.LINE) {
             Account account = accountRepository.findAccountById(accountId);
             if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {
@@ -88,5 +92,40 @@ public class CommunityService {
     public boolean isLastPage(int page, int count) {
         Long communityCnt = communityRepository.findCommunityCount();
         return (long) (page + 2) * count >= communityCnt;
+    }
+
+    @Transactional
+    public void updateCommunity(Long id, CommunityDTO communityDTO, Long profileId) {
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        if(!community.getWriter().getId().equals(profileId))
+            throw new NotAuthenticatedException("수정 권한이 없습니다.");
+        community.changeTitle(communityDTO.getTitle());
+        community.changeContent(communityDTO.getContent());
+        community.changeCategory(communityDTO.getCategory());
+        community.changeRange(communityDTO.getRange());
+    }
+
+    @Transactional
+    public void updateLike(Long communityId, String email) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        if(!accountRepository.accountExistsByEmail(email))
+            throw new NotAuthenticatedException("권한이 없습니다.");
+        community.increaseLike();
+    }
+
+    @Transactional
+    public void delete(Long id, Long profileId) {
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        Profile profile = accountRepository.findProfileById(profileId);
+
+        if(!community.getWriter().equals(profile))
+            throw new NotAuthenticatedException("삭제 권한이 없습니다.");
+
+        List<CommunityComment> comments = commentRepository.findAllByCommunityId(id);
+        for(CommunityComment comment : comments) commentRepository.delete(comment);
+        communityRepository.delete(community);
     }
 }

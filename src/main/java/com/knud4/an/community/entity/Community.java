@@ -41,4 +41,11 @@ public class Community extends Board {
         this.writerHouseName = account.getHouse().getName();
     }
 
+    public void changeCategory(Category category) {
+        this.category = category;
+    }
+
+    public void increaseLike() {
+        this.likes++;
+    }
 }
