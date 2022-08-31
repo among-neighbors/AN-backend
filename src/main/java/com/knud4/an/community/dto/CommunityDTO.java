@@ -31,6 +31,8 @@ public class CommunityDTO {
 
     private String writerName;
 
+    private Long like;
+
     public CommunityDTO(Community community) {
         this.community_id = community.getId();
         this.title = community.getTitle();
@@ -40,6 +42,7 @@ public class CommunityDTO {
         this.writerLineName = community.getWriterLineName();
         this.writerHouseName = community.getWriterHouseName();
         this.writerName = community.getWriter().getName();
+        this.like = community.getLikes();
     }
 
     public static List<CommunityDTO> entityListToDTOList(List<Community> communities) {
