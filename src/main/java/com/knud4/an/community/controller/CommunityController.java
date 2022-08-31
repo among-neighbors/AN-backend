@@ -25,7 +25,6 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    private final CommunityCommentService commentService;
     private final AccountService accountService;
 
     @Operation(summary = "커뮤니티글 생성")
@@ -79,8 +78,27 @@ public class CommunityController {
         return ApiUtil.success(new CommunityDTO(communityService.findCommunityById(id, accountId)));
     }
 
+    @Operation(summary = "커뮤니티글 수정")
+    @PutMapping("/api/v1/communities/{id}/update")
+    public ApiSuccessResult<Long> updateById(@PathVariable Long id,
+                                             @Valid @RequestBody CommunityDTO communityDTO,
+                                             HttpServletRequest req) {
+        Long profileId = (Long) req.getAttribute("profileId");
+        communityService.updateCommunity(id, communityDTO, profileId);
+        return ApiUtil.success(id);
+    }
+
+    @Operation(summary = "커뮤니티글 좋아요")
+    @PutMapping("/api/v1/communities/like/{id}")
+    public ApiSuccessResult<String> updateLike(@PathVariable Long id,
+                                               HttpServletRequest req) {
+        String email = (String) req.getAttribute("email");
+        communityService.updateLike(id, email);
+        return ApiUtil.success("좋아요가 업데이트 되었습니다.");
+    }
+
     @Operation(summary = "커뮤니티글 삭제")
-    @DeleteMapping("/api/v1/communities/{id}")
+    @DeleteMapping("/api/v1/communities/{id}/delete")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
                                                HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");

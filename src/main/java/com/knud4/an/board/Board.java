@@ -34,7 +34,20 @@ public abstract class Board extends BaseEntity {
     }
 
     protected void setWriter(Profile writer) {this.writer = writer;}
+
     protected void setRange(Range range) {
+        this.range = range;
+    }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
+
+    public void changeRange(Range range) {
         this.range = range;
     }
 }

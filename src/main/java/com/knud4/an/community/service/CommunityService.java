@@ -6,7 +6,7 @@ import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.comment.entity.CommunityComment;
 import com.knud4.an.comment.repository.CommunityCommentRepository;
-import com.knud4.an.comment.service.CommunityCommentService;
+import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
@@ -94,6 +94,28 @@ public class CommunityService {
         return (long) (page + 2) * count >= communityCnt;
     }
 
+    @Transactional
+    public void updateCommunity(Long id, CommunityDTO communityDTO, Long profileId) {
+        Community community = communityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        if(!community.getWriter().getId().equals(profileId))
+            throw new NotAuthenticatedException("수정 권한이 없습니다.");
+        community.changeTitle(communityDTO.getTitle());
+        community.changeContent(communityDTO.getContent());
+        community.changeCategory(communityDTO.getCategory());
+        community.changeRange(communityDTO.getRange());
+    }
+
+    @Transactional
+    public void updateLike(Long communityId, String email) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
+        if(!accountRepository.accountExistsByEmail(email))
+            throw new NotAuthenticatedException("권한이 없습니다.");
+        community.increaseLike();
+    }
+
+    @Transactional
     public void delete(Long id, Long profileId) {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
