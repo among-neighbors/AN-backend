@@ -39,10 +39,8 @@ public class NoticeService {
     }
 
     public Notice findNoticeById(Long noticeId, Long accountId) {
-        Notice findNotice = noticeRepository.findOne(noticeId);
-        if(findNotice == null) {
-            throw new NotFoundException("공지글을 찾을 수 없습니다.");
-        }
+        Notice findNotice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
         if(findNotice.getRange() == Range.LINE) {
             Account account = accountRepository.findAccountById(accountId);
             if(!account.getLine().getName().equals(findNotice.getReleaseLine())) {

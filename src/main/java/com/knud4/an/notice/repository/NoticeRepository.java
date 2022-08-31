@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,12 +20,8 @@ public class NoticeRepository {
         em.persist(notice);
     }
 
-    public void remove(Notice notice) {
-        em.remove(notice);
-    }
-
-    public Notice findOne(Long id) {
-        return em.find(Notice.class, id);
+    public Optional<Notice> findById(Long id) {
+        return Optional.ofNullable(em.find(Notice.class, id));
     }
 
     public List<Notice> findAll(int page, int count) {
