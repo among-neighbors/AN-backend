@@ -35,6 +35,8 @@ public class CommunityCommentService {
     }
 
     public List<CommunityComment> findAllByCommunityId(int page, int count, Long communityId) {
+        communityRepository.findById(communityId)
+                .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         return commentRepository.findAllByCommunityId(communityId, page, count);
     }
 
