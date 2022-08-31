@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,"/api/v1/communities/{id}")
                 .antMatchers(HttpMethod.PUT,"/api/v1/communities/like/{id}")
                 .antMatchers(HttpMethod.GET,"/api/v1/notices/**")
+                .antMatchers(HttpMethod.DELETE,"/api/v1/notices/{id}/delete")
                 .antMatchers(HttpMethod.GET,"/api/v1/comments/**")
                 .and()
                 .authorizeRequests()
@@ -52,7 +53,7 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/auth/profiles/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers("/api/v1/accounts/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers(HttpMethod.GET,"/api/v1/communities/**").hasAnyRole("USER", "MANAGER")
-                .antMatchers(HttpMethod.GET,"/api/v1/notices/**").hasAnyRole("USER", "MANAGER")
+                .antMatchers("/api/v1/notices/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers(HttpMethod.GET,"/api/v1/comments/**").hasAnyRole("USER", "MANAGER")
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(jwtProvider),

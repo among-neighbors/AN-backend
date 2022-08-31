@@ -54,4 +54,13 @@ public class NoticeController {
         Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new NoticeDTO(noticeService.findNoticeById(id, accountId)));
     }
+
+    @Operation(summary = "공지사항 삭제")
+    @DeleteMapping("/api/v1/notices/{id}/delete")
+    public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
+                                               HttpServletRequest req) {
+        Long accountId = (Long) req.getAttribute("accountId");
+        noticeService.deleteById(id, accountId);
+        return ApiUtil.success("삭제되었습니다.");
+    }
 }

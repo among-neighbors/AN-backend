@@ -63,4 +63,13 @@ public class NoticeService {
         Account account = accountRepository.findAccountById(accountId);
         return noticeRepository.findByLine(account.getLine().getName(), page, count);
     }
+
+    public void deleteById(Long noticeId, Long accountId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다.") );
+        Account account = accountRepository.findAccountById(accountId);
+        if(account.getRole() != Role.ROLE_MANAGER)
+            throw new NotAuthenticatedException("삭제 권한이 없습니다.");
+        noticeRepository.delete(notice);
+    }
 }

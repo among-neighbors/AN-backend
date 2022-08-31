@@ -73,4 +73,7 @@ public class NoticeRepository {
                 .getResultList();
     }
 
+    public void delete(Notice notice) {
+        em.remove(notice);
+    }
 }
