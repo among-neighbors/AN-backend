@@ -1,7 +1,7 @@
 package com.knud4.an.config;
 
 import com.knud4.an.websocket.handler.StompErrorHandler;
-import com.knud4.an.websocket.interceptor.StompInterceptor;
+import com.knud4.an.websocket.interceptor.StompInboundInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompInterceptor stompInterceptor;
+    private final StompInboundInterceptor stompInboundInterceptor;
 
     @Bean
     public StompErrorHandler stompErrorHandler() {
@@ -38,6 +38,6 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompInterceptor);
+        registration.interceptors(stompInboundInterceptor);
     }
 }
