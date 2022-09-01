@@ -8,6 +8,7 @@ import com.knud4.an.board.Range;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.notice.dto.CreateNoticeForm;
+import com.knud4.an.notice.dto.NoticeDTO;
 import com.knud4.an.notice.entity.Notice;
 import com.knud4.an.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,20 @@ public class NoticeService {
         return noticeRepository.findByLine(account.getLine().getName(), page, count);
     }
 
+    @Transactional
+    public void updateNotice(Long id, NoticeDTO noticeDTO, Long accountId) {
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
+        if(accountRepository.findAccountById(accountId).getRole() != Role.ROLE_MANAGER)
+            throw new NotAuthenticatedException("수정 권한이 없습니다.");
+        notice.changeTitle(noticeDTO.getTitle());
+        notice.changeContent(noticeDTO.getContent());
+        notice.changeRange(noticeDTO.getRange());
+        notice.changeExpiredDate(noticeDTO.getExpiredDate());
+        notice.changeReleaseLine(noticeDTO.getReleaseLine());
+    }
+
+    @Transactional
     public void deleteById(Long noticeId, Long accountId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다.") );

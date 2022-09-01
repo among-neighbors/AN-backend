@@ -26,7 +26,7 @@ public class NoticeController {
     private final AccountService accountService;
 
     @Operation(summary = "공지사항 생성")
-    @PostMapping("/api/v1/manager/notices/new")
+    @PostMapping("/api/v1/notices/new")
     public ApiSuccessResult<Long> createNotice(@Valid @RequestBody CreateNoticeForm form,
                                                        HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -53,6 +53,16 @@ public class NoticeController {
                                                 HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new NoticeDTO(noticeService.findNoticeById(id, accountId)));
+    }
+
+    @Operation(summary = "공지사항 수정")
+    @PutMapping("/api/v1/notices/{id}/update")
+    public ApiSuccessResult<Long> updateNotice(@PathVariable(name = "id") Long id,
+                                               @Valid @RequestBody NoticeDTO noticeDTO,
+                                               HttpServletRequest req) {
+        Long accountId = (Long) req.getAttribute("accountId");
+        noticeService.updateNotice(id, noticeDTO, accountId);
+        return ApiUtil.success(id);
     }
 
     @Operation(summary = "공지사항 삭제")
