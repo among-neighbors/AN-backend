@@ -10,7 +10,9 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.knud4.an.security.details.AccountDetails;
 import com.knud4.an.security.details.AccountDetailsService;
+import com.knud4.an.security.details.ProfileDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class JwtProvider implements AuthenticationProvider {
 
     private final AccountDetailsService accountDetailsService;
+    private final ProfileDetailsService profileDetailsService;
 
     private static final long TOKEN_VALIDATION_SECOND = 1000L * 60 * 120;
     private static final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60 * 60 * 48;
@@ -226,9 +229,15 @@ public class JwtProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        AccountDetails userDetails = (AccountDetails) accountDetailsService.loadUserByUsername
-                ((String) authentication.getPrincipal());
+        AccountDetails userDetails;
 
+        if (authentication.getCredentials().equals(Strings.EMPTY)) {
+             userDetails = (AccountDetails) accountDetailsService
+                     .loadUserByUsername((String) authentication.getPrincipal());
+        } else {
+            userDetails = (AccountDetails) profileDetailsService
+                    .loadUserByUsername(authentication.getCredentials().toString());
+        }
 
         return new UsernamePasswordAuthenticationToken(
                 userDetails.getEmail(),

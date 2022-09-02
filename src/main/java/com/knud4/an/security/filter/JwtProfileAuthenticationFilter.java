@@ -35,8 +35,10 @@ public class JwtProfileAuthenticationFilter extends GenericFilterBean {
         if(token != null && !jwtProvider.isProfileTokenExpired(token)) {
             try {
                 String emailFromToken = jwtProvider.getEmailFromToken(token);
+                Long profileId = jwtProvider.getProfileIdFromToken(token);
+
                 authenticate = jwtProvider
-                        .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
+                        .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, profileId));
                 SecurityContextHolder.getContext().setAuthentication(authenticate);
             } catch(Exception e) {
             }
