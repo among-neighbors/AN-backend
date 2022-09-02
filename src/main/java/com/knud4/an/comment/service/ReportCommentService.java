@@ -45,14 +45,11 @@ public class ReportCommentService {
         return commentRepository.findAllByReportId(reportId, page, count);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         commentRepository.delete(
                 commentRepository.findById(id).orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."))
         );
     }
 
-    public void deleteAllByReportId(Long reportId) {
-        List<ReportComment> reportComments = commentRepository.findAllByReportId(reportId);
-        for(ReportComment comment : reportComments) commentRepository.delete(comment);
-    }
 }

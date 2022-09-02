@@ -40,6 +40,7 @@ public class CommunityCommentService {
         return commentRepository.findAllByCommunityId(communityId, page, count);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         commentRepository.delete(
                 commentRepository.findById(id).orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."))
