@@ -47,4 +47,13 @@ public class CommunityCommentService {
         );
     }
 
+    public Boolean isFirstPage(int page) {
+        return page == 1;
+    }
+
+    public Boolean isLastPage(int page, int count, Long communityId) {
+        Long commentCnt = commentRepository.findCommentCountByCommunityId(communityId);
+        return (long) (page + 2) * count >= commentCnt;
+    }
+
 }

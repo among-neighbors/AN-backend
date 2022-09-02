@@ -52,4 +52,13 @@ public class ReportCommentService {
         );
     }
 
+    public Boolean isFirstPage(int page) {
+        return page == 1;
+    }
+
+    public Boolean isLastPage(int page, int count, Long reportId) {
+        Long commentCnt = commentRepository.findCommentCountByReportId(reportId);
+        return (long) (page + 2) * count >= commentCnt;
+    }
+
 }
