@@ -76,10 +76,14 @@ public class AccountRepository {
 
     public boolean profileExistsByName(String profileName, Long accountId) {
         return em.createQuery("select count(p) > 0 from Profile p " +
-                "where p.name = :profileName " +
+                        "where p.name = :profileName " +
                         "and p.account.id = :accountId", Boolean.class)
                 .setParameter("profileName", profileName)
                 .setParameter("accountId", accountId)
                 .getSingleResult();
+    }
+
+    public void deleteProfile(Profile profile) {
+        em.remove(profile);
     }
 }

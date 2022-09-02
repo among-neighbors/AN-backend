@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -47,5 +46,11 @@ public class Community extends Board {
 
     public void increaseLike() {
         this.likes++;
+    }
+
+    public void deleteWriter() {
+        this.setWriter(null);
+        this.writerHouseName = null;
+        this.writerLineName = null;
     }
 }

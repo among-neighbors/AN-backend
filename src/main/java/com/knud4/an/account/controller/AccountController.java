@@ -9,8 +9,7 @@ import com.knud4.an.utils.api.ApiUtil.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -32,9 +31,16 @@ public class AccountController {
     @Cacheable(key = "#req.getAttribute('profileId')", cacheNames = "profile")
     @Operation(summary = "내 프로필 조회")
     @GetMapping("/api/v1/profiles/me")
-    public ApiSuccessResult<ProfileDTO> myProfile(HttpServletRequest req) throws RuntimeException{
+    public ApiSuccessResult<ProfileDTO> myProfile(HttpServletRequest req) throws RuntimeException {
         Profile profile = accountService.findProfileById((Long)req.getAttribute("profileId"));
 
         return ApiUtil.success(new ProfileDTO(profile.getId(), profile.getName(), profile.getAge(), profile.getGender()));
+    }
+
+    @DeleteMapping("/api/v1/accounts/profiles/{id}")
+    public ApiSuccessResult<String> deleteProfile(@PathVariable(value = "id")Long profileId, HttpServletRequest req)
+            throws RuntimeException {
+        accountService.deleteProfile(profileId);
+        return ApiUtil.success("삭제 성공했습니다.");
     }
 }

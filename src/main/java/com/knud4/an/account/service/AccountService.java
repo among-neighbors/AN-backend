@@ -3,6 +3,8 @@ package com.knud4.an.account.service;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.repository.AccountRepository;
+import com.knud4.an.comment.entity.CommunityComment;
+import com.knud4.an.community.entity.Community;
 import com.knud4.an.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,5 +44,17 @@ public class AccountService {
     public Profile findProfileByAccountIdAndProfileName(Long accountId, String profileName) {
         return accountRepository.findProfileByAccountIdAndProfileName(accountId, profileName)
                 .orElseThrow(() -> new NotFoundException("프로필이 존재하지 않습니다."));
+    }
+
+    @Transactional
+    public void deleteProfile(Long profileId) {
+        Profile profile = accountRepository.findProfileById(profileId);
+        if (profile == null) {
+            throw new NotFoundException("존재하지 않는 회원입니다.");
+        }
+
+        profile.getCommunities().forEach(Community::deleteWriter);
+        profile.getCommunityComments().forEach(CommunityComment::deleteWriter);
+        accountRepository.deleteProfile(profile);
     }
 }

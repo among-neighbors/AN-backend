@@ -29,4 +29,7 @@ public class CommunityComment extends Comment {
         this.setWriter(writer);
     }
 
+    public void deleteWriter() {
+        this.setWriter(null);
+    }
 }
