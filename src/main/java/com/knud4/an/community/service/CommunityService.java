@@ -111,10 +111,10 @@ public class CommunityService {
     }
 
     @Transactional
-    public void updateLike(Long communityId, String email) {
+    public void updateLike(Long communityId, Long profileId) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        if(!accountRepository.accountExistsByEmail(email))
+        if(accountRepository.findProfileById(profileId) == null)
             throw new NotAuthenticatedException("권한이 없습니다.");
         community.increaseLike();
     }

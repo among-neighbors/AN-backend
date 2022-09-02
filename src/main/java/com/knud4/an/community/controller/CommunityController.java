@@ -97,13 +97,13 @@ public class CommunityController {
         return ApiUtil.success(id);
     }
 
-    @AccountRequired
+    @ProfileRequired
     @Operation(summary = "커뮤니티글 좋아요")
-    @PutMapping("/api/v1/communities/like/{id}")
+    @PutMapping("/api/v1/communities/{id}/like")
     public ApiSuccessResult<String> updateLike(@PathVariable Long id,
                                                HttpServletRequest req) {
-        String email = (String) req.getAttribute("email");
-        communityService.updateLike(id, email);
+        Long profileId = (Long) req.getAttribute("profileId");
+        communityService.updateLike(id, profileId);
         return ApiUtil.success("좋아요가 업데이트 되었습니다.");
     }
 
