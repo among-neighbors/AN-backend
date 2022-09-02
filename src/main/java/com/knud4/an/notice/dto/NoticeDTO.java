@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NoticeDTO {
 
-    private Long noticeId;
+    private Long id;
 
     private String title;
 
@@ -32,7 +32,7 @@ public class NoticeDTO {
     private String releaseLine;
 
     public NoticeDTO(Notice notice) {
-        this.noticeId = notice.getId();
+        this.id = notice.getId();
         this.title = notice.getTitle();
         this.content = notice.getContent();
         this.expiredDate = notice.getExpiredDate();
