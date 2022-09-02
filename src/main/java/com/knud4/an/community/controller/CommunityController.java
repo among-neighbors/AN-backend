@@ -3,7 +3,6 @@ package com.knud4.an.community.controller;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.board.Range;
-import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CommunityListDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
@@ -57,7 +56,9 @@ public class CommunityController {
             else
                 communityDTOList = CommunityDTO.entityListToDTOList(communityService.findByCategory(category, page, count, accountId));
         }
-        return ApiUtil.success(new CommunityListDTO(communityService.isLastPage(page, count), communityDTOList));
+        return ApiUtil.success(new CommunityListDTO(communityService.isFirstPage(page),
+                communityService.isLastPage(page, count),
+                communityDTOList));
     }
 
     @Operation(summary = "내 커뮤니티글 전체 조회")
@@ -66,8 +67,9 @@ public class CommunityController {
                                                                     @RequestParam(name = "count") int count,
                                                                     HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
-        return ApiUtil.success(new CommunityListDTO(communityService.isLastPage(page, count),
-                        CommunityDTO.entityListToDTOList(communityService.findAllMine(page, count, profileId))));
+        return ApiUtil.success(new CommunityListDTO(communityService.isFirstPage(page),
+                communityService.isLastPage(page, count),
+                CommunityDTO.entityListToDTOList(communityService.findAllMine(page, count, profileId))));
     }
 
     @Operation(summary = "커뮤니티글 상세 조회 (id)")

@@ -1,5 +1,6 @@
 package com.knud4.an.community.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.knud4.an.board.Range;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CommunityDTO {
 
-    private Long community_id;
+    private Long id;
 
     private String title;
 
@@ -25,23 +27,22 @@ public class CommunityDTO {
 
     private Range range;
 
-    private String writerLineName;
+    private Writer writer;
 
-    private String writerHouseName;
-
-    private String writerName;
+    private LocalDateTime createdDate;
 
     private Long like;
 
     public CommunityDTO(Community community) {
-        this.community_id = community.getId();
+        this.id = community.getId();
         this.title = community.getTitle();
         this.content = community.getContent();
         this.category = community.getCategory();
         this.range = community.getRange();
-        this.writerLineName = community.getWriterLineName();
-        this.writerHouseName = community.getWriterHouseName();
-        this.writerName = community.getWriter().getName();
+        this.writer = new Writer(community.getWriter().getName(),
+                community.getWriterLineName(),
+                community.getWriterHouseName());
+        this.createdDate = community.getCreatedDate();
         this.like = community.getLikes();
     }
 
@@ -49,5 +50,11 @@ public class CommunityDTO {
         List<CommunityDTO> communityDTOList = new ArrayList<>();
         for(Community community : communities) communityDTOList.add(new CommunityDTO(community));
         return communityDTOList;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Writer {
+        String name, lineName, houseName;
     }
 }

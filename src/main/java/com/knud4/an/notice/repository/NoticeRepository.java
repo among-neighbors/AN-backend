@@ -73,6 +73,11 @@ public class NoticeRepository {
                 .getResultList();
     }
 
+    public Long findNoticeCount() {
+        return em.createQuery("select count(n) from Notice n", Long.class)
+                .getSingleResult();
+    }
+
     public void delete(Notice notice) {
         em.remove(notice);
     }

@@ -87,4 +87,13 @@ public class NoticeService {
             throw new NotAuthenticatedException("삭제 권한이 없습니다.");
         noticeRepository.delete(notice);
     }
+
+    public Boolean isFirstPage(int page) {
+        return page == 1;
+    }
+
+    public Boolean isLastPage(int page, int count) {
+        Long noticeCnt = noticeRepository.findNoticeCount();
+        return (long) (page + 2) * count >= noticeCnt;
+    }
 }

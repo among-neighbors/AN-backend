@@ -1,4 +1,4 @@
-package com.knud4.an.community.dto;
+package com.knud4.an.notice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +8,9 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class CommunityListDTO {
+public class NoticeListDTO {
 
     @NotNull private Boolean isFirstPage;
     @NotNull private Boolean isLastPage;
-    @NotNull private List<CommunityDTO> list;
+    @NotNull private List<NoticeDTO> list;
 }
