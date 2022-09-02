@@ -8,6 +8,8 @@ import com.knud4.an.community.dto.CommunityListDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.service.CommunityService;
+import com.knud4.an.interceptor.AccountRequired;
+import com.knud4.an.interceptor.ProfileRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +28,9 @@ public class CommunityController {
 
     private final AccountService accountService;
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티글 생성")
-    @PostMapping("/api/v1/communities/new")
+    @PostMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunity(@Valid @RequestBody CreateCommunityForm form,
                                                           HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -36,6 +39,7 @@ public class CommunityController {
         return ApiUtil.success(communityId);
     }
 
+    @AccountRequired
     @Operation(summary = "커뮤니티글 전체 조회")
     @GetMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAll(@RequestParam(name = "page") int page,
@@ -61,6 +65,7 @@ public class CommunityController {
                 communityDTOList));
     }
 
+    @ProfileRequired
     @Operation(summary = "내 커뮤니티글 전체 조회")
     @GetMapping("/api/v1/communities/me")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAllMine(@RequestParam(name = "page") int page,
@@ -72,6 +77,7 @@ public class CommunityController {
                 CommunityDTO.entityListToDTOList(communityService.findAllMine(page, count, profileId))));
     }
 
+    @AccountRequired
     @Operation(summary = "커뮤니티글 상세 조회 (id)")
     @GetMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
@@ -80,8 +86,9 @@ public class CommunityController {
         return ApiUtil.success(new CommunityDTO(communityService.findCommunityById(id, accountId)));
     }
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티글 수정")
-    @PutMapping("/api/v1/communities/{id}/update")
+    @PutMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<Long> updateById(@PathVariable Long id,
                                              @Valid @RequestBody CommunityDTO communityDTO,
                                              HttpServletRequest req) {
@@ -90,17 +97,19 @@ public class CommunityController {
         return ApiUtil.success(id);
     }
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티글 좋아요")
-    @PutMapping("/api/v1/communities/like/{id}")
+    @PutMapping("/api/v1/communities/{id}/like")
     public ApiSuccessResult<String> updateLike(@PathVariable Long id,
                                                HttpServletRequest req) {
-        String email = (String) req.getAttribute("email");
-        communityService.updateLike(id, email);
+        Long profileId = (Long) req.getAttribute("profileId");
+        communityService.updateLike(id, profileId);
         return ApiUtil.success("좋아요가 업데이트 되었습니다.");
     }
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티글 삭제")
-    @DeleteMapping("/api/v1/communities/{id}/delete")
+    @DeleteMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
                                                HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");

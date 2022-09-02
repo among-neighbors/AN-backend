@@ -1,9 +1,10 @@
 package com.knud4.an.notice.controller;
 
-import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.board.Range;
+import com.knud4.an.interceptor.AccountRequired;
+import com.knud4.an.interceptor.ProfileRequired;
 import com.knud4.an.notice.dto.CreateNoticeForm;
 import com.knud4.an.notice.dto.NoticeDTO;
 import com.knud4.an.notice.dto.NoticeListDTO;
@@ -27,16 +28,18 @@ public class NoticeController {
 
     private final AccountService accountService;
 
+    @ProfileRequired
     @Operation(summary = "공지사항 생성")
-    @PostMapping("/api/v1/notices/new")
+    @PostMapping("/api/v1/manager/notices")
     public ApiSuccessResult<Long> createNotice(@Valid @RequestBody CreateNoticeForm form,
-                                                       HttpServletRequest req) {
+                                               HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
         Profile profile = accountService.findProfileById(profileId);
         Long noticeId = noticeService.createNotice(form, profile);
         return ApiUtil.success(noticeId);
     }
 
+    @AccountRequired
     @Operation(summary = "공지사항 전체 조회")
     @GetMapping("/api/v1/notices")
     public ApiSuccessResult<NoticeListDTO> findAll(@RequestParam(name = "page") int page,
@@ -53,6 +56,7 @@ public class NoticeController {
                 NoticeDTO.entityListToDTOList(noticeList)));
     }
 
+    @AccountRequired
     @Operation(summary = "공지사항 상세 조회 (id)")
     @GetMapping("/api/v1/notices/{id}")
     public ApiSuccessResult<NoticeDTO> findById(@PathVariable(name = "id") Long id,
@@ -62,21 +66,18 @@ public class NoticeController {
     }
 
     @Operation(summary = "공지사항 수정")
-    @PutMapping("/api/v1/notices/{id}/update")
+    @PutMapping("/api/v1/manager/notices/{id}")
     public ApiSuccessResult<Long> updateNotice(@PathVariable(name = "id") Long id,
-                                               @Valid @RequestBody NoticeDTO noticeDTO,
-                                               HttpServletRequest req) {
-        Long accountId = (Long) req.getAttribute("accountId");
-        noticeService.updateNotice(id, noticeDTO, accountId);
+                                               @Valid @RequestBody NoticeDTO noticeDTO) {
+        noticeService.updateNotice(id, noticeDTO);
         return ApiUtil.success(id);
     }
 
+    @AccountRequired
     @Operation(summary = "공지사항 삭제")
-    @DeleteMapping("/api/v1/notices/{id}/delete")
-    public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
-                                               HttpServletRequest req) {
-        Long accountId = (Long) req.getAttribute("accountId");
-        noticeService.deleteById(id, accountId);
+    @DeleteMapping("/api/v1/manager/notices/{id}")
+    public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id) {
+        noticeService.deleteById(id);
         return ApiUtil.success("삭제되었습니다.");
     }
 }
