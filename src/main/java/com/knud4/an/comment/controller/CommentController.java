@@ -3,6 +3,7 @@ package com.knud4.an.comment.controller;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.comment.dto.CommentDTO;
+import com.knud4.an.comment.dto.CommentListDTO;
 import com.knud4.an.comment.dto.CreateCommentForm;
 import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.comment.service.ReportCommentService;
@@ -35,10 +36,12 @@ public class CommentController {
 
     @Operation(summary = "커뮤니티 댓글 조회 (community_id)")
     @GetMapping("/api/v1/comments/communities/{id}")
-    public ApiUtil.ApiSuccessResult<List<CommentDTO>> findAllByCommunityId(@PathVariable(name = "id") Long id,
-                                                                              @RequestParam(name = "page") int page,
-                                                                              @RequestParam(name = "count") int count) {
-        return ApiUtil.success(CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id)));
+    public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByCommunityId(@PathVariable(name = "id") Long id,
+                                                                         @RequestParam(name = "page") int page,
+                                                                         @RequestParam(name = "count") int count) {
+        return ApiUtil.success(new CommentListDTO(communityCommentService.isFirstPage(page),
+                communityCommentService.isLastPage(page, count, id),
+                CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id))));
     }
 
     @Operation(summary = "커뮤니티 댓글 삭제")
@@ -60,10 +63,12 @@ public class CommentController {
 
     @Operation(summary = "민원 댓글 조회 (report_id)")
     @GetMapping("/api/v1/comments/reports/{id}")
-    public ApiUtil.ApiSuccessResult<List<CommentDTO>> findAllByReportId(@PathVariable Long id,
+    public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByReportId(@PathVariable Long id,
                                                                         @RequestParam int page,
                                                                         @RequestParam int count) {
-        return ApiUtil.success(CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id)));
+        return ApiUtil.success(new CommentListDTO(reportCommentService.isFirstPage(page),
+                reportCommentService.isLastPage(page, count, id),
+                CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id))));
     }
 
     @Operation(summary = "민원 댓글 삭제")
