@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,31 +18,39 @@ import java.util.List;
 @AllArgsConstructor
 public class CommentDTO {
 
+    private Long id;
+
     private String text;
 
-    private String writerName;
+    private LocalDateTime createdDate;
 
-    private String writerLineName;
+    private Writer writer;
 
-    private String writerHouseName;
-
-    public CommentDTO(Comment comment) {
+    public CommentDTO(Comment comment, Long id) {
+        this.id = id;
         this.text = comment.getText();
-        this.writerName = comment.getWriter().getName();
+        this.createdDate = comment.getCreatedDate();
         Account account = comment.getWriter().getAccount();
-        this.writerLineName = account.getLine().getName();
-        this.writerHouseName = account.getHouse().getName();
+        this.writer = new Writer(comment.getWriter().getName(),
+                account.getLine().getName(),
+                account.getHouse().getName());
     }
 
     public static List<CommentDTO> makeCommunityCommentList(List<CommunityComment> comments) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(CommunityComment comment : comments) commentDTOList.add(new CommentDTO(comment));
+        for(CommunityComment comment : comments) commentDTOList.add(new CommentDTO(comment, comment.getId()));
         return commentDTOList;
     }
 
     public static List<CommentDTO> makeReportCommentList(List<ReportComment> comments) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(ReportComment comment : comments) commentDTOList.add(new CommentDTO(comment));
+        for(ReportComment comment : comments) commentDTOList.add(new CommentDTO(comment, comment.getId()));
         return commentDTOList;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Writer {
+        String name, LineName, houseName;
     }
 }
