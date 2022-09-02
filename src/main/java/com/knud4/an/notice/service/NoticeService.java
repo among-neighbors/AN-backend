@@ -66,11 +66,9 @@ public class NoticeService {
     }
 
     @Transactional
-    public void updateNotice(Long id, NoticeDTO noticeDTO, Long accountId) {
+    public void updateNotice(Long id, NoticeDTO noticeDTO) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
-        if(accountRepository.findAccountById(accountId).getRole() != Role.ROLE_MANAGER)
-            throw new NotAuthenticatedException("수정 권한이 없습니다.");
         notice.changeTitle(noticeDTO.getTitle());
         notice.changeContent(noticeDTO.getContent());
         notice.changeRange(noticeDTO.getRange());
@@ -79,12 +77,9 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteById(Long noticeId, Long accountId) {
+    public void deleteById(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다.") );
-        Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole() != Role.ROLE_MANAGER)
-            throw new NotAuthenticatedException("삭제 권한이 없습니다.");
         noticeRepository.delete(notice);
     }
 

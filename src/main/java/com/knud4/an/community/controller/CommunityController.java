@@ -30,7 +30,7 @@ public class CommunityController {
 
     @ProfileRequired
     @Operation(summary = "커뮤니티글 생성")
-    @PostMapping("/api/v1/communities/new")
+    @PostMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunity(@Valid @RequestBody CreateCommunityForm form,
                                                           HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -88,7 +88,7 @@ public class CommunityController {
 
     @ProfileRequired
     @Operation(summary = "커뮤니티글 수정")
-    @PutMapping("/api/v1/communities/{id}/update")
+    @PutMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<Long> updateById(@PathVariable Long id,
                                              @Valid @RequestBody CommunityDTO communityDTO,
                                              HttpServletRequest req) {
@@ -109,7 +109,7 @@ public class CommunityController {
 
     @ProfileRequired
     @Operation(summary = "커뮤니티글 삭제")
-    @DeleteMapping("/api/v1/communities/{id}/delete")
+    @DeleteMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
                                                HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");

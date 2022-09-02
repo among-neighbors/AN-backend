@@ -28,7 +28,7 @@ public class CommentController {
 
     @ProfileRequired
     @Operation(summary = "커뮤니티 댓글 생성")
-    @PostMapping("/api/v1/comments/communities/new")
+    @PostMapping("/api/v1/comments/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunityComment(@Valid @RequestBody CreateCommentForm form,
                                                                  HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -58,7 +58,7 @@ public class CommentController {
 
     @ProfileRequired
     @Operation(summary = "민원 댓글 생성")
-    @PostMapping("/api/v1/comments/reports/new")
+    @PostMapping("/api/v1/comments/reports")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
                                                               HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
