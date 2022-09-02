@@ -16,6 +16,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,13 +42,19 @@ public class StompInboundInterceptor implements ChannelInterceptor {
         if (StompCommand.CONNECT.equals(headerAccessor.getCommand())) {
             Map<String, Object> info = getHouseInfoByAuthorizationHeader(headerAccessor);
 
+            Assert.notNull(sessionAttributes, "null session");
+
             sessionAttributes.put("line", ((Line)info.get("line")).getName());
             sessionAttributes.put("house", ((House)info.get("house")).getName());
             headerAccessor.setSessionAttributes(sessionAttributes);
         }
 
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
-            validateSubscriptionHeader(headerAccessor);
+            Assert.notNull(headerAccessor.getDestination(), "null destination");
+
+            if (!headerAccessor.getDestination().startsWith("/user")) {
+                validateSubscriptionHeader(headerAccessor);
+            }
         }
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
@@ -57,10 +64,13 @@ public class StompInboundInterceptor implements ChannelInterceptor {
                 throw new IllegalStateException("잘못된 접근 입니다.");
             }
 
+            Assert.notNull(sessionAttributes, "null session");
+
             headerAccessor.setNativeHeader("line", sessionAttributes.get("line").toString());
             headerAccessor.setNativeHeader("house", sessionAttributes.get("house").toString());
+            headerAccessor.setLeaveMutable(true);
 
-            message = MessageBuilder.createMessage(message.getPayload(), headerAccessor.toMessageHeaders());
+            message = MessageBuilder.createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
         }
 
         return message;
