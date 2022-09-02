@@ -27,16 +27,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(accountTokenInterceptor).addPathPatterns(
-                "/api/v1/accounts/**", "/api/v1/auth/profiles/**", "/api/v1/reports/**",
-                "/api/v1/communities/**", "/api/v1/notices/**", "/api/v1/comments/**",
-                "/api/v1/manager/notices/new"
-        ).excludePathPatterns("/api/v1/communities/new", "/api/v1/notices/new", "/api/v1/comments/**/new",
-                "/api/v1/communities/me", "/api/v1/communities/{id}/update", "/api/v1/communities/{id}/delete");
-
-        registry.addInterceptor(profileTokenInterceptor).addPathPatterns(
-                "/api/v1/profiles/**", "/api/v1/communities/new", "/api/v1/notices/new", "/api/v1/comments/**/new",
-                "/api/v1/communities/me", "/api/v1/communities/{id}/update", "/api/v1/communities/{id}/delete"
-        );
+        registry.addInterceptor(accountTokenInterceptor).addPathPatterns("/api/v1/**");
+        registry.addInterceptor(profileTokenInterceptor).addPathPatterns("/api/v1/**");
+//        registry.addInterceptor(accountTokenInterceptor).addPathPatterns(
+//                "/api/v1/accounts/**", "/api/v1/auth/profiles/**", "/api/v1/reports/**",
+//                "/api/v1/communities/**", "/api/v1/notices/**", "/api/v1/comments/**",
+//                "/api/v1/manager/notices/new"
+//        ).excludePathPatterns("/api/v1/communities/new", "/api/v1/notices/new", "/api/v1/comments/**/new",
+//                "/api/v1/communities/me", "/api/v1/communities/{id}/update", "/api/v1/communities/{id}/delete");
+//
+//        registry.addInterceptor(profileTokenInterceptor).addPathPatterns(
+//                "/api/v1/profiles/**", "/api/v1/communities/new", "/api/v1/notices/new", "/api/v1/comments/**/new",
+//                "/api/v1/communities/me", "/api/v1/communities/{id}/update", "/api/v1/communities/{id}/delete"
+//        );
     }
 }

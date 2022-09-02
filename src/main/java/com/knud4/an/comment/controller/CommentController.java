@@ -7,6 +7,8 @@ import com.knud4.an.comment.dto.CommentListDTO;
 import com.knud4.an.comment.dto.CreateCommentForm;
 import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.comment.service.ReportCommentService;
+import com.knud4.an.interceptor.AccountRequired;
+import com.knud4.an.interceptor.ProfileRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class CommentController {
     private final ReportCommentService reportCommentService;
     private final AccountService accountService;
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티 댓글 생성")
     @PostMapping("/api/v1/comments/communities/new")
     public ApiUtil.ApiSuccessResult<Long> createCommunityComment(@Valid @RequestBody CreateCommentForm form,
@@ -34,6 +37,7 @@ public class CommentController {
         return ApiUtil.success(commentId);
     }
 
+    @AccountRequired
     @Operation(summary = "커뮤니티 댓글 조회 (community_id)")
     @GetMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByCommunityId(@PathVariable(name = "id") Long id,
@@ -44,6 +48,7 @@ public class CommentController {
                 CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id))));
     }
 
+    @ProfileRequired
     @Operation(summary = "커뮤니티 댓글 삭제")
     @DeleteMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteCommunityComment(@PathVariable(name = "id") Long id) {
@@ -51,6 +56,7 @@ public class CommentController {
         return ApiUtil.success("삭제되었습니다.");
     }
 
+    @ProfileRequired
     @Operation(summary = "민원 댓글 생성")
     @PostMapping("/api/v1/comments/reports/new")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
@@ -61,6 +67,7 @@ public class CommentController {
         return ApiUtil.success(commentId);
     }
 
+    @AccountRequired
     @Operation(summary = "민원 댓글 조회 (report_id)")
     @GetMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByReportId(@PathVariable Long id,
@@ -71,6 +78,7 @@ public class CommentController {
                 CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id))));
     }
 
+    @ProfileRequired
     @Operation(summary = "민원 댓글 삭제")
     @DeleteMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteReportComment(@PathVariable(name = "id") Long id) {

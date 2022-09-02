@@ -2,6 +2,7 @@ package com.knud4.an.report.controller;
 
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.service.AccountService;
+import com.knud4.an.interceptor.AccountRequired;
 import com.knud4.an.report.dto.CreateReportForm;
 import com.knud4.an.report.dto.ReportDTO;
 import com.knud4.an.report.service.ReportService;
@@ -22,6 +23,7 @@ public class ReportController {
     private final ReportService reportService;
     private final AccountService accountService;
 
+    @AccountRequired
     @Operation(summary = "민원 생성")
     @PostMapping("/api/v1/reports/new")
     public ApiSuccessResult<Long> createReport(@Valid @RequestBody CreateReportForm form,
@@ -39,6 +41,7 @@ public class ReportController {
         return ApiUtil.success(reportService.findAll(page, count));
     }
 
+    @AccountRequired
     @Operation(summary = "민원 전체 조회 (계정)")
     @GetMapping("/api/v1/reports")
     public ApiSuccessResult<List<ReportDTO>> findByAccountId(@RequestParam(name = "page") int page,
@@ -48,6 +51,7 @@ public class ReportController {
         return ApiUtil.success(reportService.findByAccountId(page, count, accountId));
     }
 
+    @AccountRequired
     @Operation(summary = "민원 상세 조회 (id)")
     @GetMapping("/api/v1/reports/{id}")
     public ApiSuccessResult<ReportDTO> findById(@PathVariable(name = "id") Long id,

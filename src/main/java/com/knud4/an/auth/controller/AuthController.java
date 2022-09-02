@@ -14,6 +14,7 @@ import com.knud4.an.auth.dto.profile.SignInProfileForm;
 import com.knud4.an.auth.dto.profile.SignInProfileResponse;
 import com.knud4.an.auth.service.AuthService;
 import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.interceptor.AccountRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import com.knud4.an.utils.cookie.CookieUtil;
@@ -61,6 +62,7 @@ public class AuthController {
         return ApiUtil.success(new SignInAccountResponse(account, accessToken, refreshToken));
     }
 
+    @AccountRequired
     @Operation(summary = "프로필 추가")
     @PostMapping("/api/v1/auth/profiles/new")
     public ApiSuccessResult<AddProfileResponse> addProfile(
@@ -74,6 +76,7 @@ public class AuthController {
         return ApiUtil.success(new AddProfileResponse(profileId));
     }
 
+    @AccountRequired
     @Operation(summary = "프로필 로그인")
     @PostMapping("/api/v1/auth/profiles/login")
     public ApiSuccessResult<SignInProfileResponse> signInProfile(
