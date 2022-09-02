@@ -4,6 +4,8 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.report.dto.CreateReportForm;
 import com.knud4.an.report.dto.ReportDTO;
+import com.knud4.an.report.dto.ReportListDTO;
+import com.knud4.an.report.entity.Report;
 import com.knud4.an.report.service.ReportService;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
@@ -34,18 +36,28 @@ public class ReportController {
 
     @Operation(summary = "민원 전체 조회")
     @GetMapping("/api/v1/manager/reports")
-    public ApiSuccessResult<List<ReportDTO>> findAll(@RequestParam(name = "page") int page,
+    public ApiSuccessResult<?> findAll(@RequestParam(name = "page") int page,
                                                      @RequestParam(name = "count") int count) {
-        return ApiUtil.success(reportService.findAll(page, count));
+        List<Report> reports = reportService.findAll(page, count);
+        ReportListDTO dto = new ReportListDTO(
+                reportService.isFirstPage(page),
+                reportService.isLastPage(page, count),
+                reports);
+        return ApiUtil.success(dto);
     }
 
     @Operation(summary = "민원 전체 조회 (계정)")
     @GetMapping("/api/v1/reports")
-    public ApiSuccessResult<List<ReportDTO>> findByAccountId(@RequestParam(name = "page") int page,
+    public ApiSuccessResult<?> findByAccountId(@RequestParam(name = "page") int page,
                                                              @RequestParam(name = "count") int count,
                                                              HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        return ApiUtil.success(reportService.findByAccountId(page, count, accountId));
+        List<Report> reports = reportService.findByAccountId(page, count, accountId);
+        ReportListDTO dto = new ReportListDTO(
+                reportService.isLastPage(page, count),
+                reportService.isFirstPage(page),
+                reports);
+        return ApiUtil.success(dto);
     }
 
     @Operation(summary = "민원 상세 조회 (id)")

@@ -23,7 +23,7 @@ public class ReportRepository {
 
     public List<Report> findAll(int offset, int limit) {
         return em.createQuery("select r from Report r order by r.createdDate desc", Report.class)
-                .setFirstResult((offset-1)*10)
+                .setFirstResult((offset-1)*limit)
                 .setMaxResults(limit)
                 .getResultList();
     }
@@ -39,8 +39,13 @@ public class ReportRepository {
         return em.createQuery("select r from Report r " +
                         "where r.writer.id = :writerId order by r.id desc", Report.class)
                 .setParameter("writerId", accountId)
-                .setFirstResult((offset-1)*10)
+                .setFirstResult((offset-1)*limit)
                 .setMaxResults(limit)
                 .getResultList();
+    }
+
+    public Long countAll() {
+        return em.createQuery("select count(r) from Report r", Long.class)
+                .getSingleResult();
     }
 }

@@ -11,23 +11,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportDTO {
-    private Long reportId;
+    private Long id;
     private String title;
     private String content;
 
-    private String lineName;
-    private String houseName;
+    private Writer writer;
 
     private LocalDateTime createdDate;
 
     public ReportDTO(Report report) {
-        this.reportId = report.getId();
+        this.id = report.getId();
         this.title = report.getTitle();
         this.content = report.getContent();
 
-        this.houseName = report.getHouseName();
-        this.lineName = report.getLineName();
+        writer = new Writer(report.getLineName(), report.getHouseName());
 
         this.createdDate = report.getCreatedDate();
     }
+
+    @Data
+    @AllArgsConstructor
+    private static class Writer {
+        private String lineName;
+        private String houseName;
+    }
+
 }
