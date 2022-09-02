@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,44 +31,44 @@ public class ReportService {
 
     public ReportDTO findReportById(Long reportId, Long accountId) throws NotFoundException{
         Report findReport = reportRepository.findById(reportId);
-        if (findReport == null || !findReport.getId().equals(accountId)) {
+        if (findReport == null || !findReport.getWriter().getId().equals(accountId)) {
             throw new NotFoundException("민원을 찾을 수 없습니다.");
         }
         return new ReportDTO(findReport);
     }
 
-    public List<ReportDTO> findAll() {
+    public List<Report> findAll() {
         List<Report> reports = reportRepository.findAll();
-        List<ReportDTO> reportDTOS = new ArrayList<>();
-
-        for (Report r : reports) {
-            reportDTOS.add(new ReportDTO(r));
-        }
-
-        return reportDTOS;
+        return reports;
     }
 
-    public List<ReportDTO> findAll(int page, int cnt) {
+    public List<Report> findAll(int page, int cnt) {
+        validatePaging(page, cnt);
         List<Report> reports = reportRepository.findAll(page, cnt);
-        List<ReportDTO> reportDTOS = new ArrayList<>();
-
-        for (Report r : reports) {
-            reportDTOS.add(new ReportDTO(r));
-        }
-
-        return reportDTOS;
+        return reports;
     }
 
-    public List<ReportDTO> findByAccountId(int page, int cnt, Long accountId) {
+    public List<Report> findByAccountId(int page, int cnt, Long accountId) {
+        validatePaging(page, cnt);
         List<Report> reports = reportRepository.findByAccountId(page, cnt, accountId);
-        List<ReportDTO> reportDTOS = new ArrayList<>();
-
-        for (Report r : reports) {
-            reportDTOS.add(new ReportDTO(r));
-        }
-
-        return reportDTOS;
+        return reports;
     }
 
+    public Boolean isLastPage(int page, int cnt) {
+        validatePaging(page, cnt);
+        Long reportCnt = reportRepository.countAll();
+        return (long) page*cnt >= reportCnt;
+    }
 
+    public Boolean isFirstPage(int page) {
+        return page == 1;
+    }
+
+    private void validatePaging(int page, int cnt) {
+        Long num = reportRepository.countAll();
+        int limit = (page - 1) * cnt;
+        if (page != 1 && num<=limit) {
+            throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");
+        }
+    }
 }
