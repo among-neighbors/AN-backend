@@ -89,7 +89,11 @@ public class CommunityService {
         return communityRepository.findAllMine(profileId, page, count);
     }
 
-    public boolean isLastPage(int page, int count) {
+    public Boolean isFirstPage(int page) {
+        return page == 1;
+    }
+
+    public Boolean isLastPage(int page, int count) {
         Long communityCnt = communityRepository.findCommunityCount();
         return (long) (page + 2) * count >= communityCnt;
     }

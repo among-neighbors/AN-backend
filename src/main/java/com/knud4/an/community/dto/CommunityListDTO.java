@@ -2,15 +2,15 @@ package com.knud4.an.community.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class CommunityListDTO {
 
-    private boolean isLastPage;
-    private List<CommunityDTO> communityList;
+    @NotNull private Boolean isFirstPage;
+    @NotNull private Boolean isLastPage;
+    @NotNull private List<CommunityDTO> list;
 }
