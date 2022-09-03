@@ -1,7 +1,7 @@
 package com.knud4.an.interceptor;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.annotation.ProfileRequired;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,19 @@ public class ProfileTokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
-        if(!(handler instanceof HandlerMethod)) return true;
+        if(!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         ProfileRequired profileRequired = handlerMethod.getMethodAnnotation(ProfileRequired.class);
-        if(Objects.isNull(profileRequired)) return true;
+
+        if(Objects.isNull(profileRequired)) {
+            return true;
+        }
 
         String profileToken = JwtExtractor.extractJwt(request);
+
         try {
             String email = jwtProvider.getEmailFromToken(profileToken);
             Long profileId = jwtProvider.getProfileIdFromToken(profileToken);

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileDTO {
-    private Long profileId;
+    private Long id;
     private String name;
     private int age;
     private Gender gender;
