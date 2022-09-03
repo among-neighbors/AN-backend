@@ -1,4 +1,4 @@
-package com.knud4.an.interceptor;
+package com.knud4.an.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

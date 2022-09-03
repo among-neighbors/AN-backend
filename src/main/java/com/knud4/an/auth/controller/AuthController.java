@@ -14,7 +14,7 @@ import com.knud4.an.auth.dto.profile.SignInProfileForm;
 import com.knud4.an.auth.dto.profile.SignInProfileResponse;
 import com.knud4.an.auth.service.AuthService;
 import com.knud4.an.exception.NotFoundException;
-import com.knud4.an.interceptor.AccountRequired;
+import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import com.knud4.an.utils.cookie.CookieUtil;

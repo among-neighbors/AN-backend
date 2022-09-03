@@ -2,7 +2,7 @@ package com.knud4.an.report.controller;
 
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.service.AccountService;
-import com.knud4.an.interceptor.AccountRequired;
+import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.report.dto.CreateReportForm;
 import com.knud4.an.report.dto.ReportDTO;
 import com.knud4.an.report.dto.ReportListDTO;

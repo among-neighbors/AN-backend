@@ -1,6 +1,7 @@
 package com.knud4.an.interceptor;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,17 @@ public class AccountTokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
                              Object handler) throws Exception {
-        if(!(handler instanceof HandlerMethod)) return true;
+        if(!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         AccountRequired accountRequired = handlerMethod.getMethodAnnotation(AccountRequired.class);
-        if(Objects.isNull(accountRequired)) return true;
+
+        if(Objects.isNull(accountRequired)) {
+            return true;
+        }
+
         String accountToken = JwtExtractor.extractJwt(request);
 
         try {
@@ -36,7 +44,6 @@ public class AccountTokenInterceptor implements HandlerInterceptor {
             request.setAttribute("email", email);
         } catch (JWTVerificationException e) {
         }
-
         return true;
     }
 }

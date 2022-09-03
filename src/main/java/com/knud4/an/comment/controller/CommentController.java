@@ -7,8 +7,8 @@ import com.knud4.an.comment.dto.CommentListDTO;
 import com.knud4.an.comment.dto.CreateCommentForm;
 import com.knud4.an.comment.service.CommunityCommentService;
 import com.knud4.an.comment.service.ReportCommentService;
-import com.knud4.an.interceptor.AccountRequired;
-import com.knud4.an.interceptor.ProfileRequired;
+import com.knud4.an.annotation.AccountRequired;
+import com.knud4.an.annotation.ProfileRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
