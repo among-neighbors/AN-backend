@@ -1,5 +1,6 @@
 package com.knud4.an.account.entity;
 
+import com.knud4.an.Base.BaseEntity;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.line.entity.Line;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account {
+public class Account extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;

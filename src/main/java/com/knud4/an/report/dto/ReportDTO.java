@@ -24,7 +24,7 @@ public class ReportDTO {
         this.title = report.getTitle();
         this.content = report.getContent();
 
-        writer = new Writer(report.getLineName(), report.getHouseName());
+        writer = new Writer(report.getLineName(), report.getHouseName(), report.getWriter().getId());
 
         this.createdDate = report.getCreatedDate();
     }
@@ -34,6 +34,7 @@ public class ReportDTO {
     private static class Writer {
         private String lineName;
         private String houseName;
+        private Long id;
     }
 
 }
