@@ -11,7 +11,7 @@ public class ProfileListResponse {
     private final List<ProfileDTO> list;
 
     public ProfileListResponse(List<Profile> list) {
-        this.list = list.stream().map(p -> new ProfileDTO(p.getId(), p.getName(), p.getAge(), p.getGender()))
+        this.list = list.stream().map(ProfileDTO::new)
                 .collect(Collectors.toList());
     }
 }

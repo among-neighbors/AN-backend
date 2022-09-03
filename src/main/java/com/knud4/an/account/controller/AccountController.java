@@ -40,6 +40,6 @@ public class AccountController {
 
         Profile profile = accountService.findProfileById((Long)req.getAttribute("profileId"));
 
-        return ApiUtil.success(new ProfileDTO(profile.getId(), profile.getName(), profile.getAge(), profile.getGender()));
+        return ApiUtil.success(new ProfileDTO(profile));
     }
 }
