@@ -20,6 +20,7 @@ import com.knud4.an.utils.api.ApiUtil.*;
 import com.knud4.an.utils.cookie.CookieUtil;
 import com.knud4.an.security.provider.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+@Tag(name = "인증")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {

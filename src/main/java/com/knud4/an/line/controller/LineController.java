@@ -8,14 +8,13 @@ import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name = "라인")
 @RestController
 @RequiredArgsConstructor
 public class LineController {
@@ -36,4 +35,10 @@ public class LineController {
     public ApiSuccessResult<LineListDTO> findAllLines() {
         return ApiUtil.success(new LineListDTO(lineService.findAllLines()));
     }
+//
+//    @Operation(summary = "라인 삭제")
+//    @DeleteMapping("/api/v1/lines")
+//    public void removeLine(@RequestParam Long lineId) {
+//        lineService.removeLine(lineId);
+//    }
 }
