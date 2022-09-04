@@ -8,6 +8,7 @@ import com.knud4.an.auth.dto.account.SignInAccountForm;
 import com.knud4.an.auth.dto.account.SignInAccountResponse;
 import com.knud4.an.auth.dto.account.SignUpAccountForm;
 import com.knud4.an.auth.dto.account.SignUpAccountResponse;
+import com.knud4.an.auth.dto.manager.SignInManagerResponse;
 import com.knud4.an.auth.dto.profile.AddProfileForm;
 import com.knud4.an.auth.dto.profile.AddProfileResponse;
 import com.knud4.an.auth.dto.profile.SignInProfileForm;
@@ -62,6 +63,43 @@ public class AuthController {
         res.addHeader("Set-Cookie", cookie.toString());
 
         return ApiUtil.success(new SignInAccountResponse(account, accessToken, refreshToken));
+    }
+
+    @Operation(summary = "매니저 로그인")
+    @PostMapping("/api/v1/auth/manager/login")
+    public ApiSuccessResult<?> signInManager (
+            @RequestBody @Valid SignInAccountForm form,
+            HttpServletResponse res) throws RuntimeException {
+
+        Profile profile = authService.signInManager(form);
+        Account account = profile.getAccount();
+
+        String accountAccessToken = jwtProvider.generateAccountToken(
+                account.getEmail(),
+                account.getId()+"");
+        String accountRefreshToken = jwtProvider.generateAccountRefreshToken(
+                account.getEmail(),
+                account.getId() + "");
+
+        String profileAccessToken = jwtProvider.generateProfileToken(
+                profile.getAccount().getEmail(),
+                profile.getAccount().getId()+"",
+                profile.getId() + "");
+
+        String profileRefreshToken = jwtProvider.generateProfileRefreshToken(
+                profile.getAccount().getEmail(),
+                profile.getAccount().getId() + "",
+                profile.getId() + "");
+
+        ResponseCookie accountCookie = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accountRefreshToken);
+        ResponseCookie profileCookie = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, profileRefreshToken);
+
+        res.addHeader("Set-Cookie", accountCookie.toString());
+        res.addHeader("Set-Cookie", profileCookie.toString());
+
+        return ApiUtil.success(new SignInManagerResponse(
+                accountAccessToken, accountRefreshToken,
+                profileAccessToken, profileRefreshToken));
     }
 
     @AccountRequired

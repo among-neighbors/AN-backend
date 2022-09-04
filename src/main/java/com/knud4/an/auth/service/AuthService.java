@@ -141,4 +141,17 @@ public class AuthService {
             redisUtil.expire(VERIFIED_PREFIX + email, 3600);
         }
     }
+
+    public Profile signInManager(SignInAccountForm form) {
+        Account account = signInAccount(form);
+
+        if (!account.getRole().equals(Role.ROLE_MANAGER)) {
+            throw new IllegalStateException("매니저 계정이 아닙니다.");
+        }
+
+        Profile profile = accountRepository.findProfilesByAccountId(account.getId())
+                .stream().findFirst().orElseThrow(() -> new NotFoundException("매니저 프로필 누락"));
+
+        return profile;
+    }
 }
