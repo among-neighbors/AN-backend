@@ -23,13 +23,13 @@ public class ReportCommentRepository {
     }
 
     public List<ReportComment> findAllByReportId(Long reportId) {
-        return em.createQuery("select r from ReportComment r where r.report.id = :reportId", ReportComment.class)
+        return em.createQuery("select r from ReportComment r where r.report.id = :reportId order by r.id desc", ReportComment.class)
                 .setParameter("reportId", reportId)
                 .getResultList();
     }
 
     public List<ReportComment> findAllByReportId(Long reportId, int page, int count) {
-        return em.createQuery("select r from ReportComment r where r.report.id = :reportId", ReportComment.class)
+        return em.createQuery("select r from ReportComment r where r.report.id = :reportId order by r.id desc", ReportComment.class)
                 .setParameter("reportId", reportId)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
