@@ -60,6 +60,7 @@ public class CommunityService {
     }
 
     public List<Community> findAll(int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count, true);
         List<Community> findCommunities = communityRepository.findByScope(Scope.ALL, page, count, false);
@@ -69,11 +70,13 @@ public class CommunityService {
     }
 
     public List<Community> findAllMyLine(int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         return communityRepository.findByLine(account.getLine().getName(), page, count, false);
     }
 
     public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         if(account.getRole().equals(Role.ROLE_MANAGER)) {
             return communityRepository.findByCategory(category, page, count, true);
@@ -85,21 +88,32 @@ public class CommunityService {
     }
 
     public List<Community> findMyLineByCategory(Category category, int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         return communityRepository.findByLineAndCategory(account.getLine().getName(), category, page, count, true);
     }
 
     public List<Community> findAllMine(int page, int count, Long profileId) {
+        validatePaging(page, count);
         return communityRepository.findAllMine(profileId, page, count, true);
+    }
+
+    public Boolean isLastPage(int page, int cnt) {
+        validatePaging(page, cnt);
+        Long communityCnt = communityRepository.findCommunityCount();
+        return (long) page*cnt >= communityCnt;
     }
 
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    public Boolean isLastPage(int page, int count) {
-        Long communityCnt = communityRepository.findCommunityCount();
-        return (long) (page + 2) * count >= communityCnt;
+    private void validatePaging(int page, int cnt) {
+        Long num = communityRepository.findCommunityCount();
+        int limit = (page - 1) * cnt;
+        if (page != 1 && num<=limit) {
+            throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");
+        }
     }
 
     @Transactional

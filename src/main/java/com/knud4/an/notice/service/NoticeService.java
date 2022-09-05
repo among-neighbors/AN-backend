@@ -53,6 +53,7 @@ public class NoticeService {
     }
 
     public List<Notice> findAll(int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
 
@@ -63,6 +64,7 @@ public class NoticeService {
     }
 
     public List<Notice> findAllMyLine(int page, int count, Long accountId) {
+        validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
         return noticeRepository.findByLine(account.getLine().getName(), page, count, true);
     }
@@ -85,13 +87,22 @@ public class NoticeService {
         noticeRepository.delete(notice);
     }
 
+    public Boolean isLastPage(int page, int cnt) {
+        validatePaging(page, cnt);
+        Long commentCnt = noticeRepository.findNoticeCount();
+        return (long) page*cnt >= commentCnt;
+    }
+
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    public Boolean isLastPage(int page, int count) {
-        Long noticeCnt = noticeRepository.findNoticeCount();
-        return (long) (page + 2) * count >= noticeCnt;
+    private void validatePaging(int page, int cnt) {
+        Long num = noticeRepository.findNoticeCount();
+        int limit = (page - 1) * cnt;
+        if (page != 1 && num<=limit) {
+            throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");
+        }
     }
 
     public Boolean isMine(Notice notice, Long accountId) {
