@@ -31,6 +31,9 @@ public class Account extends BaseEntity {
     private String username;
     private String password;
 
+    private String lineName;
+    private String houseName;
+
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.ROLE_NOT_SIGNED;
 
@@ -42,5 +45,8 @@ public class Account extends BaseEntity {
         this.username = username;
         this.password = password;
         this.role = role;
+
+        this.lineName = line.getName();
+        this.houseName = house.getName();
     }
 }

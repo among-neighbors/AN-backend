@@ -27,7 +27,6 @@ public class AccountController {
     @Operation(summary = "프로필 목록 조회")
     @GetMapping("/api/v1/accounts/profiles")
     public ApiSuccessResult<ProfileListResponse> accountProfileList(HttpServletRequest req) throws RuntimeException {
-
         List<Profile> profiles = accountService
                 .findProfilesByAccountId((Long)req.getAttribute("accountId"));
 
@@ -35,7 +34,6 @@ public class AccountController {
     }
 
     @ProfileRequired
-    @Cacheable(key = "#req.getAttribute('profileId')", cacheNames = "profile")
     @Operation(summary = "내 프로필 조회")
     @GetMapping("/api/v1/profiles/me")
     public ApiSuccessResult<ProfileDTO> myProfile(HttpServletRequest req) throws RuntimeException {
