@@ -14,8 +14,10 @@ import java.time.LocalDateTime;
 public class ProfileDTO {
     private Long id;
     private String name;
-    private int age;
+    private Integer age;
     private Gender gender;
+    private String lineName;
+    private String houseName;
     private LocalDateTime createdDate;
 
     public ProfileDTO(Profile profile) {
@@ -24,5 +26,8 @@ public class ProfileDTO {
         this.age = profile.getAge();
         this.gender = profile.getGender();
         this.createdDate = profile.getCreatedDate();
+
+        this.lineName = profile.getAccount().getLineName();
+        this.houseName = profile.getAccount().getHouseName();
     }
 }
