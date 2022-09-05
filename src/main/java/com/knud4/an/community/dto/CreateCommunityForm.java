@@ -1,7 +1,7 @@
 package com.knud4.an.community.dto;
 
 import com.knud4.an.community.entity.Category;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,6 @@ public class CreateCommunityForm {
     private Category category;
 
     @NotNull
-    private Range range;
+    private Scope scope;
 
 }

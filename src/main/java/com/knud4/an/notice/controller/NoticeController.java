@@ -2,7 +2,7 @@ package com.knud4.an.notice.controller;
 
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.annotation.ProfileRequired;
 import com.knud4.an.notice.dto.CreateNoticeForm;
@@ -46,11 +46,11 @@ public class NoticeController {
     @GetMapping("/api/v1/notices")
     public ApiSuccessResult<NoticeListDTO> findAll(@RequestParam(name = "page") int page,
                                                    @RequestParam(name = "count") int count,
-                                                   @RequestParam(name = "range") Range range,
+                                                   @RequestParam(name = "scope") Scope scope,
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
         List<Notice> noticeList;
-        if(range.equals(Range.LINE))
+        if(scope.equals(Scope.LINE))
             noticeList = noticeService.findAllMyLine(page, count, accountId);
         else noticeList = noticeService.findAll(page, count, accountId);
         return ApiUtil.success(new NoticeListDTO(noticeService.isFirstPage(page),

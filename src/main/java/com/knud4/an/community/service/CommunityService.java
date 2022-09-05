@@ -10,7 +10,7 @@ import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.community.repository.CommunityRepository;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
@@ -39,8 +39,8 @@ public class CommunityService {
                 .title(form.getTitle())
                 .content(form.getContent())
                 .category(form.getCategory())
-                .range(form.getRange())
-                .likes(0L)
+                .scope(form.getScope())
+                .like(0L)
                 .build();
         communityRepository.save(community);
         return community.getId();
@@ -49,7 +49,7 @@ public class CommunityService {
     public Community findCommunityById(Long communityId, Long accountId) {
         Community findCommunity = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
-        if(findCommunity.getRange() == Range.LINE) {
+        if(findCommunity.getScope() == Scope.LINE) {
             Account account = accountRepository.findAccountById(accountId);
             if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
@@ -61,8 +61,8 @@ public class CommunityService {
     public List<Community> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
         if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count);
-        List<Community> findCommunities = communityRepository.findByRange(Range.ALL, page, count);
-        findCommunities.addAll(communityRepository.findByRangeAndLine(Range.LINE, account.getLine().getName(), page, count));
+        List<Community> findCommunities = communityRepository.findByScope(Scope.ALL, page, count);
+        findCommunities.addAll(communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count));
         return findCommunities;
     }
 
@@ -76,8 +76,8 @@ public class CommunityService {
         if(account.getRole().equals(Role.ROLE_MANAGER)) {
             return communityRepository.findByCategory(category, page, count);
         }
-        List<Community> findCommunities = communityRepository.findByRangeAndCategory(Range.ALL, category, page, count);
-        findCommunities.addAll(communityRepository.findByRangeAndLineAndCategory(Range.LINE, account.getLine().getName(), category, page, count));
+        List<Community> findCommunities = communityRepository.findByScopeAndCategory(Scope.ALL, category, page, count);
+        findCommunities.addAll(communityRepository.findByScopeAndLineAndCategory(Scope.LINE, account.getLine().getName(), category, page, count));
         return findCommunities;
     }
 
@@ -108,7 +108,7 @@ public class CommunityService {
         community.changeTitle(communityDTO.getTitle());
         community.changeContent(communityDTO.getContent());
         community.changeCategory(communityDTO.getCategory());
-        community.changeRange(communityDTO.getRange());
+        community.changeScope(communityDTO.getScope());
     }
 
     @Transactional

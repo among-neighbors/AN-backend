@@ -1,6 +1,6 @@
 package com.knud4.an.notice.repository;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.notice.entity.Notice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -47,17 +47,17 @@ public class NoticeRepository {
                 .getResultList();
     }
 
-    public List<Notice> findByRange(Range range, int page, int count) {
-        return em.createQuery("select n from Notice n where n.range = :range order by n.id desc", Notice.class)
-                .setParameter("range", range)
+    public List<Notice> findByScope(Scope scope, int page, int count) {
+        return em.createQuery("select n from Notice n where n.scope = :scope order by n.id desc", Notice.class)
+                .setParameter("scope", scope)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Notice> findByRangeAndLine(Range range, String releaseLine, int page, int count) {
-        return em.createQuery("select n from Notice n where n.range = :range and n.releaseLine = :releaseLine order by n.id desc", Notice.class)
-                .setParameter("range", range)
+    public List<Notice> findByScopeAndLine(Scope scope, String releaseLine, int page, int count) {
+        return em.createQuery("select n from Notice n where n.scope = :scope and n.releaseLine = :releaseLine order by n.id desc", Notice.class)
+                .setParameter("scope", scope)
                 .setParameter("releaseLine", releaseLine)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)

@@ -1,6 +1,6 @@
 package com.knud4.an.notice.dto;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.notice.entity.Notice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +23,14 @@ public class NoticeDTO {
 
     private LocalDateTime expiredDate;
 
-    private Range range;
+    private Scope scope;
 
     private LocalDateTime createdDate;
 
     private Writer writer;
 
     private String releaseLine;
+
 
     private Boolean isMine;
 
@@ -38,7 +39,7 @@ public class NoticeDTO {
         this.title = notice.getTitle();
         this.content = notice.getContent();
         this.expiredDate = notice.getExpiredDate();
-        this.range = notice.getRange();
+        this.scope = notice.getScope();
         this.createdDate = notice.getCreatedDate();
         this.releaseLine = notice.getReleaseLine();
         this.writer = new Writer(notice.getWriter().getId(),

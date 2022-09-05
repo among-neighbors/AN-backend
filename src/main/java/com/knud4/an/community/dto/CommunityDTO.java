@@ -1,7 +1,6 @@
 package com.knud4.an.community.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,7 @@ public class CommunityDTO {
 
     private Category category;
 
-    private Range range;
+    private Scope scope;
 
     private Writer writer;
 
@@ -41,13 +40,13 @@ public class CommunityDTO {
         this.title = community.getTitle();
         this.content = community.getContent();
         this.category = community.getCategory();
-        this.range = community.getRange();
+        this.scope = community.getScope();
         this.writer = new Writer(community.getWriter().getId(),
                 community.getWriter().getName(),
                 community.getWriterLineName(),
                 community.getWriterHouseName());
         this.createdDate = community.getCreatedDate();
-        this.like = community.getLikes();
+        this.like = community.getLike();
     }
 
     public static List<CommunityDTO> entityListToDTOList(List<Community> communities) {

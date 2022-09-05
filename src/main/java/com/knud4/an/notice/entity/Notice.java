@@ -2,7 +2,7 @@ package com.knud4.an.notice.entity;
 
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.board.Board;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,11 +20,11 @@ public class Notice extends Board {
     private String releaseLine;
 
     @Builder
-    public Notice(String title, String content, Profile writer, Range range, LocalDateTime expiredDate, String releaseLine) {
+    public Notice(String title, String content, Profile writer, Scope scope, LocalDateTime expiredDate, String releaseLine) {
         this.setContent(content);
         this.setTitle(title);
         this.setWriter(writer);
-        this.setRange(range);
+        this.setScope(scope);
 
         this.expiredDate = expiredDate;
         this.releaseLine = releaseLine;

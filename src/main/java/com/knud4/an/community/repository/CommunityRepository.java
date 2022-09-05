@@ -1,6 +1,6 @@
 package com.knud4.an.community.repository;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
 import lombok.RequiredArgsConstructor;
@@ -48,17 +48,17 @@ public class CommunityRepository {
                 .getResultList();
     }
 
-    public List<Community> findByRange(Range range, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range order by c.id desc", Community.class)
-                .setParameter("range", range)
+    public List<Community> findByScope(Scope scope, int page, int count) {
+        return em.createQuery("select c from Community c where c.scope = :scope order by c.id desc", Community.class)
+                .setParameter("scope", scope)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Community> findByRangeAndLine(Range range, String lineName, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range and c.writerLineName = :lineName order by c.id desc", Community.class)
-                .setParameter("range", range)
+    public List<Community> findByScopeAndLine(Scope scope, String lineName, int page, int count) {
+        return em.createQuery("select c from Community c where c.scope = :scope and c.writerLineName = :lineName order by c.id desc", Community.class)
+                .setParameter("scope", scope)
                 .setParameter("lineName", lineName)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
@@ -73,18 +73,18 @@ public class CommunityRepository {
                 .getResultList();
     }
 
-    public List<Community> findByRangeAndCategory(Range range, Category category, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range and c.category = :category order by c.id desc", Community.class)
-                .setParameter("range", range)
+    public List<Community> findByScopeAndCategory(Scope scope, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.scope = :scope and c.category = :category order by c.id desc", Community.class)
+                .setParameter("scope", scope)
                 .setParameter("category", category)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
     }
 
-    public List<Community> findByRangeAndLineAndCategory(Range range, String lineName, Category category, int page, int count) {
-        return em.createQuery("select c from Community c where c.range = :range and c.writerLineName = :lineName and c.category = :category order by c.id desc", Community.class)
-                .setParameter("range", range)
+    public List<Community> findByScopeAndLineAndCategory(Scope scope, String lineName, Category category, int page, int count) {
+        return em.createQuery("select c from Community c where c.scope = :scope and c.writerLineName = :lineName and c.category = :category order by c.id desc", Community.class)
+                .setParameter("scope", scope)
                 .setParameter("lineName", lineName)
                 .setParameter("category", category)
                 .setFirstResult((page-1)*count)

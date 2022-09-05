@@ -1,5 +1,5 @@
 package com.knud4.an.board;
 
-public enum Range {
+public enum Scope {
     ALL, LINE
 }
