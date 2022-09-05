@@ -23,13 +23,13 @@ public class CommunityCommentRepository {
     }
 
     public List<CommunityComment> findAllByCommunityId(Long communityId) {
-        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
+        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId order by c.id desc", CommunityComment.class)
                 .setParameter("communityId", communityId)
                 .getResultList();
     }
 
     public List<CommunityComment> findAllByCommunityId(Long communityId, int page, int count) {
-        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId", CommunityComment.class)
+        return em.createQuery("select c from CommunityComment c where c.community.id = :communityId order by c.id desc", CommunityComment.class)
                 .setParameter("communityId", communityId)
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)

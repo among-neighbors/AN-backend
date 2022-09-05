@@ -4,7 +4,7 @@ import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.notice.dto.CreateNoticeForm;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class NoticeService {
                 .writer(writer)
                 .title(form.getTitle())
                 .content(form.getContent())
-                .range(form.getRange())
+                .scope(form.getScope())
                 .releaseLine(form.getReleaseLine())
                 .expiredDate(form.getExpiredDate())
                 .build();
@@ -42,7 +43,7 @@ public class NoticeService {
     public Notice findNoticeById(Long noticeId, Long accountId) {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
-        if(findNotice.getRange() == Range.LINE) {
+        if(findNotice.getScope() == Scope.LINE) {
             Account account = accountRepository.findAccountById(accountId);
             if(!account.getLine().getName().equals(findNotice.getReleaseLine())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
@@ -53,16 +54,17 @@ public class NoticeService {
 
     public List<Notice> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count);
+        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
 
-        List<Notice> findNotices = noticeRepository.findByRange(Range.ALL, page, count);
-        findNotices.addAll(noticeRepository.findByRangeAndLine(Range.LINE, account.getLine().getName(), page, count));
+        List<Notice> findNotices = noticeRepository.findByScope(Scope.ALL, page, count, false);
+        findNotices.addAll(noticeRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
+        findNotices.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return findNotices;
     }
 
     public List<Notice> findAllMyLine(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        return noticeRepository.findByLine(account.getLine().getName(), page, count);
+        return noticeRepository.findByLine(account.getLine().getName(), page, count, true);
     }
 
     @Transactional
@@ -71,7 +73,7 @@ public class NoticeService {
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
         notice.changeTitle(noticeDTO.getTitle());
         notice.changeContent(noticeDTO.getContent());
-        notice.changeRange(noticeDTO.getRange());
+        notice.changeScope(noticeDTO.getScope());
         notice.changeExpiredDate(noticeDTO.getExpiredDate());
         notice.changeReleaseLine(noticeDTO.getReleaseLine());
     }
@@ -90,5 +92,9 @@ public class NoticeService {
     public Boolean isLastPage(int page, int count) {
         Long noticeCnt = noticeRepository.findNoticeCount();
         return (long) (page + 2) * count >= noticeCnt;
+    }
+
+    public Boolean isMine(Notice notice, Long accountId) {
+        return Objects.equals(notice.getWriter().getAccount().getId(), accountId);
     }
 }

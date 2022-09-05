@@ -1,6 +1,6 @@
 package com.knud4.an.notice.dto;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.notice.entity.Notice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,28 +23,39 @@ public class NoticeDTO {
 
     private LocalDateTime expiredDate;
 
-    private Range range;
+    private Scope scope;
 
     private LocalDateTime createdDate;
 
-    private String writer;
+    private Writer writer;
 
     private String releaseLine;
+
+
+    private Boolean isMine;
 
     public NoticeDTO(Notice notice) {
         this.id = notice.getId();
         this.title = notice.getTitle();
         this.content = notice.getContent();
         this.expiredDate = notice.getExpiredDate();
-        this.range = notice.getRange();
+        this.scope = notice.getScope();
         this.createdDate = notice.getCreatedDate();
         this.releaseLine = notice.getReleaseLine();
-        this.writer = notice.getWriter().getName();
+        this.writer = new Writer(notice.getWriter().getId(),
+                notice.getWriter().getName());
     }
 
     public static List<NoticeDTO> entityListToDTOList(List<Notice> notices) {
         List<NoticeDTO> noticeDTOList = new ArrayList<>();
         for(Notice notice : notices) noticeDTOList.add(new NoticeDTO(notice));
         return noticeDTOList;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Writer {
+        Long id;
+        String name;
     }
 }

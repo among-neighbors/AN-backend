@@ -1,6 +1,6 @@
 package com.knud4.an.notice.dto;
 
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class CreateNoticeForm {
     private LocalDateTime expiredDate;
 
     @NotNull
-    private Range range;
+    private Scope scope;
 
     private String releaseLine;
 }

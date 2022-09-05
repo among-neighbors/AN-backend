@@ -2,11 +2,12 @@ package com.knud4.an.community.controller;
 
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
-import com.knud4.an.board.Range;
+import com.knud4.an.board.Scope;
 import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CommunityListDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
+import com.knud4.an.community.entity.Community;
 import com.knud4.an.community.service.CommunityService;
 import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.annotation.ProfileRequired;
@@ -46,18 +47,18 @@ public class CommunityController {
     @GetMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAll(@RequestParam(name = "page") int page,
                                                               @RequestParam(name = "count") int count,
-                                                              @RequestParam(name = "range") Range range,
+                                                              @RequestParam(name = "scope") Scope scope,
                                                               @RequestParam(name = "category") Category category,
                                                               HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
         List<CommunityDTO> communityDTOList;
         if (category.equals(Category.ALL)) {
-            if (range.equals(Range.LINE))
+            if (scope.equals(Scope.LINE))
                 communityDTOList = CommunityDTO.entityListToDTOList(communityService.findAllMyLine(page, count, accountId));
             else
                 communityDTOList = CommunityDTO.entityListToDTOList(communityService.findAll(page, count, accountId));
         } else {
-            if (range.equals(Range.LINE))
+            if (scope.equals(Scope.LINE))
                 communityDTOList = CommunityDTO.entityListToDTOList(communityService.findMyLineByCategory(category, page, count, accountId));
             else
                 communityDTOList = CommunityDTO.entityListToDTOList(communityService.findByCategory(category, page, count, accountId));
@@ -85,7 +86,10 @@ public class CommunityController {
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        return ApiUtil.success(new CommunityDTO(communityService.findCommunityById(id, accountId)));
+        Community community = communityService.findCommunityById(id, accountId);
+        CommunityDTO communityDTO = new CommunityDTO(community);
+        communityDTO.setIsMine(communityService.isMine(community, accountId));
+        return ApiUtil.success(communityDTO);
     }
 
     @ProfileRequired
