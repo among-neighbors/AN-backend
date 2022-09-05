@@ -42,6 +42,7 @@ public class ReportCommentService {
     }
 
     public List<ReportComment> findAllByReportId(int page, int count, Long reportId) {
+        validatePaging(page, count, reportId);
         return commentRepository.findAllByReportId(reportId, page, count);
     }
 
@@ -52,13 +53,22 @@ public class ReportCommentService {
         );
     }
 
+    public Boolean isLastPage(int page, int cnt, Long reportId) {
+        validatePaging(page, cnt, reportId);
+        Long commentCnt = commentRepository.findCommentCountByReportId(reportId);
+        return (long) page*cnt >= commentCnt;
+    }
+
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    public Boolean isLastPage(int page, int count, Long reportId) {
-        Long commentCnt = commentRepository.findCommentCountByReportId(reportId);
-        return (long) (page + 2) * count >= commentCnt;
+    private void validatePaging(int page, int cnt, Long reportId) {
+        Long num = commentRepository.findCommentCountByReportId(reportId);
+        int limit = (page - 1) * cnt;
+        if (page != 1 && num<=limit) {
+            throw new IllegalStateException("댓글 요청 범위를 초과하였습니다.");
+        }
     }
 
 }

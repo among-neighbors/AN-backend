@@ -35,6 +35,7 @@ public class CommunityCommentService {
     }
 
     public List<CommunityComment> findAllByCommunityId(int page, int count, Long communityId) {
+        validatePaging(page, count, communityId);
         communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         return commentRepository.findAllByCommunityId(communityId, page, count);
@@ -47,13 +48,22 @@ public class CommunityCommentService {
         );
     }
 
+    public Boolean isLastPage(int page, int cnt, Long communityId) {
+        validatePaging(page, cnt, communityId);
+        Long commentCnt = commentRepository.findCommentCountByCommunityId(communityId);
+        return (long) page*cnt >= commentCnt;
+    }
+
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    public Boolean isLastPage(int page, int count, Long communityId) {
-        Long commentCnt = commentRepository.findCommentCountByCommunityId(communityId);
-        return (long) (page + 2) * count >= commentCnt;
+    private void validatePaging(int page, int cnt, Long communityId) {
+        Long num = commentRepository.findCommentCountByCommunityId(communityId);
+        int limit = (page - 1) * cnt;
+        if (page != 1 && num<=limit) {
+            throw new IllegalStateException("댓글 요청 범위를 초과하였습니다.");
+        }
     }
 
 }
