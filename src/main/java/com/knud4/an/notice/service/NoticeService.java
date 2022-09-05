@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -90,5 +91,9 @@ public class NoticeService {
     public Boolean isLastPage(int page, int count) {
         Long noticeCnt = noticeRepository.findNoticeCount();
         return (long) (page + 2) * count >= noticeCnt;
+    }
+
+    public Boolean isMine(Notice notice, Long accountId) {
+        return Objects.equals(notice.getWriter().getAccount().getId(), accountId);
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -131,5 +132,9 @@ public class CommunityService {
         List<CommunityComment> comments = commentRepository.findAllByCommunityId(id);
         for(CommunityComment comment : comments) commentRepository.delete(comment);
         communityRepository.delete(community);
+    }
+
+    public Boolean isMine(Community community, Long accountId) {
+        return Objects.equals(community.getWriter().getAccount().getId(), accountId);
     }
 }

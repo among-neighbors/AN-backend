@@ -27,9 +27,11 @@ public class NoticeDTO {
 
     private LocalDateTime createdDate;
 
-    private String writer;
+    private Writer writer;
 
     private String releaseLine;
+
+    private Boolean isMine;
 
     public NoticeDTO(Notice notice) {
         this.id = notice.getId();
@@ -39,12 +41,20 @@ public class NoticeDTO {
         this.range = notice.getRange();
         this.createdDate = notice.getCreatedDate();
         this.releaseLine = notice.getReleaseLine();
-        this.writer = notice.getWriter().getName();
+        this.writer = new Writer(notice.getWriter().getId(),
+                notice.getWriter().getName());
     }
 
     public static List<NoticeDTO> entityListToDTOList(List<Notice> notices) {
         List<NoticeDTO> noticeDTOList = new ArrayList<>();
         for(Notice notice : notices) noticeDTOList.add(new NoticeDTO(notice));
         return noticeDTOList;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Writer {
+        Long id;
+        String name;
     }
 }

@@ -64,7 +64,10 @@ public class NoticeController {
     public ApiSuccessResult<NoticeDTO> findById(@PathVariable(name = "id") Long id,
                                                 HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        return ApiUtil.success(new NoticeDTO(noticeService.findNoticeById(id, accountId)));
+        Notice notice = noticeService.findNoticeById(id, accountId);
+        NoticeDTO noticeDTO = new NoticeDTO(notice);
+        noticeDTO.setIsMine(noticeService.isMine(notice, accountId));
+        return ApiUtil.success(new NoticeDTO());
     }
 
     @Operation(summary = "공지사항 수정")

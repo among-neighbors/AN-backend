@@ -7,6 +7,7 @@ import com.knud4.an.community.dto.CommunityDTO;
 import com.knud4.an.community.dto.CommunityListDTO;
 import com.knud4.an.community.dto.CreateCommunityForm;
 import com.knud4.an.community.entity.Category;
+import com.knud4.an.community.entity.Community;
 import com.knud4.an.community.service.CommunityService;
 import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.annotation.ProfileRequired;
@@ -85,7 +86,10 @@ public class CommunityController {
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        return ApiUtil.success(new CommunityDTO(communityService.findCommunityById(id, accountId)));
+        Community community = communityService.findCommunityById(id, accountId);
+        CommunityDTO communityDTO = new CommunityDTO(community);
+        communityDTO.setIsMine(communityService.isMine(community, accountId));
+        return ApiUtil.success(communityDTO);
     }
 
     @ProfileRequired

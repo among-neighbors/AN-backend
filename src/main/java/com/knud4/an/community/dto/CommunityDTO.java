@@ -33,13 +33,17 @@ public class CommunityDTO {
 
     private Long like;
 
+
+    private Boolean isMine;
+
     public CommunityDTO(Community community) {
         this.id = community.getId();
         this.title = community.getTitle();
         this.content = community.getContent();
         this.category = community.getCategory();
         this.range = community.getRange();
-        this.writer = new Writer(community.getWriter().getName(),
+        this.writer = new Writer(community.getWriter().getId(),
+                community.getWriter().getName(),
                 community.getWriterLineName(),
                 community.getWriterHouseName());
         this.createdDate = community.getCreatedDate();
@@ -55,6 +59,7 @@ public class CommunityDTO {
     @Data
     @AllArgsConstructor
     private static class Writer {
+        Long id;
         String name, lineName, houseName;
     }
 }
