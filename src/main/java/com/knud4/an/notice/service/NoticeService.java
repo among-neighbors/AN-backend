@@ -54,16 +54,17 @@ public class NoticeService {
 
     public List<Notice> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count);
+        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
 
-        List<Notice> findNotices = noticeRepository.findByScope(Scope.ALL, page, count);
-        findNotices.addAll(noticeRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count));
+        List<Notice> findNotices = noticeRepository.findByScope(Scope.ALL, page, count, false);
+        findNotices.addAll(noticeRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
+        findNotices.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return findNotices;
     }
 
     public List<Notice> findAllMyLine(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        return noticeRepository.findByLine(account.getLine().getName(), page, count);
+        return noticeRepository.findByLine(account.getLine().getName(), page, count, true);
     }
 
     @Transactional

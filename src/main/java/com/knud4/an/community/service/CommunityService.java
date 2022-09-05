@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,34 +61,36 @@ public class CommunityService {
 
     public List<Community> findAll(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count);
-        List<Community> findCommunities = communityRepository.findByScope(Scope.ALL, page, count);
-        findCommunities.addAll(communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count));
+        if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count, true);
+        List<Community> findCommunities = communityRepository.findByScope(Scope.ALL, page, count, false);
+        findCommunities.addAll(communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
+        findCommunities.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return findCommunities;
     }
 
     public List<Community> findAllMyLine(int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByLine(account.getLine().getName(), page, count);
+        return communityRepository.findByLine(account.getLine().getName(), page, count, false);
     }
 
     public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
         if(account.getRole().equals(Role.ROLE_MANAGER)) {
-            return communityRepository.findByCategory(category, page, count);
+            return communityRepository.findByCategory(category, page, count, true);
         }
-        List<Community> findCommunities = communityRepository.findByScopeAndCategory(Scope.ALL, category, page, count);
-        findCommunities.addAll(communityRepository.findByScopeAndLineAndCategory(Scope.LINE, account.getLine().getName(), category, page, count));
+        List<Community> findCommunities = communityRepository.findByScopeAndCategory(Scope.ALL, category, page, count, false);
+        findCommunities.addAll(communityRepository.findByScopeAndLineAndCategory(Scope.LINE, account.getLine().getName(), category, page, count, false));
+        findCommunities.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
         return findCommunities;
     }
 
     public List<Community> findMyLineByCategory(Category category, int page, int count, Long accountId) {
         Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByLineAndCategory(account.getLine().getName(), category, page, count);
+        return communityRepository.findByLineAndCategory(account.getLine().getName(), category, page, count, true);
     }
 
     public List<Community> findAllMine(int page, int count, Long profileId) {
-        return communityRepository.findAllMine(profileId, page, count);
+        return communityRepository.findAllMine(profileId, page, count, true);
     }
 
     public Boolean isFirstPage(int page) {
