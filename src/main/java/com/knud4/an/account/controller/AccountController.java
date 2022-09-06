@@ -24,7 +24,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @AccountRequired
-    @Operation(summary = "프로필 목록 조회")
+    @Operation(summary = "프로필 목록 조회", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/accounts/profiles")
     public ApiSuccessResult<ProfileListResponse> accountProfileList(HttpServletRequest req) throws RuntimeException {
         List<Profile> profiles = accountService
@@ -34,7 +34,7 @@ public class AccountController {
     }
 
     @ProfileRequired
-    @Operation(summary = "내 프로필 조회")
+    @Operation(summary = "내 프로필 조회", description = "profile token이 필요합니다.")
     @GetMapping("/api/v1/profiles/me")
     public ApiSuccessResult<ProfileDTO> myProfile(HttpServletRequest req) throws RuntimeException {
 

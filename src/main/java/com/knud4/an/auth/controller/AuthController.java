@@ -103,7 +103,7 @@ public class AuthController {
     }
 
     @AccountRequired
-    @Operation(summary = "프로필 추가")
+    @Operation(summary = "프로필 추가", description = "account token이 필요합니다.")
     @PostMapping("/api/v1/auth/profiles/new")
     public ApiSuccessResult<AddProfileResponse> addProfile(
             @RequestBody @Valid AddProfileForm form,
@@ -117,7 +117,7 @@ public class AuthController {
     }
 
     @AccountRequired
-    @Operation(summary = "프로필 로그인")
+    @Operation(summary = "프로필 로그인", description = "account token이 필요합니다.")
     @PostMapping("/api/v1/auth/profiles/login")
     public ApiSuccessResult<SignInProfileResponse> signInProfile(
             @RequestBody @Valid SignInProfileForm form,

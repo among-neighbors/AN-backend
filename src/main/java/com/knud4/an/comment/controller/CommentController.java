@@ -28,7 +28,7 @@ public class CommentController {
     private final AccountService accountService;
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티 댓글 생성")
+    @Operation(summary = "커뮤니티 댓글 생성", description = "profile token이 필요합니다.")
     @PostMapping("/api/v1/comments/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunityComment(@Valid @RequestBody CreateCommentForm form,
                                                                  HttpServletRequest req) {
@@ -39,7 +39,7 @@ public class CommentController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티 댓글 조회 (community_id)")
+    @Operation(summary = "커뮤니티 댓글 조회 (community_id)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByCommunityId(@PathVariable(name = "id") Long id,
                                                                          @RequestParam(name = "page") int page,
@@ -53,7 +53,7 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티 댓글 삭제")
+    @Operation(summary = "커뮤니티 댓글 삭제", description = "profile token이 필요합니다.")
     @DeleteMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteCommunityComment(@PathVariable(name = "id") Long id) {
         communityCommentService.deleteById(id);
@@ -61,7 +61,7 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "민원 댓글 생성")
+    @Operation(summary = "민원 댓글 생성", description = "profile token이 필요합니다.")
     @PostMapping("/api/v1/comments/reports")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
                                                               HttpServletRequest req) {
@@ -72,7 +72,7 @@ public class CommentController {
     }
 
     @AccountRequired
-    @Operation(summary = "민원 댓글 조회 (report_id)")
+    @Operation(summary = "민원 댓글 조회 (report_id)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByReportId(@PathVariable Long id,
                                                                       @RequestParam int page,
@@ -86,7 +86,7 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "민원 댓글 삭제")
+    @Operation(summary = "민원 댓글 삭제", description = "profile token이 필요합니다.")
     @DeleteMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteReportComment(@PathVariable(name = "id") Long id) {
         reportCommentService.deleteById(id);

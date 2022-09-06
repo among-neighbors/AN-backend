@@ -18,7 +18,7 @@ import javax.validation.Valid;
 public class HouseController {
     private final HouseService houseService;
 
-    @Operation(summary = "세대 추가")
+    @Operation(summary = "세대 추가", description = "account token이 필요합니다.")
     @PostMapping("/api/v1/manager/houses/new")
     public ApiSuccessResult<Long> createHouse(@RequestBody @Valid CreateHouseForm form) {
         Long houseId = houseService.createHouse(form);

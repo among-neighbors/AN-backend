@@ -21,7 +21,7 @@ public class LineController {
     private final LineService lineService;
     private final JwtProvider jwtProvider;
 
-    @Operation(summary = "라인 추가")
+    @Operation(summary = "라인 추가", description = "account token이 필요합니다.")
     @PostMapping("/api/v1/manager/lines/new")
     public ApiSuccessResult<CreateLineResponse> createLine
             (@Valid @RequestBody CreateLineForm form) throws RuntimeException{

@@ -31,7 +31,7 @@ public class NoticeController {
     private final AccountService accountService;
 
     @ProfileRequired
-    @Operation(summary = "공지사항 생성")
+    @Operation(summary = "공지사항 생성", description = "profile token이 필요합니다.")
     @PostMapping("/api/v1/manager/notices")
     public ApiSuccessResult<Long> createNotice(@Valid @RequestBody CreateNoticeForm form,
                                                HttpServletRequest req) {
@@ -42,7 +42,7 @@ public class NoticeController {
     }
 
     @AccountRequired
-    @Operation(summary = "공지사항 전체 조회")
+    @Operation(summary = "공지사항 전체 조회", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/notices")
     public ApiSuccessResult<NoticeListDTO> findAll(@RequestParam(name = "page") int page,
                                                    @RequestParam(name = "count") int count,
@@ -59,7 +59,7 @@ public class NoticeController {
     }
 
     @AccountRequired
-    @Operation(summary = "공지사항 상세 조회 (id)")
+    @Operation(summary = "공지사항 상세 조회 (id)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/notices/{id}")
     public ApiSuccessResult<NoticeDTO> findById(@PathVariable(name = "id") Long id,
                                                 HttpServletRequest req) {
@@ -79,7 +79,7 @@ public class NoticeController {
     }
 
     @AccountRequired
-    @Operation(summary = "공지사항 삭제")
+    @Operation(summary = "공지사항 삭제", description = "account token이 필요합니다.")
     @DeleteMapping("/api/v1/manager/notices/{id}")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id) {
         noticeService.deleteById(id);

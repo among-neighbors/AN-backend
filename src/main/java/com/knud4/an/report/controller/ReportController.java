@@ -28,7 +28,7 @@ public class ReportController {
     private final AccountService accountService;
 
     @AccountRequired
-    @Operation(summary = "민원 생성")
+    @Operation(summary = "민원 생성", description = "account token이 필요합니다.")
     @PostMapping("/api/v1/reports/new")
     public ApiSuccessResult<Long> createReport(@Valid @RequestBody CreateReportForm form,
                                                HttpServletRequest req) {
@@ -51,7 +51,7 @@ public class ReportController {
     }
 
     @AccountRequired
-    @Operation(summary = "민원 전체 조회 (계정)")
+    @Operation(summary = "민원 전체 조회 (계정)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/reports")
     public ApiSuccessResult<?> findByAccountId(@RequestParam(name = "page") int page,
                                                              @RequestParam(name = "count") int count,
@@ -66,7 +66,7 @@ public class ReportController {
     }
 
     @AccountRequired
-    @Operation(summary = "민원 상세 조회 (id)")
+    @Operation(summary = "민원 상세 조회 (id)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/reports/{id}")
     public ApiSuccessResult<ReportDTO> findById(@PathVariable(name = "id") Long id,
                                                 HttpServletRequest req) {

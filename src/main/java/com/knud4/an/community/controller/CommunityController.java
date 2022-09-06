@@ -32,7 +32,7 @@ public class CommunityController {
     private final AccountService accountService;
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 생성")
+    @Operation(summary = "커뮤니티글 생성", description = "profile token이 필요합니다.")
     @PostMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunity(@Valid @RequestBody CreateCommunityForm form,
                                                           HttpServletRequest req) {
@@ -43,7 +43,7 @@ public class CommunityController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티글 전체 조회")
+    @Operation(summary = "커뮤니티글 전체 조회", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAll(@RequestParam(name = "page") int page,
                                                               @RequestParam(name = "count") int count,
@@ -69,7 +69,7 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "내 커뮤니티글 전체 조회")
+    @Operation(summary = "내 커뮤니티글 전체 조회", description = "profile token이 필요합니다.")
     @GetMapping("/api/v1/communities/me")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAllMine(@RequestParam(name = "page") int page,
                                                                     @RequestParam(name = "count") int count,
@@ -81,7 +81,7 @@ public class CommunityController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티글 상세 조회 (id)")
+    @Operation(summary = "커뮤니티글 상세 조회 (id)", description = "account token이 필요합니다.")
     @GetMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
                                                    HttpServletRequest req) {
@@ -93,7 +93,7 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 수정")
+    @Operation(summary = "커뮤니티글 수정", description = "profile token이 필요합니다.")
     @PutMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<Long> updateById(@PathVariable Long id,
                                              @Valid @RequestBody CommunityDTO communityDTO,
@@ -104,7 +104,7 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 좋아요")
+    @Operation(summary = "커뮤니티글 좋아요", description = "profile token이 필요합니다.")
     @PutMapping("/api/v1/communities/{id}/like")
     public ApiSuccessResult<String> updateLike(@PathVariable Long id,
                                                HttpServletRequest req) {
@@ -114,7 +114,7 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 삭제")
+    @Operation(summary = "커뮤니티글 삭제", description = "profile token이 필요합니다.")
     @DeleteMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
                                                HttpServletRequest req) {
