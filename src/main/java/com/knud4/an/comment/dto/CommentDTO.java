@@ -26,6 +26,8 @@ public class CommentDTO {
 
     private Writer writer;
 
+    private Boolean isMine;
+
     public CommentDTO(Comment comment, Long id) {
         this.id = id;
         this.text = comment.getText();
@@ -36,15 +38,25 @@ public class CommentDTO {
                 account.getHouse().getName());
     }
 
-    public static List<CommentDTO> makeCommunityCommentList(List<CommunityComment> comments) {
+    public static List<CommentDTO> makeCommunityCommentList(List<CommunityComment> comments,
+                                                            Long accountId) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(CommunityComment comment : comments) commentDTOList.add(new CommentDTO(comment, comment.getId()));
+        for (CommunityComment comment : comments) {
+            CommentDTO commentDTO = new CommentDTO(comment, comment.getId());
+            commentDTO.setIsMine(comment.getWriter().getAccount().getId().equals(accountId));
+            commentDTOList.add(commentDTO);
+        }
         return commentDTOList;
     }
 
-    public static List<CommentDTO> makeReportCommentList(List<ReportComment> comments) {
+    public static List<CommentDTO> makeReportCommentList(List<ReportComment> comments,
+                                                         Long accountId) {
         List<CommentDTO> commentDTOList = new ArrayList<>();
-        for(ReportComment comment : comments) commentDTOList.add(new CommentDTO(comment, comment.getId()));
+        for(ReportComment comment : comments) {
+            CommentDTO commentDTO  = new CommentDTO(comment, comment.getId());
+            commentDTO.setIsMine(comment.getWriter().getAccount().getId().equals(accountId));
+            commentDTOList.add(commentDTO);
+        }
         return commentDTOList;
     }
 
