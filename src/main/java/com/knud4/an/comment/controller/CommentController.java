@@ -43,10 +43,13 @@ public class CommentController {
     @GetMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByCommunityId(@PathVariable(name = "id") Long id,
                                                                          @RequestParam(name = "page") int page,
-                                                                         @RequestParam(name = "count") int count) {
+                                                                         @RequestParam(name = "count") int count,
+                                                                         HttpServletRequest req) {
+        Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new CommentListDTO(communityCommentService.isFirstPage(page),
                 communityCommentService.isLastPage(page, count, id),
-                CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id))));
+                CommentDTO.makeCommunityCommentList(communityCommentService.findAllByCommunityId(page, count, id),
+                        accountId)));
     }
 
     @ProfileRequired
@@ -72,11 +75,14 @@ public class CommentController {
     @Operation(summary = "민원 댓글 조회 (report_id)")
     @GetMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByReportId(@PathVariable Long id,
-                                                                        @RequestParam int page,
-                                                                        @RequestParam int count) {
+                                                                      @RequestParam int page,
+                                                                      @RequestParam int count,
+                                                                      HttpServletRequest req) {
+        Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new CommentListDTO(reportCommentService.isFirstPage(page),
                 reportCommentService.isLastPage(page, count, id),
-                CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id))));
+                CommentDTO.makeReportCommentList(reportCommentService.findAllByReportId(page, count, id),
+                        accountId)));
     }
 
     @ProfileRequired
