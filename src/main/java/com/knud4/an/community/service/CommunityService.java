@@ -72,7 +72,7 @@ public class CommunityService {
     public List<Community> findAllMyLine(int page, int count, Long accountId) {
         validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByLine(account.getLine().getName(), page, count, false);
+        return communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false);
     }
 
     public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
