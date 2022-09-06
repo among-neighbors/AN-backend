@@ -52,7 +52,8 @@ public class CommunityService {
                 .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         if(findCommunity.getScope() == Scope.LINE) {
             Account account = accountRepository.findAccountById(accountId);
-            if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {
+            if(account.getRole() != Role.ROLE_MANAGER &&
+                    !findCommunity.getWriterLineName().equals(account.getLine().getName())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
             }
         }
