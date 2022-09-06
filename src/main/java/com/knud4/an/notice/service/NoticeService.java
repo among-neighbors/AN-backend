@@ -45,7 +45,8 @@ public class NoticeService {
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
         if(findNotice.getScope() == Scope.LINE) {
             Account account = accountRepository.findAccountById(accountId);
-            if(!account.getLine().getName().equals(findNotice.getReleaseLine())) {
+            if(account.getRole() != Role.ROLE_MANAGER &&
+                    !account.getLine().getName().equals(findNotice.getReleaseLine())) {
                 throw new NotAuthenticatedException("접근 권한이 없습니다.");
             }
         }
