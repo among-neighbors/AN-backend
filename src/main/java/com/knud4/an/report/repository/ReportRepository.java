@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,7 +15,7 @@ public class ReportRepository {
 
     public void save(Report report) { em.persist(report); }
 
-    public Report findById(Long id) { return em.find(Report.class, id); }
+    public Optional<Report> findById(Long id) { return Optional.ofNullable(em.find(Report.class, id)); }
 
     public List<Report> findAll() {
         return em.createQuery("select r from Report r", Report.class)
