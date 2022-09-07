@@ -33,7 +33,8 @@ public class CommentDTO {
         this.text = comment.getText();
         this.createdDate = comment.getCreatedDate();
         Account account = comment.getWriter().getAccount();
-        this.writer = new Writer(comment.getWriter().getName(),
+        this.writer = new Writer(comment.getWriter().getId(),
+                comment.getWriter().getName(),
                 account.getLine().getName(),
                 account.getHouse().getName());
     }
@@ -63,6 +64,7 @@ public class CommentDTO {
     @Data
     @AllArgsConstructor
     private static class Writer {
+        Long id;
         String name, LineName, houseName;
     }
 }
