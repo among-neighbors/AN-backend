@@ -56,8 +56,8 @@ public class AccountRepository {
                 .stream().findFirst();
     }
 
-    public Profile findProfileById(Long profileId) {
-        return em.find(Profile.class, profileId);
+    public Optional<Profile> findProfileById(Long profileId) {
+        return Optional.ofNullable(em.find(Profile.class, profileId));
     }
 
     public Boolean accountExistsByEmail(String email) {

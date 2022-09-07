@@ -133,8 +133,10 @@ public class CommunityService {
     public void updateLike(Long communityId, Long profileId) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        if(accountRepository.findProfileById(profileId) == null)
-            throw new NotAuthenticatedException("권한이 없습니다.");
+
+        accountRepository.findProfileById(profileId)
+                .orElseThrow(() -> new NotAuthenticatedException("권한이 없습니다."));
+
         community.increaseLike();
     }
 
@@ -142,7 +144,9 @@ public class CommunityService {
     public void delete(Long id, Long profileId) {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        Profile profile = accountRepository.findProfileById(profileId);
+
+        Profile profile = accountRepository.findProfileById(profileId)
+                .orElseThrow(() -> new NotAuthenticatedException("권한이 없습니다."));
 
         if(!community.getWriter().equals(profile))
             throw new NotAuthenticatedException("삭제 권한이 없습니다.");

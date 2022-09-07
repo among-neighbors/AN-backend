@@ -21,18 +21,19 @@ public class AccountService {
         return accountRepository.findAccountById(id);
     }
 
-    public Account findAccountByEmail(String email) {
+    public Account findAccountByEmail(String email) throws NotFoundException{
         return accountRepository.findAccountByEmail(email)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
     }
 
-    public Account findAccountByUserName(String userName) {
+    public Account findAccountByUserName(String userName) throws NotFoundException{
         return accountRepository.findAccountByUsername(userName)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
     }
 
-    public Profile findProfileById(Long id) {
-        return accountRepository.findProfileById(id);
+    public Profile findProfileById(Long id) throws NotFoundException{
+        return accountRepository.findProfileById(id)
+                .orElseThrow(() -> new NotFoundException("프로필이 존재하지 않습니다."));
     }
 
     public List<Profile> findProfilesByAccountId(Long id) {
