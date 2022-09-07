@@ -1,5 +1,7 @@
 package com.knud4.an.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.knud4.an.exception.TokenNotFoundException;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -23,26 +25,18 @@ public class JwtProfileAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        String token;
-        Authentication authenticate;
+            throws IOException, ServletException, TokenNotFoundException, JWTVerificationException {
 
         HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (HttpServletResponse)response;
 
-        token = JwtExtractor.extractJwt(req);
+        String token = JwtExtractor.extractJwt(req);
 
-        if(token != null && !jwtProvider.isProfileTokenExpired(token)) {
-            try {
-                String emailFromToken = jwtProvider.getEmailFromToken(token);
-                Long profileId = jwtProvider.getProfileIdFromToken(token);
+        String emailFromToken = jwtProvider.getEmailFromToken(token);
+        Long profileId = jwtProvider.getProfileIdFromToken(token);
 
-                authenticate = jwtProvider
-                        .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, profileId));
-                SecurityContextHolder.getContext().setAuthentication(authenticate);
-            } catch(Exception e) {
-            }
-        }
+        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, profileId));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+
 
         chain.doFilter(request, response);
     }

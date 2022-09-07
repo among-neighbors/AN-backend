@@ -1,5 +1,7 @@
 package com.knud4.an.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.knud4.an.exception.TokenNotFoundException;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -23,24 +24,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        String token;
-        Authentication authenticate;
+            throws IOException, ServletException, TokenNotFoundException, JWTVerificationException {
 
         HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (HttpServletResponse)response;
 
-        token = JwtExtractor.extractJwt(req);
+        String token = JwtExtractor.extractJwt(req);
 
-        if(token != null && !jwtProvider.isAccountTokenExpired(token)) {
-            try {
-                String emailFromToken = jwtProvider.getEmailFromToken(token);
-                authenticate = jwtProvider
-                        .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
-                SecurityContextHolder.getContext().setAuthentication(authenticate);
-            } catch(Exception e) {
-            }
-        }
+        String emailFromToken = jwtProvider.getEmailFromToken(token);
+        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         chain.doFilter(request, response);
     }
