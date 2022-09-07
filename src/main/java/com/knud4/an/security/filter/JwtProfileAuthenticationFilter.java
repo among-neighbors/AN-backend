@@ -31,10 +31,15 @@ public class JwtProfileAuthenticationFilter extends GenericFilterBean {
 
         String token = JwtExtractor.extractJwt(req);
 
-        String emailFromToken = jwtProvider.getEmailFromToken(token);
+        String email = jwtProvider.getEmailFromToken(token);
         Long profileId = jwtProvider.getProfileIdFromToken(token);
+        Long accountId = jwtProvider.getAccountIdFromToken(token);
 
-        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, profileId));
+        request.setAttribute("email", email);
+        request.setAttribute("accountId", accountId);
+        request.setAttribute("profileId", profileId);
+
+        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(email, profileId));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
 

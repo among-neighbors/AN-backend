@@ -28,10 +28,16 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest req = (HttpServletRequest)request;
 
-        String token = JwtExtractor.extractJwt(req);
 
-        String emailFromToken = jwtProvider.getEmailFromToken(token);
-        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
+        String accountToken = JwtExtractor.extractJwt(req);
+
+        String email = jwtProvider.getEmailFromToken(accountToken);
+        Long accountId = jwtProvider.getAccountIdFromToken(accountToken);
+
+        request.setAttribute("accountId", accountId);
+        request.setAttribute("email", email);
+
+        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(email, ""));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         chain.doFilter(request, response);
