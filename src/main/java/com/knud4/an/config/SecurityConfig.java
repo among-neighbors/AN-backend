@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/v1/notices")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/profiles/**").hasRole("USER")
+                .antMatchers("/api/v1/profiles/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers( "/api/v1/communities/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers( "/api/v1/comments/**").hasAnyRole("USER", "MANAGER")
                 .antMatchers( "/api/v1/notices").hasAnyRole("USER", "MANAGER")
