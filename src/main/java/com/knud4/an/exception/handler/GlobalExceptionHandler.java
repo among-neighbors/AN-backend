@@ -1,8 +1,8 @@
 package com.knud4.an.exception.handler;
 
+import com.knud4.an.exception.IllegalMessagingException;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
-import com.knud4.an.exception.IllegalMessagingException;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import org.json.JSONObject;
@@ -12,8 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
-import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal
             (Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         logger.error(ex.getMessage(), ex);
-        ApiErrorResult<String> error = ApiUtil.error(status.value(), ex.getMessage());
+        ApiErrorResult<String> error = ApiUtil.error(status.value(), "알 수 없는 오류 서버팀에 문의해주세요");
         return super.handleExceptionInternal(ex, error, headers, status, request);
     }
 
@@ -50,17 +50,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(error);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        logger.error(ex.getMessage(), ex);
+        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, "Method Argument Not Valid");
+        return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body(error);
+    }
+
     @ExceptionHandler({
             Exception.class
     })
     protected ResponseEntity<?> handleNormalException(Exception e) {
         logger.error(e.getMessage(), e);
-        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "알 수 없는 오류 서버팀에 문의해주세요");
         return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(error);
     }
 
     @MessageExceptionHandler({
-            MethodArgumentNotValidException.class,
+            org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException.class,
             IllegalMessagingException.class
     })
     @SendToUser("/queue/error")
