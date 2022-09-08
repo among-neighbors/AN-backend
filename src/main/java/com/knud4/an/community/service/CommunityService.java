@@ -60,37 +60,47 @@ public class CommunityService {
     }
 
     public List<Community> findAll(Scope scope, Category category, int page, int count, Long accountId) {
-        validatePaging(page, count);
+        validatePaging(page, count, countAll(scope, category, accountId));
         Account account = accountRepository.findAccountById(accountId)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
         if(scope.equals(Scope.ALL)) {
-            if(category.equals(Category.ALL))
-                return communityRepository.findAllForAll(account.getLine().getName(), page, count,true);
-            else
-                return communityRepository.findAllForAllWithCategory(category, account.getLine().getName(), page, count, true);
+            if(category.equals(Category.ALL)) return communityRepository.findAllForAll(account.getLine().getName(), page, count, true);
+            else return communityRepository.findAllForAllWithCategory(category, account.getLine().getName(), page, count, true);
         }
-        if (category.equals(Category.ALL))
-            return communityRepository.findAllForLine(account.getLine().getName(), page, count, true);
+        if (category.equals(Category.ALL)) return communityRepository.findAllForLine(account.getLine().getName(), page, count, true);
         return communityRepository.findAllForLineWithCategory(category, account.getLine().getName(), page, count, true);
     }
 
+    public Long countAll(Scope scope, Category category, Long accountId) {
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
+        if(scope.equals(Scope.ALL)) {
+            if(category.equals(Category.ALL)) return communityRepository.countAllForAll(account.getLine().getName());
+            else return communityRepository.countAllForAllWithCategory(category, account.getLine().getName());
+        }
+        if (category.equals(Category.ALL)) return communityRepository.countAllForLine(account.getLine().getName());
+        return communityRepository.countAllForLineWithCategory(category, account.getLine().getName());
+    }
+
     public List<Community> findAllMine(int page, int count, Long profileId) {
-        validatePaging(page, count);
+        validatePaging(page, count, countAllMine(profileId));
         return communityRepository.findAllMine(profileId, page, count, true);
     }
 
-    public Boolean isLastPage(int page, int cnt) {
-        validatePaging(page, cnt);
-        Long communityCnt = communityRepository.findCommunityCount();
-        return (long) page*cnt >= communityCnt;
+    public Long countAllMine(Long profileId) {
+        return communityRepository.countAllMine(profileId);
+    }
+
+    public Boolean isLastPage(int page, int cnt, Long num) {
+        validatePaging(page, cnt, num);
+        return (long) page*cnt >= num;
     }
 
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    private void validatePaging(int page, int cnt) {
-        Long num = communityRepository.findCommunityCount();
+    private void validatePaging(int page, int cnt, Long num) {
         int limit = (page - 1) * cnt;
         if (page != 1 && num<=limit) {
             throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");

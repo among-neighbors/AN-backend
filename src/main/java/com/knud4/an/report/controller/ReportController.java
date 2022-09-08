@@ -57,7 +57,7 @@ public class ReportController {
         List<Report> reports = reportService.findAll(page, count);
         ReportListDTO dto = new ReportListDTO(
                 reportService.isFirstPage(page),
-                reportService.isLastPage(page, count),
+                reportService.isLastPage(page, count, reportService.countAll()),
                 reports);
         return ApiUtil.success(dto);
     }
@@ -75,7 +75,7 @@ public class ReportController {
         Long accountId = (Long) req.getAttribute("accountId");
         List<Report> reports = reportService.findByAccountId(page, count, accountId);
         ReportListDTO dto = new ReportListDTO(
-                reportService.isLastPage(page, count),
+                reportService.isLastPage(page, count, reportService.countByAccountId(accountId)),
                 reportService.isFirstPage(page),
                 reports);
         return ApiUtil.success(dto);

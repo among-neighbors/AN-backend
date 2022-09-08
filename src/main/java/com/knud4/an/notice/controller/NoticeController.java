@@ -63,7 +63,7 @@ public class NoticeController {
         Long accountId = (Long) req.getAttribute("accountId");
 
         return ApiUtil.success(new NoticeListDTO(noticeService.isFirstPage(page),
-                noticeService.isLastPage(page, count),
+                noticeService.isLastPage(page, count, noticeService.countAll(scope, accountId)),
                 NoticeDTO.entityListToDTOList(noticeService.findAll(scope, page, count, accountId))));
     }
 

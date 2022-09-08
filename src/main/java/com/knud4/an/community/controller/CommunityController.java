@@ -64,7 +64,7 @@ public class CommunityController {
                                                               HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
         return ApiUtil.success(new CommunityListDTO(communityService.isFirstPage(page),
-                communityService.isLastPage(page, count),
+                communityService.isLastPage(page, count, communityService.countAll(scope, category, accountId)),
                 CommunityDTO.entityListToDTOList(communityService.findAll(scope, category, page, count, accountId))));
     }
 
@@ -80,7 +80,7 @@ public class CommunityController {
                                                                     HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
         return ApiUtil.success(new CommunityListDTO(communityService.isFirstPage(page),
-                communityService.isLastPage(page, count),
+                communityService.isLastPage(page, count, communityService.countAllMine(profileId)),
                 CommunityDTO.entityListToDTOList(communityService.findAllMine(page, count, profileId))));
     }
 

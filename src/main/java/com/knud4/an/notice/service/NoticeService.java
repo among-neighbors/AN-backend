@@ -54,7 +54,7 @@ public class NoticeService {
     }
 
     public List<Notice> findAll(Scope scope, int page, int count, Long accountId) {
-        validatePaging(page, count);
+        validatePaging(page, count, countAll(scope, accountId));
         Account account = accountRepository.findAccountById(accountId)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
         if(scope.equals(Scope.ALL)) {
@@ -62,7 +62,18 @@ public class NoticeService {
             return noticeRepository.findAllForAll(account.getLine().getName(), page, count, true);
         }
         if (account.getRole().equals(Role.ROLE_MANAGER)) throw new IllegalStateException("관리자는 라인 지정 불가");
-        return noticeRepository.findAllForLINE(account.getLine().getName(), page, count, true);
+        return noticeRepository.findAllForLine(account.getLineName(), page, count, true);
+    }
+
+    public Long countAll(Scope scope, Long accountId) {
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
+        if(scope.equals(Scope.ALL)) {
+            if (account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findNoticeCount();
+            return noticeRepository.countAllForAll(account.getLine().getName());
+        }
+        if (account.getRole().equals(Role.ROLE_MANAGER)) throw new IllegalStateException("관리자는 라인 지정 불가");
+        return noticeRepository.countAllForLine(account.getLineName());
     }
 
     @Transactional
@@ -85,18 +96,16 @@ public class NoticeService {
         noticeRepository.delete(notice);
     }
 
-    public Boolean isLastPage(int page, int cnt) {
-        validatePaging(page, cnt);
-        Long commentCnt = noticeRepository.findNoticeCount();
-        return (long) page*cnt >= commentCnt;
+    public Boolean isLastPage(int page, int cnt, Long num) {
+        validatePaging(page, cnt, num);
+        return (long) page*cnt >= num;
     }
 
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    private void validatePaging(int page, int cnt) {
-        Long num = noticeRepository.findNoticeCount();
+    private void validatePaging(int page, int cnt, Long num) {
         int limit = (page - 1) * cnt;
         if (page != 1 && num<=limit) {
             throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");
