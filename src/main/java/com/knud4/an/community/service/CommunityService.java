@@ -12,7 +12,6 @@ import com.knud4.an.community.entity.Category;
 import com.knud4.an.community.entity.Community;
 import com.knud4.an.board.Scope;
 import com.knud4.an.community.repository.CommunityRepository;
-import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,8 +50,9 @@ public class CommunityService {
                 .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         if(findCommunity.getScope() == Scope.LINE) {
             Account account = accountRepository.findAccountById(accountId);
-            if(!findCommunity.getWriterLineName().equals(account.getLine().getName())) {
-                throw new NotAuthenticatedException("접근 권한이 없습니다.");
+            if(account.getRole() != Role.ROLE_MANAGER &&
+                    !findCommunity.getWriterLineName().equals(account.getLine().getName())) {
+                throw new IllegalStateException("접근 권한이 없습니다.");
             }
         }
         return findCommunity;
@@ -120,7 +120,7 @@ public class CommunityService {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
         if(!community.getWriter().getId().equals(profileId))
-            throw new NotAuthenticatedException("수정 권한이 없습니다.");
+            throw new IllegalStateException("수정 권한이 없습니다.");
         community.changeTitle(communityDTO.getTitle());
         community.changeContent(communityDTO.getContent());
         community.changeCategory(communityDTO.getCategory());
@@ -128,11 +128,10 @@ public class CommunityService {
     }
 
     @Transactional
-    public void updateLike(Long communityId, Long profileId) {
+    public void updateLike(Long communityId) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        if(accountRepository.findProfileById(profileId) == null)
-            throw new NotAuthenticatedException("권한이 없습니다.");
+
         community.increaseLike();
     }
 
@@ -140,10 +139,9 @@ public class CommunityService {
     public void delete(Long id, Long profileId) {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        Profile profile = accountRepository.findProfileById(profileId);
 
-        if(!community.getWriter().equals(profile))
-            throw new NotAuthenticatedException("삭제 권한이 없습니다.");
+        if(!community.getWriter().getId().equals(profileId))
+            throw new IllegalStateException("삭제 권한이 없습니다.");
 
         List<CommunityComment> comments = commentRepository.findAllByCommunityId(id);
         for(CommunityComment comment : comments) commentRepository.delete(comment);
