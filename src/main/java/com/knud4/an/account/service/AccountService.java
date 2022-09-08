@@ -18,7 +18,9 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public Account findAccountByAccountId(Long id) {
-        return accountRepository.findAccountById(id);
+        return accountRepository.findAccountById(id)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다.")
+        );
     }
 
     public Account findAccountByEmail(String email) throws NotFoundException{
