@@ -37,6 +37,11 @@ public class JwtProfileAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest req = (HttpServletRequest)request;
 
+        if (req.getMethod().equals("OPTIONS")){
+            chain.doFilter(request, response);
+            return;
+        }
+
         String token = JwtExtractor.extractJwt(req);
 
         String email = jwtProvider.getEmailFromToken(token);

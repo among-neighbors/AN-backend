@@ -31,6 +31,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest req = (HttpServletRequest)request;
 
+        if (req.getMethod().equals("OPTIONS")){
+            chain.doFilter(request, response);
+            return;
+        }
 
         String accountToken = JwtExtractor.extractJwt(req);
 

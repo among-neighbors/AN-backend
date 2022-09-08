@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knud4.an.exception.TokenNotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,6 +23,7 @@ import java.io.IOException;
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -29,13 +31,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
         HttpServletResponse res = (HttpServletResponse)response;
 
-        if (request.getMethod().equals(HttpMethod.OPTIONS.toString())) {
-            return;
-        }
-
         try {
             filterChain.doFilter(request, response);
         } catch(JWTVerificationException e) {
+            logger.error(e.getMessage(), e);
+
             String body = objectMapper
                     .writeValueAsString(ApiUtil.error(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰."));
 
@@ -44,6 +44,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             res.setCharacterEncoding("UTF-8");
             res.getWriter().write(body);
         } catch (TokenNotFoundException e) {
+            logger.error(e.getMessage(), e);
+
             String body = objectMapper
                     .writeValueAsString(ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, "토큰이 없습니다."));
 
