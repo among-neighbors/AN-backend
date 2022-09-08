@@ -33,7 +33,32 @@ public class NoticeRepository {
                 .getResultList();
     }
 
-    public List<Notice> findBeforeExpire(LocalDateTime expiredDate, int page, int count, boolean desc) {
+    public List<Notice> findAllForAll(String lineName, int page, int count, boolean desc) {
+        String query = "select n from Notice n " +
+                "where n.scope = 'ALL' " +
+                "or (n.scope = 'LINE' and n.releaseLine = :lineName) " +
+                "order by n.id";
+        if(desc) query += " desc";
+        return em.createQuery(query, Notice.class)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Notice> findAllForLINE(String lineName, int page, int count, boolean desc) {
+        String query = "select n from Notice n " +
+                "where n.scope = 'LINE' and n.releaseLine = :lineName " +
+                "order by n.id";
+        if(desc) query += " desc";
+        return em.createQuery(query, Notice.class)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    /*public List<Notice> findBeforeExpire(LocalDateTime expiredDate, int page, int count, boolean desc) {
         String query = "select n from Notice n where n.expiredDate <= :expiredDate order by n.id";
         if(desc) query += " desc";
         return em.createQuery(query, Notice.class)
@@ -81,7 +106,7 @@ public class NoticeRepository {
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
-    }
+    }*/
 
     public Long findNoticeCount() {
         return em.createQuery("select count(n) from Notice n", Long.class)

@@ -53,23 +53,16 @@ public class NoticeService {
         return findNotice;
     }
 
-    public List<Notice> findAll(int page, int count, Long accountId) {
+    public List<Notice> findAll(Scope scope, int page, int count, Long accountId) {
         validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
-        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
-
-        List<Notice> findNotices = noticeRepository.findByScope(Scope.ALL, page, count, false);
-        findNotices.addAll(noticeRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
-        findNotices.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
-        return findNotices;
-    }
-
-    public List<Notice> findAllMyLine(int page, int count, Long accountId) {
-        validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId)
-                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
-        return noticeRepository.findByLine(account.getLine().getName(), page, count, true);
+        if(scope.equals(Scope.ALL)) {
+            if (account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
+            return noticeRepository.findAllForAll(account.getLine().getName(), page, count, true);
+        }
+        if (account.getRole().equals(Role.ROLE_MANAGER)) throw new IllegalStateException("관리자는 라인 지정 불가");
+        return noticeRepository.findAllForLINE(account.getLine().getName(), page, count, true);
     }
 
     @Transactional

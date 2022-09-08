@@ -49,7 +49,8 @@ public class CommunityService {
         Community findCommunity = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티글을 찾을 수 없습니다."));
         if(findCommunity.getScope() == Scope.LINE) {
-            Account account = accountRepository.findAccountById(accountId);
+            Account account = accountRepository.findAccountById(accountId)
+                    .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
             if(account.getRole() != Role.ROLE_MANAGER &&
                     !findCommunity.getWriterLineName().equals(account.getLine().getName())) {
                 throw new IllegalStateException("접근 권한이 없습니다.");
@@ -58,38 +59,12 @@ public class CommunityService {
         return findCommunity;
     }
 
-    public List<Community> findAll(int page, int count, Long accountId) {
+    public List<Community> findAll(Scope scope, Category category, int page, int count, Long accountId) {
         validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole() == Role.ROLE_MANAGER) return communityRepository.findAll(page, count, true);
-        List<Community> findCommunities = communityRepository.findByScope(Scope.ALL, page, count, false);
-        findCommunities.addAll(communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
-        findCommunities.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
-        return findCommunities;
-    }
-
-    public List<Community> findAllMyLine(int page, int count, Long accountId) {
-        validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false);
-    }
-
-    public List<Community> findByCategory(Category category, int page, int count, Long accountId) {
-        validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole().equals(Role.ROLE_MANAGER)) {
-            return communityRepository.findByCategory(category, page, count, true);
-        }
-        List<Community> findCommunities = communityRepository.findByScopeAndCategory(Scope.ALL, category, page, count, false);
-        findCommunities.addAll(communityRepository.findByScopeAndLineAndCategory(Scope.LINE, account.getLine().getName(), category, page, count, false));
-        findCommunities.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
-        return findCommunities;
-    }
-
-    public List<Community> findMyLineByCategory(Category category, int page, int count, Long accountId) {
-        validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        return communityRepository.findByLineAndCategory(account.getLine().getName(), category, page, count, true);
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
+        if(scope.equals(Scope.ALL)) return communityRepository.findAllForAll(category, account.getLine().getName(), page, count,true);
+        return communityRepository.findAllForLine(category, account.getLine().getName(), page, count, true);
     }
 
     public List<Community> findAllMine(int page, int count, Long profileId) {

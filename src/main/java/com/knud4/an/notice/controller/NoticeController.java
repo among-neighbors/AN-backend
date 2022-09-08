@@ -53,7 +53,7 @@ public class NoticeController {
     @Operation(summary = "공지사항 전체 조회", description = "account token이 필요합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "공지사항 전체 조회 성공", content = @Content(schema = @Schema(implementation = NoticeListDTO.class))),
-            @ApiResponse(responseCode = "400", description = "게시글 요청 범위를 초과했습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+            @ApiResponse(responseCode = "400", description = "게시글 요청 범위를 초과했거나 관리자는 라인을 지정할 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
     })
     @GetMapping("/api/v1/notices")
     public ApiSuccessResult<NoticeListDTO> findAll(@RequestParam(name = "page") int page,
@@ -61,13 +61,10 @@ public class NoticeController {
                                                    @RequestParam(name = "scope") Scope scope,
                                                    HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        List<Notice> noticeList;
-        if(scope.equals(Scope.LINE))
-            noticeList = noticeService.findAllMyLine(page, count, accountId);
-        else noticeList = noticeService.findAll(page, count, accountId);
+
         return ApiUtil.success(new NoticeListDTO(noticeService.isFirstPage(page),
                 noticeService.isLastPage(page, count),
-                NoticeDTO.entityListToDTOList(noticeList)));
+                NoticeDTO.entityListToDTOList(noticeService.findAll(scope, page, count, accountId))));
     }
 
     @AccountRequired
