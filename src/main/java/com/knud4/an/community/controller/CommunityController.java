@@ -14,6 +14,10 @@ import com.knud4.an.annotation.ProfileRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +36,11 @@ public class CommunityController {
     private final AccountService accountService;
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 생성")
+    @Operation(summary = "커뮤니티글 생성", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 생성 성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "404", description = "프로필이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @PostMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunity(@Valid @RequestBody CreateCommunityForm form,
                                                           HttpServletRequest req) {
@@ -43,7 +51,11 @@ public class CommunityController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티글 전체 조회")
+    @Operation(summary = "커뮤니티글 전체 조회", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 생성 성공", content = @Content(schema = @Schema(implementation = CommunityListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "게시글 요청 범위를 초과하였습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @GetMapping("/api/v1/communities")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAll(@RequestParam(name = "page") int page,
                                                               @RequestParam(name = "count") int count,
@@ -69,7 +81,11 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "내 커뮤니티글 전체 조회")
+    @Operation(summary = "내 커뮤니티글 전체 조회", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "내 커뮤니티글 전체 조회 성공", content = @Content(schema = @Schema(implementation = CommunityListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "게시글 요청 범위를 초과하였습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @GetMapping("/api/v1/communities/me")
     public ApiUtil.ApiSuccessResult<CommunityListDTO> findAllMine(@RequestParam(name = "page") int page,
                                                                     @RequestParam(name = "count") int count,
@@ -81,7 +97,12 @@ public class CommunityController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티글 상세 조회 (id)")
+    @Operation(summary = "커뮤니티글 상세 조회 (id)", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 상세 조회 성공", content = @Content(schema = @Schema(implementation = CommunityDTO.class))),
+            @ApiResponse(responseCode = "400", description = "접근 권한이 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "커뮤니티글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @GetMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<CommunityDTO> findById(@PathVariable(name = "id") Long id,
                                                    HttpServletRequest req) {
@@ -93,7 +114,12 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 수정")
+    @Operation(summary = "커뮤니티글 수정", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 수정 성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "400", description = "수정 권한이 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "커뮤니티글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @PutMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<Long> updateById(@PathVariable Long id,
                                              @Valid @RequestBody CommunityDTO communityDTO,
@@ -104,17 +130,24 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 좋아요")
+    @Operation(summary = "커뮤니티글 좋아요", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 좋아요 성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "커뮤니티글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @PutMapping("/api/v1/communities/{id}/like")
-    public ApiSuccessResult<String> updateLike(@PathVariable Long id,
-                                               HttpServletRequest req) {
-        Long profileId = (Long) req.getAttribute("profileId");
-        communityService.updateLike(id, profileId);
+    public ApiSuccessResult<String> updateLike(@PathVariable Long id) {
+        communityService.updateLike(id);
         return ApiUtil.success("좋아요가 업데이트 되었습니다.");
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 삭제")
+    @Operation(summary = "커뮤니티글 삭제", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 삭제 성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "삭제 권한이 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "커뮤니티글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @DeleteMapping("/api/v1/communities/{id}")
     public ApiSuccessResult<String> deleteById(@PathVariable(name = "id") Long id,
                                                HttpServletRequest req) {

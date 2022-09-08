@@ -5,7 +5,6 @@ import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.entity.Role;
 import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.board.Scope;
-import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.notice.dto.CreateNoticeForm;
 import com.knud4.an.notice.dto.NoticeDTO;
@@ -47,7 +46,7 @@ public class NoticeService {
             Account account = accountRepository.findAccountById(accountId);
             if(account.getRole() != Role.ROLE_MANAGER &&
                     !account.getLine().getName().equals(findNotice.getReleaseLine())) {
-                throw new NotAuthenticatedException("접근 권한이 없습니다.");
+                throw new IllegalStateException("접근 권한이 없습니다.");
             }
         }
         return findNotice;
@@ -71,9 +70,11 @@ public class NoticeService {
     }
 
     @Transactional
-    public void updateNotice(Long id, NoticeDTO noticeDTO) {
+    public void updateNotice(Long id, NoticeDTO noticeDTO, Long profileId) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
+        if(!notice.getWriter().getId().equals(profileId))
+            throw new IllegalStateException("수정 권한이 없습니다.");
         notice.changeTitle(noticeDTO.getTitle());
         notice.changeContent(noticeDTO.getContent());
         notice.changeScope(noticeDTO.getScope());

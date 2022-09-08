@@ -25,13 +25,8 @@ public class ReportCommentService {
 
     @Transactional
     public Long createReportComment(CreateCommentForm form, Profile writer) {
-        if(writer.getAccount().getRole() != Role.ROLE_MANAGER) {
-            throw new NotAuthenticatedException("작성 권한이 없습니다.");
-        }
-        Report report = reportRepository.findById(form.getBoardId());
-        if(report == null) {
-            throw new NotFoundException("민원글을 찾을 수 없습니다.");
-        }
+        Report report = reportRepository.findById(form.getBoardId())
+                .orElseThrow(() -> new NotFoundException("민원글을 찾을 수 없습니다."));
         ReportComment comment = ReportComment.builder()
                 .writer(writer)
                 .text(form.getText())
@@ -43,6 +38,7 @@ public class ReportCommentService {
 
     public List<ReportComment> findAllByReportId(int page, int count, Long reportId) {
         validatePaging(page, count, reportId);
+        reportRepository.findById(reportId).orElseThrow(() -> new NotFoundException("민원글이 존재하지 않습니다."));
         return commentRepository.findAllByReportId(reportId, page, count);
     }
 

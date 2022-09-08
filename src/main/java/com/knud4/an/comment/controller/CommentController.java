@@ -11,6 +11,10 @@ import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.annotation.ProfileRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +32,11 @@ public class CommentController {
     private final AccountService accountService;
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티 댓글 생성")
+    @Operation(summary = "커뮤니티 댓글 생성", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티 댓글 생성 성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "404", description = "프로필 또는 게시글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
     @PostMapping("/api/v1/comments/communities")
     public ApiUtil.ApiSuccessResult<Long> createCommunityComment(@Valid @RequestBody CreateCommentForm form,
                                                                  HttpServletRequest req) {
@@ -39,7 +47,12 @@ public class CommentController {
     }
 
     @AccountRequired
-    @Operation(summary = "커뮤니티 댓글 조회 (community_id)")
+    @Operation(summary = "커뮤니티 댓글 조회 (community_id)", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티 댓글 조회 성공", content = @Content(schema = @Schema(implementation = CommentListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "댓글 요청 범위를 초과하였습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
     @GetMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByCommunityId(@PathVariable(name = "id") Long id,
                                                                          @RequestParam(name = "page") int page,
@@ -53,7 +66,11 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티 댓글 삭제")
+    @Operation(summary = "커뮤니티 댓글 삭제", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "커뮤니티 댓글 삭제 성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "댓글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
     @DeleteMapping("/api/v1/comments/communities/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteCommunityComment(@PathVariable(name = "id") Long id) {
         communityCommentService.deleteById(id);
@@ -61,8 +78,12 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "민원 댓글 생성")
-    @PostMapping("/api/v1/comments/reports")
+    @Operation(summary = "민원 댓글 생성", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "민원 댓글 생성 성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "404", description = "프로필 또는 게시글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
+    @PostMapping("/api/v1/manager/comments/reports")
     public ApiUtil.ApiSuccessResult<Long> createReportComment(@Valid @RequestBody CreateCommentForm form,
                                                               HttpServletRequest req) {
         Long profileId = (Long) req.getAttribute("profileId");
@@ -72,7 +93,12 @@ public class CommentController {
     }
 
     @AccountRequired
-    @Operation(summary = "민원 댓글 조회 (report_id)")
+    @Operation(summary = "민원 댓글 조회 (report_id)", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "민원 댓글 조회 성공", content = @Content(schema = @Schema(implementation = CommentListDTO.class))),
+            @ApiResponse(responseCode = "400", description = "댓글 요청 범위를 초과하였습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
     @GetMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<CommentListDTO> findAllByReportId(@PathVariable Long id,
                                                                       @RequestParam int page,
@@ -86,7 +112,11 @@ public class CommentController {
     }
 
     @ProfileRequired
-    @Operation(summary = "민원 댓글 삭제")
+    @Operation(summary = "민원 댓글 삭제", description = "profile token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "민원 댓글 삭제 성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "댓글을 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiUtil.ApiErrorResult.class)))
+    })
     @DeleteMapping("/api/v1/comments/reports/{id}")
     public ApiUtil.ApiSuccessResult<String> deleteReportComment(@PathVariable(name = "id") Long id) {
         reportCommentService.deleteById(id);
