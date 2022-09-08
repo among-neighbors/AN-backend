@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 토큰 관련 예외 핸들링
+ */
 @RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
 

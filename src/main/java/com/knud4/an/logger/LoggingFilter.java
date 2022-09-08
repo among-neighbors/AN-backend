@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 서버 HTTP request/response logging filter
+ */
 @Order(1)
 @Component
 public class LoggingFilter extends OncePerRequestFilter {

@@ -59,7 +59,7 @@ public class AuthController {
         String accessToken = jwtProvider.generateAccountToken(account.getEmail(), account.getId()+"");
         String refreshToken = jwtProvider.generateAccountRefreshToken(account.getEmail(), account.getId() + "");
 
-        ResponseCookie cookie = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, refreshToken);
+        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, refreshToken);
         res.addHeader("Set-Cookie", cookie.toString());
 
         return ApiUtil.success(new SignInAccountResponse(account, accessToken, refreshToken));
@@ -91,8 +91,8 @@ public class AuthController {
                 profile.getAccount().getId() + "",
                 profile.getId() + "");
 
-        ResponseCookie accountCookie = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accountRefreshToken);
-        ResponseCookie profileCookie = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, profileRefreshToken);
+        ResponseCookie accountCookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, accountRefreshToken);
+        ResponseCookie profileCookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, profileRefreshToken);
 
         res.addHeader("Set-Cookie", accountCookie.toString());
         res.addHeader("Set-Cookie", profileCookie.toString());
@@ -138,7 +138,7 @@ public class AuthController {
                 profile.getAccount().getId() + "",
                 profile.getId() + "");
 
-        ResponseCookie cookie = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, refreshToken);
+        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, refreshToken);
         res.addHeader("Set-Cookie", cookie.toString());
 
         return ApiUtil.success(new SignInProfileResponse(profile, accessToken, refreshToken));
@@ -149,7 +149,7 @@ public class AuthController {
     public ApiSuccessResult<String> signOutAccount(
             HttpServletResponse res) {
         ResponseCookie deleteCookie
-                = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, null, 0);
+                = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, null, 0);
         res.addHeader("Set-Cookie", deleteCookie.toString());
 
         return ApiUtil.success("성공적으로 로그아웃 했습니다.");
@@ -160,7 +160,7 @@ public class AuthController {
     public ApiSuccessResult<String> signOutProfile(
             HttpServletResponse res) {
         ResponseCookie deleteCookie
-                = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, null, 0);
+                = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, null, 0);
         res.addHeader("Set-Cookie", deleteCookie.toString());
 
         return ApiUtil.success("성공적으로 로그아웃 했습니다.");
@@ -184,7 +184,7 @@ public class AuthController {
         String reIssuedRefreshToken = jwtProvider.reIssueAccountRefreshToken(refreshToken);
         if (reIssuedRefreshToken != null) {
             ResponseCookie refreshTokenCookie
-                    = cookieUtil.createRefreshTokenCookie(JwtProvider.ACCOUNT_TOKEN_NAME, reIssuedRefreshToken);
+                    = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, reIssuedRefreshToken);
             res.addHeader("Set-Cookie", refreshTokenCookie.toString());
         }
         return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));
@@ -202,7 +202,7 @@ public class AuthController {
 //      갱신 가능한 상태면 재발급
         if (reIssuedRefreshToken != null) {
             ResponseCookie refreshTokenCookie
-                    = cookieUtil.createRefreshTokenCookie(JwtProvider.PROFILE_TOKEN_NAME, reIssuedRefreshToken);
+                    = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, reIssuedRefreshToken);
             res.addHeader("Set-Cookie", refreshTokenCookie.toString());
         }
         return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));

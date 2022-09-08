@@ -21,6 +21,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Dispatcher Servlet 이후 레이어에서 발생한 에러 핸들링
+ * @see ExceptionHandler
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -57,9 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpServletResponse.SC_BAD_REQUEST).body(error);
     }
 
-    @ExceptionHandler({
-            Exception.class
-    })
+    @ExceptionHandler(Exception.class)
     protected ResponseEntity<?> handleNormalException(Exception e) {
         logger.error(e.getMessage(), e);
         ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "알 수 없는 오류 서버팀에 문의해주세요");
@@ -68,8 +70,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @MessageExceptionHandler({
             org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException.class,
-            IllegalMessagingException.class
-    })
+            IllegalMessagingException.class})
     @SendToUser("/queue/error")
     protected String methodArgumentErrorHandler(Exception e) {
         logger.error(e.getMessage(), e);

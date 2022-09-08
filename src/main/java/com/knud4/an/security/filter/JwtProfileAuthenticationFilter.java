@@ -18,11 +18,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * spring security 프로필 토큰 검증 필터
+ */
 @RequiredArgsConstructor
 public class JwtProfileAuthenticationFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
 
+
+    /**
+     * @see JwtExtractor
+     * @see org.springframework.security.core.userdetails.UserDetailsService
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException, TokenNotFoundException, JWTVerificationException {

@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 서버 스펙의 STOMP 메세징 채널 인터셉터
+ * @see com.knud4.an.config.StompWebSocketConfig
+ */
 @Component
 @RequiredArgsConstructor
 public class StompInboundInterceptor implements ChannelInterceptor {
@@ -34,6 +38,10 @@ public class StompInboundInterceptor implements ChannelInterceptor {
     private final HouseRepository houseRepository;
     private final AccountRepository accountRepository;
 
+    /**
+     * COMMAND 별 필터링 로직 정의
+     * @see StompHeaderAccessor
+     */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
@@ -76,17 +84,29 @@ public class StompInboundInterceptor implements ChannelInterceptor {
         return message;
     }
 
+    /**
+     * 구독 요청 메세징 헤더 검증
+     * @exception IllegalStateException
+     *            <p>요청 형식이 올바르지 않을 때</p>
+     *            session 에 저장된 라인 정보와 구독 요청 라인 정보가 일치하지 않을 때
+     */
     private void validateSubscriptionHeader(StompHeaderAccessor headerAccessor) {
         String lineName = (String) headerAccessor.getSessionAttributes().get("line");
         String destination = headerAccessor.getDestination();
 
         if (destination != null && destination.startsWith(SUB_LINE_PREFIX)) {
             if (!destination.replace(SUB_LINE_PREFIX, "").equals(lineName)) {
-                throw new IllegalStateException("인증 정보가 잘못되었습니다.");
+                throw new IllegalStateException("요청 라인 이름이 잘못되었습니다.");
             }
+        } else {
+            throw new IllegalStateException("요청 형식이 잘못되었습니다.");
         }
     }
 
+    /**
+     * 메세징 인증 헤더에 포함된 세대 정보 제공
+     * @exception NotFoundException 요청 헤더가 올바르지 않을 때
+     */
     private Map<String, Object> getHouseInfoByAuthorizationHeader(StompHeaderAccessor headerAccessor) {
         List<String> authorization = headerAccessor.getNativeHeader("Authorization");
         if (authorization == null || authorization.size() != 1) {

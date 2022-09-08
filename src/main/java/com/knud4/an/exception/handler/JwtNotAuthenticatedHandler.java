@@ -14,6 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Authentication Exception 핸들링
+ * @see AuthenticationException
+ * @see org.springframework.security.core.userdetails.UsernameNotFoundException
+ */
 @RequiredArgsConstructor
 public class JwtNotAuthenticatedHandler implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;

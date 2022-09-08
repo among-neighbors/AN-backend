@@ -25,6 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * spring security JWT 검증 수행
+ * <p>token 데이터 추출 로직은 유효성 검사가 항상 선수</p>
+ * <p><br>현재 JWT 관련 보조 기능도 해당 클래스에 함께 포함되어있는 상태, 다음 버전에서 수정 예정</p>
+ *
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtProvider implements AuthenticationProvider {
@@ -32,9 +38,15 @@ public class JwtProvider implements AuthenticationProvider {
     private final AccountDetailsService accountDetailsService;
     private final ProfileDetailsService profileDetailsService;
 
+    /**
+     * 서버 스펙 JWT 유효기간
+     */
     private static final long TOKEN_VALIDATION_SECOND = 1000L * 60 * 120;
     private static final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60 * 60 * 48;
 
+    /**
+     * 서버 스펙 JWT 이름
+     */
     public static final String ACCOUNT_TOKEN_NAME = "account_refresh_token";
     public static final String PROFILE_TOKEN_NAME = "profile_refresh_token";
 
