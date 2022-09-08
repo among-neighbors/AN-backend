@@ -63,8 +63,15 @@ public class CommunityService {
         validatePaging(page, count);
         Account account = accountRepository.findAccountById(accountId)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
-        if(scope.equals(Scope.ALL)) return communityRepository.findAllForAll(category, account.getLine().getName(), page, count,true);
-        return communityRepository.findAllForLine(category, account.getLine().getName(), page, count, true);
+        if(scope.equals(Scope.ALL)) {
+            if(category.equals(Category.ALL))
+                return communityRepository.findAllForAll(account.getLine().getName(), page, count,true);
+            else
+                return communityRepository.findAllForAllWithCategory(category, account.getLine().getName(), page, count, true);
+        }
+        if (category.equals(Category.ALL))
+            return communityRepository.findAllForLine(account.getLine().getName(), page, count, true);
+        return communityRepository.findAllForLineWithCategory(category, account.getLine().getName(), page, count, true);
     }
 
     public List<Community> findAllMine(int page, int count, Long profileId) {
