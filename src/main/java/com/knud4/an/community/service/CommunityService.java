@@ -131,7 +131,6 @@ public class CommunityService {
     public void updateLike(Long communityId) {
         Community community = communityRepository.findById(communityId)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-
         community.increaseLike();
     }
 
@@ -139,7 +138,7 @@ public class CommunityService {
     public void delete(Long id, Long profileId) {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-
+                
         if(!community.getWriter().getId().equals(profileId))
             throw new IllegalStateException("삭제 권한이 없습니다.");
 

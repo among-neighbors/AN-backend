@@ -17,11 +17,8 @@ public class ProfileDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String profileId) throws UsernameNotFoundException {
-        Profile profile = accountRepository.findProfileById(Long.parseLong(profileId));
-
-        if (profile == null) {
-            throw new UsernameNotFoundException("프로필이 존재하지 않습니다.");
-        }
+        Profile profile = accountRepository.findProfileById(Long.parseLong(profileId))
+                        .orElseThrow(() -> new UsernameNotFoundException("프로필이 존재하지 않습니다."));
 
         Account account = accountRepository.findAccountById(profile.getAccount().getId());
 

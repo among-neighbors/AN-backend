@@ -1,5 +1,7 @@
 package com.knud4.an.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.knud4.an.exception.TokenNotFoundException;
 import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.jwt.JwtExtractor;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +15,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * spring security 계정 토큰 검증 필터
+ */
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
@@ -23,24 +27,25 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        String token;
-        Authentication authenticate;
+            throws IOException, ServletException, TokenNotFoundException, JWTVerificationException {
 
         HttpServletRequest req = (HttpServletRequest)request;
-        HttpServletResponse res = (HttpServletResponse)response;
 
-        token = JwtExtractor.extractJwt(req);
-
-        if(token != null && !jwtProvider.isAccountTokenExpired(token)) {
-            try {
-                String emailFromToken = jwtProvider.getEmailFromToken(token);
-                authenticate = jwtProvider
-                        .authenticate(new UsernamePasswordAuthenticationToken(emailFromToken, ""));
-                SecurityContextHolder.getContext().setAuthentication(authenticate);
-            } catch(Exception e) {
-            }
+        if (req.getMethod().equals("OPTIONS")){
+            chain.doFilter(request, response);
+            return;
         }
+
+        String accountToken = JwtExtractor.extractJwt(req);
+
+        String email = jwtProvider.getEmailFromToken(accountToken);
+        Long accountId = jwtProvider.getAccountIdFromToken(accountToken);
+
+        request.setAttribute("accountId", accountId);
+        request.setAttribute("email", email);
+
+        Authentication authenticate = jwtProvider.authenticate(new UsernamePasswordAuthenticationToken(email, ""));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         chain.doFilter(request, response);
     }

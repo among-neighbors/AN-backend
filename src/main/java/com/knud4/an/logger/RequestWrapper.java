@@ -9,6 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Wrapper Class: HTTP request InputStream 반복 호출
+ * @see java.io.BufferedReader
+ * @see org.springframework.web.util.ContentCachingRequestWrapper
+ */
 public class RequestWrapper extends HttpServletRequestWrapper {
 
     private final byte[] cachedInputStream;

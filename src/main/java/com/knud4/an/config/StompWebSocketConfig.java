@@ -11,6 +11,10 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+
+/**
+ * STOMP 서버 스펙 설정
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor

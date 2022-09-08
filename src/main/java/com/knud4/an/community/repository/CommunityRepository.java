@@ -77,7 +77,7 @@ public class CommunityRepository {
 
     public List<Community> findByCategory(Category category, int page, int count, boolean desc) {
         String query = "select c from Community c where c.category = :category order by c.id";
-        query += " desc";
+        if(desc) query += " desc";
         return em.createQuery(query, Community.class)
                 .setParameter("category", category)
                 .setFirstResult((page-1)*count)

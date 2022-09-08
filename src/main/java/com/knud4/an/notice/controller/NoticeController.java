@@ -84,7 +84,7 @@ public class NoticeController {
         Notice notice = noticeService.findNoticeById(id, accountId);
         NoticeDTO noticeDTO = new NoticeDTO(notice);
         noticeDTO.setIsMine(noticeService.isMine(notice, accountId));
-        return ApiUtil.success(new NoticeDTO());
+        return ApiUtil.success(noticeDTO);
     }
 
     @ProfileRequired
