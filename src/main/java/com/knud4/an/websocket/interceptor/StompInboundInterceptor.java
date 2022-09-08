@@ -116,7 +116,8 @@ public class StompInboundInterceptor implements ChannelInterceptor {
         String token = authorization.get(0);
         Long accountId = jwtProvider.getAccountIdFromToken(token);
 
-        Account account = accountRepository.findAccountById(accountId);
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
         Line line = lineRepository.findById(account.getLine().getId());
         House house = houseRepository.findById(account.getHouse().getId());
 

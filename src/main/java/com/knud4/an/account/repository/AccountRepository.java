@@ -35,8 +35,8 @@ public class AccountRepository {
                 .stream().findFirst();
     }
 
-    public Account findAccountById(Long id) {
-        return em.find(Account.class, id);
+    public Optional<Account> findAccountById(Long id) {
+        return Optional.ofNullable(em.find(Account.class, id));
     }
 
     public List<Profile> findProfilesByAccountId(Long accountId) {

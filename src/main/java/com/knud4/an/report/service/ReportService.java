@@ -36,7 +36,8 @@ public class ReportService {
     public ReportDTO findReportById(Long reportId, Long accountId) throws NotFoundException{
         Report findReport = reportRepository.findById(reportId)
                 .orElseThrow(() -> new NotFoundException("민원을 찾을 수 없습니다."));
-        Account account = accountRepository.findAccountById(accountId);
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
         if(account.getRole() != Role.ROLE_MANAGER &&
                 !findReport.getWriter().getId().equals(accountId))
             throw new IllegalStateException("접근 권한이 없습니다.");

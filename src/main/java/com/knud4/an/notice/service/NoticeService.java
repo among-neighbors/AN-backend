@@ -43,7 +43,8 @@ public class NoticeService {
         Notice findNotice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NotFoundException("공지글을 찾을 수 없습니다."));
         if(findNotice.getScope() == Scope.LINE) {
-            Account account = accountRepository.findAccountById(accountId);
+            Account account = accountRepository.findAccountById(accountId)
+                    .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
             if(account.getRole() != Role.ROLE_MANAGER &&
                     !account.getLine().getName().equals(findNotice.getReleaseLine())) {
                 throw new IllegalStateException("접근 권한이 없습니다.");
@@ -52,21 +53,16 @@ public class NoticeService {
         return findNotice;
     }
 
-    public List<Notice> findAll(int page, int count, Long accountId) {
+    public List<Notice> findAll(Scope scope, int page, int count, Long accountId) {
         validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        if(account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
-
-        List<Notice> findNotices = noticeRepository.findByScope(Scope.ALL, page, count, false);
-        findNotices.addAll(noticeRepository.findByScopeAndLine(Scope.LINE, account.getLine().getName(), page, count, false));
-        findNotices.sort((o1, o2) -> Long.compare(o2.getId(), o1.getId()));
-        return findNotices;
-    }
-
-    public List<Notice> findAllMyLine(int page, int count, Long accountId) {
-        validatePaging(page, count);
-        Account account = accountRepository.findAccountById(accountId);
-        return noticeRepository.findByLine(account.getLine().getName(), page, count, true);
+        Account account = accountRepository.findAccountById(accountId)
+                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
+        if(scope.equals(Scope.ALL)) {
+            if (account.getRole().equals(Role.ROLE_MANAGER)) return noticeRepository.findAll(page, count, true);
+            return noticeRepository.findAllForAll(account.getLine().getName(), page, count, true);
+        }
+        if (account.getRole().equals(Role.ROLE_MANAGER)) throw new IllegalStateException("관리자는 라인 지정 불가");
+        return noticeRepository.findAllForLINE(account.getLine().getName(), page, count, true);
     }
 
     @Transactional

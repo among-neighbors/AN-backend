@@ -63,21 +63,9 @@ public class CommunityController {
                                                               @RequestParam(name = "category") Category category,
                                                               HttpServletRequest req) {
         Long accountId = (Long) req.getAttribute("accountId");
-        List<CommunityDTO> communityDTOList;
-        if (category.equals(Category.ALL)) {
-            if (scope.equals(Scope.LINE))
-                communityDTOList = CommunityDTO.entityListToDTOList(communityService.findAllMyLine(page, count, accountId));
-            else
-                communityDTOList = CommunityDTO.entityListToDTOList(communityService.findAll(page, count, accountId));
-        } else {
-            if (scope.equals(Scope.LINE))
-                communityDTOList = CommunityDTO.entityListToDTOList(communityService.findMyLineByCategory(category, page, count, accountId));
-            else
-                communityDTOList = CommunityDTO.entityListToDTOList(communityService.findByCategory(category, page, count, accountId));
-        }
         return ApiUtil.success(new CommunityListDTO(communityService.isFirstPage(page),
                 communityService.isLastPage(page, count),
-                communityDTOList));
+                CommunityDTO.entityListToDTOList(communityService.findAll(scope, category, page, count, accountId))));
     }
 
     @ProfileRequired

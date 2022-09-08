@@ -25,7 +25,33 @@ public class CommunityRepository {
         return Optional.ofNullable(em.find(Community.class, id));
     }
 
-    public List<Community> findAll(int page, int count, boolean desc) {
+
+    public List<Community> findAllForAll(Category category, String lineName, int page, int count, boolean desc) {
+        String query = "select c from Community c where c.category = :category " +
+                "and (c.scope = 'ALL' or (c.scope = 'LINE' and c.writerLineName = :lineName)) " +
+                "order by c.id";
+        if(desc) query += " desc";
+        return em.createQuery(query, Community.class)
+                .setParameter("category", category)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+
+    public List<Community> findAllForLine(Category category, String lineName, int page, int count, boolean desc) {
+        String query = "select c from Community c where c.category = :category " +
+                "and c.scope = 'LINE' and c.writerLineName = :lineName) " +
+                "order by c.id";
+        if(desc) query += " desc";
+        return em.createQuery(query, Community.class)
+                .setParameter("category", category)
+                .setParameter("lineName", lineName)
+                .setFirstResult((page-1)*count)
+                .setMaxResults(count)
+                .getResultList();
+    }
+    /*public List<Community> findAll(int page, int count, boolean desc) {
         String query = "select c from Community c order by c.id";
         if(desc) query += " desc";
         return em.createQuery(query, Community.class)
@@ -42,7 +68,7 @@ public class CommunityRepository {
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
-    }
+    }*/
 
     public List<Community> findAllMine(Long profileId, int page, int count, boolean desc) {
         String query = "select c from Community c where c.writer.id = :profileId";
@@ -54,7 +80,7 @@ public class CommunityRepository {
                 .getResultList();
     }
 
-    public List<Community> findByScope(Scope scope, int page, int count, boolean desc) {
+    /*public List<Community> findByScope(Scope scope, int page, int count, boolean desc) {
         String query = "select c from Community c where c.scope = :scope order by c.id";
         if(desc) query += " desc";
         return em.createQuery(query, Community.class)
@@ -117,7 +143,7 @@ public class CommunityRepository {
                 .setFirstResult((page-1)*count)
                 .setMaxResults(count)
                 .getResultList();
-    }
+    }*/
 
     public List<Community> findWithinPeriod(LocalDateTime from, LocalDateTime to, int page, int count) {
         return em.createQuery("select c from Community c where c.createdDate >= :from and c.createdDate <= :to order by c.id desc", Community.class)
