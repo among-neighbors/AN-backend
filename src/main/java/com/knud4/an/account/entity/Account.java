@@ -1,6 +1,6 @@
 package com.knud4.an.account.entity;
 
-import com.knud4.an.Base.BaseEntity;
+import com.knud4.an.base.BaseEntity;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.line.entity.Line;
 import lombok.AccessLevel;

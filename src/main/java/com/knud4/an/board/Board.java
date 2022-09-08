@@ -1,6 +1,6 @@
 package com.knud4.an.board;
 
-import com.knud4.an.Base.BaseEntity;
+import com.knud4.an.base.BaseEntity;
 import com.knud4.an.account.entity.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
