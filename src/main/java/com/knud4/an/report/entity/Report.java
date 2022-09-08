@@ -1,6 +1,6 @@
 package com.knud4.an.report.entity;
 
-import com.knud4.an.Base.BaseEntity;
+import com.knud4.an.base.BaseEntity;
 import com.knud4.an.account.entity.Account;
 import lombok.AccessLevel;
 import lombok.Builder;

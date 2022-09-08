@@ -1,16 +1,12 @@
 package com.knud4.an.account.entity;
 
-import com.knud4.an.Base.BaseEntity;
-import com.knud4.an.comment.entity.CommunityComment;
-import com.knud4.an.community.entity.Community;
+import com.knud4.an.base.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity

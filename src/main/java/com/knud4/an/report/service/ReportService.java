@@ -50,29 +50,35 @@ public class ReportService {
     }
 
     public List<Report> findAll(int page, int cnt) {
-        validatePaging(page, cnt);
+        validatePaging(page, cnt, countAll());
         List<Report> reports = reportRepository.findAll(page, cnt);
         return reports;
     }
 
+    public Long countAll() {
+        return reportRepository.countAll();
+    }
+
     public List<Report> findByAccountId(int page, int cnt, Long accountId) {
-        validatePaging(page, cnt);
+        validatePaging(page, cnt, countByAccountId(accountId));
         List<Report> reports = reportRepository.findByAccountId(page, cnt, accountId);
         return reports;
     }
 
-    public Boolean isLastPage(int page, int cnt) {
-        validatePaging(page, cnt);
-        Long reportCnt = reportRepository.countAll();
-        return (long) page*cnt >= reportCnt;
+    public Long countByAccountId(Long accountId) {
+        return reportRepository.countByAccountId(accountId);
+    }
+
+    public Boolean isLastPage(int page, int cnt, Long num) {
+        validatePaging(page, cnt, num);
+        return (long) page*cnt >= num;
     }
 
     public Boolean isFirstPage(int page) {
         return page == 1;
     }
 
-    private void validatePaging(int page, int cnt) {
-        Long num = reportRepository.countAll();
+    private void validatePaging(int page, int cnt, Long num) {
         int limit = (page - 1) * cnt;
         if (page != 1 && num<=limit) {
             throw new IllegalStateException("게시글 요청 범위를 초과하였습니다.");

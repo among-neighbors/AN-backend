@@ -1,6 +1,6 @@
 package com.knud4.an.line.entity;
 
-import com.knud4.an.Base.BaseEntity;
+import com.knud4.an.base.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

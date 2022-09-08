@@ -45,6 +45,13 @@ public class ReportRepository {
                 .getResultList();
     }
 
+    public Long countByAccountId(Long accountId) {
+        return em.createQuery("select count(r) from Report r " +
+                "where r.writer.id = :writerId", Long.class)
+                .setParameter("writerId", accountId)
+                .getSingleResult();
+    }
+
     public Long countAll() {
         return em.createQuery("select count(r) from Report r", Long.class)
                 .getSingleResult();

@@ -1,4 +1,4 @@
-package com.knud4.an.Base;
+package com.knud4.an.base;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
