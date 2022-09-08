@@ -1,5 +1,6 @@
 package com.knud4.an.line.controller;
 
+import com.knud4.an.house.dto.HouseListResponse;
 import com.knud4.an.line.dto.CreateLineForm;
 import com.knud4.an.line.dto.CreateLineResponse;
 import com.knud4.an.line.dto.LineListDTO;
@@ -8,6 +9,10 @@ import com.knud4.an.security.provider.JwtProvider;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +27,10 @@ public class LineController {
     private final JwtProvider jwtProvider;
 
     @Operation(summary = "라인 추가", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "라인 추가 성공", content = @Content(schema = @Schema(implementation = CreateLineResponse.class))),
+            @ApiResponse(responseCode = "400", description = "이미 존재하는 라인입니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
     @PostMapping("/api/v1/manager/lines/new")
     public ApiSuccessResult<CreateLineResponse> createLine
             (@Valid @RequestBody CreateLineForm form) throws RuntimeException{
