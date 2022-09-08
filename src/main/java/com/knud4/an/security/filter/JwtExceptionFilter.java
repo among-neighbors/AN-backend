@@ -34,7 +34,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch(JWTVerificationException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
 
             String body = objectMapper
                     .writeValueAsString(ApiUtil.error(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 토큰."));
@@ -44,10 +44,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             res.setCharacterEncoding("UTF-8");
             res.getWriter().write(body);
         } catch (TokenNotFoundException e) {
-            logger.error(e.getMessage(), e);
-
             String body = objectMapper
-                    .writeValueAsString(ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, "토큰이 없습니다."));
+                    .writeValueAsString(ApiUtil.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage()));
 
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.setContentType(MediaType.APPLICATION_JSON_VALUE);

@@ -1,6 +1,6 @@
 package com.knud4.an.utils.cookie;
 
-import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.exception.CookieNotFoundException;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -55,13 +55,13 @@ public class CookieUtil {
      * {@link HttpServletRequest http request} 에 포함된 브라우저 쿠키 조회
      * @param req http request
      * @param name 쿠키 이름
-     * @exception  NotFoundException
+     * @exception  CookieNotFoundException
      *              요청한 쿠키가 없을 때
      */
     public ResponseCookie getCookie(HttpServletRequest req, String name) {
         Cookie[] findCookies = req.getCookies();
         if (findCookies == null) {
-         throw new NotFoundException("전달된 쿠키가 없습니다.");
+         throw new CookieNotFoundException("전달된 쿠키가 없습니다.");
         }
         for (Cookie cookie : findCookies) {
             if (cookie.getName().equals(name)) {
@@ -69,6 +69,6 @@ public class CookieUtil {
             }
         }
 
-        throw new NotFoundException("쿠키를 찾을 수 없습니다.");
+        throw new CookieNotFoundException("쿠키를 찾을 수 없습니다.");
     }
 }
