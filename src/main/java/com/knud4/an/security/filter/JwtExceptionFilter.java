@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.knud4.an.exception.TokenNotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -27,6 +28,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         HttpServletResponse res = (HttpServletResponse)response;
+
+        if (request.getMethod().equals(HttpMethod.OPTIONS.toString())) {
+            return;
+        }
 
         try {
             filterChain.doFilter(request, response);
