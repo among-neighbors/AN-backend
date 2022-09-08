@@ -40,16 +40,27 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterWrapped(RequestWrapper request, ContentCachingResponseWrapper response, FilterChain filterChain) throws ServletException, IOException {
+        String[] resource = request.getRequestURI().split("/");
+        String lastResource = resource[resource.length - 1];
+        boolean isLoggable = (!lastResource.equals("account-token") && !lastResource.equals("profile-token"));
+
         try {
-            logRequest(request);
+            if (isLoggable) {
+                logRequest(request);
+            }
+
             filterChain.doFilter(request, response);
         } finally {
-            logResponse(response);
+            if (isLoggable) {
+                logResponse(response);
+            }
+
             response.copyBodyToResponse();
         }
     }
 
     private static void logRequest(RequestWrapper request) throws IOException {
+
         String queryString = request.getQueryString();
         log.info("Request : {} ip=[{}] uri=[{}] content-type=[{}]",
                 request.getMethod(),
@@ -67,6 +78,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private static void logPayload(String prefix, String contentType, InputStream inputStream) throws IOException {
+
         boolean visible = isVisible(MediaType.valueOf(contentType == null ? "application/json" : contentType));
         if (visible) {
             byte[] content = StreamUtils.copyToByteArray(inputStream);
@@ -80,6 +92,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     private static boolean isVisible(MediaType mediaType) {
+
         final List<MediaType> VISIBLE_TYPES = Arrays.asList(
                 MediaType.valueOf("text/*"),
                 MediaType.APPLICATION_FORM_URLENCODED,
