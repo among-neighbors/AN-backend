@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @Tag(name = "커뮤니티")
 @RestController
@@ -53,7 +52,7 @@ public class CommunityController {
     @AccountRequired
     @Operation(summary = "커뮤니티글 전체 조회", description = "account token이 필요합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "커뮤니티글 생성 성공", content = @Content(schema = @Schema(implementation = CommunityListDTO.class))),
+            @ApiResponse(responseCode = "200", description = "커뮤니티글 전체 조회 성공", content = @Content(schema = @Schema(implementation = CommunityListDTO.class))),
             @ApiResponse(responseCode = "400", description = "게시글 요청 범위를 초과하였습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
     })
     @GetMapping("/api/v1/communities")
