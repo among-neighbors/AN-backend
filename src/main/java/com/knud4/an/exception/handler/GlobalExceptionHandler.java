@@ -1,7 +1,7 @@
 package com.knud4.an.exception.handler;
 
 import com.knud4.an.exception.CookieNotFoundException;
-import com.knud4.an.exception.IllegalMessagingException;
+import com.knud4.an.exception.websocket.IllegalMessagingException;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
