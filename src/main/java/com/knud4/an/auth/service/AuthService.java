@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -64,6 +66,8 @@ public class AuthService {
 
         House house = houseRepository.findByLineIdAndHouseName(line.getId(), form.getHouseName())
                 .orElseThrow(() -> new NotFoundException("세대를 찾을 수 없습니다."));
+
+        validatePassword(form.getPasswd());
 
         Account account = Account.builder()
                 .username(form.getUsername())
@@ -153,5 +157,17 @@ public class AuthService {
                 .stream().findFirst().orElseThrow(() -> new NotFoundException("매니저 프로필 누락"));
 
         return profile;
+    }
+
+    private void validatePassword(String password) {
+        int MIN_SIZE = 8;
+        int MAX_SIZE = 50;
+
+        String regexPassword = "^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z[0-9]]{" + MIN_SIZE
+                + "," + MAX_SIZE + "}$";
+        Pattern PATTERN = Pattern.compile(regexPassword);
+
+        if (!PATTERN.matcher(password).matches())
+                throw new IllegalStateException(MIN_SIZE + "자 이상의 "+ MAX_SIZE + "자 이하의 숫자, 영문자를 포함한 비밀번호를 입력해주세요");
     }
 }
