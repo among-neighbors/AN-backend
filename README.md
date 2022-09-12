@@ -116,6 +116,18 @@ $ docker run -p 8080:8080 -d --name=app-name tag-name:1.0
 
 <br>
 
+<img width="60%" alt="Screen Shot 2022-09-11 at 11 40 44 AM" src="https://user-images.githubusercontent.com/62577565/189511726-2f7b41a7-7971-4047-b88e-4315aa6adc56.gif">
+
+<p>
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 14 34 AM" src="https://user-images.githubusercontent.com/62577565/189509399-de0e5858-bd3e-4561-b4f1-74ca3fbdd6f9.png">
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 24 09 AM" src="https://user-images.githubusercontent.com/62577565/189509268-3514676a-a110-4bb6-ae7e-faf02faa9b8f.png">
+</p>
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<일반 사용자 모드>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<어르신 모드>
+<br>
+<br>
+
 
 > 이웃 사이 조금 더 편하게 이야기 할 수 있어요.
 
@@ -128,12 +140,31 @@ $ docker run -p 8080:8080 -d --name=app-name tag-name:1.0
 <br>
 
 
+<p>
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 53 16 AM" src="https://user-images.githubusercontent.com/62577565/189510334-80ff0b46-3347-4e7c-8d7b-1639a91a6bef.png">
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 56 32 AM" src="https://user-images.githubusercontent.com/62577565/189510390-a44e51be-85ff-4a75-82aa-5317c635ab35.png">
+
+</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<일반 사용자 모드>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<어르신 모드>
+<br>
+<br>
+
+
 > 이웃 사이 중요한 정보는 놓치면 안돼요.
 
 이웃사이는 집 안팎에서 언제든지 확인 가능한 통합 공지 시스템을 제공합니다.
 
 언제 어디서든 **공지사항**을 간편하게 확인할 수 있습니다. 세대 별 공지를 골라 볼 수도 있습니다.
 
+<br>
+
+<p>
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 58 30 AM" src="https://user-images.githubusercontent.com/62577565/189510429-6dd226df-bdbf-4207-a89e-5773281cbf85.png">
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 58 17 AM" src="https://user-images.githubusercontent.com/62577565/189510434-d2b178c1-44ee-40d0-be62-18bbf06d331f.png">
+
+</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<일반 사용자 모드>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<어르신 모드>
+<br>
 <br>
 
 
@@ -144,6 +175,16 @@ $ docker run -p 8080:8080 -d --name=app-name tag-name:1.0
 **도움을 요청**하는 즉시 같은 라인의 모든 이웃들에게 전달되고, 요청을 수락한 이웃으로부터 필요한 도움을 받을 수 있습니다.
 
 <br>
+
+<p>
+<img width="40%" alt="Screen Shot 2022-09-11 at 12 02 04 PM" src="https://user-images.githubusercontent.com/62577565/189510524-8f2926d7-295d-4b1f-a9f7-6596b4896b79.png">
+<img width="40%" alt="Screen Shot 2022-09-11 at 11 59 22 AM" src="https://user-images.githubusercontent.com/62577565/189510465-5ed9abe9-74ae-4c4a-9862-cfce585962e0.png">
+
+</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<일반 사용자 모드>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<어르신 모드>
+<br>
+<br>
+
 
 ## 4. 이웃사이 서버 환경
 
