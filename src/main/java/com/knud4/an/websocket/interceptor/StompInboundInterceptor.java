@@ -3,6 +3,7 @@ package com.knud4.an.websocket.interceptor;
 import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.repository.AccountRepository;
 import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.exception.websocket.IllegalMessagingException;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
@@ -96,10 +97,10 @@ public class StompInboundInterceptor implements ChannelInterceptor {
 
         if (destination != null && destination.startsWith(SUB_LINE_PREFIX)) {
             if (!destination.replace(SUB_LINE_PREFIX, "").equals(lineName)) {
-                throw new IllegalStateException("요청 라인 이름이 잘못되었습니다.");
+                throw new IllegalMessagingException("요청 라인 이름이 잘못되었습니다.");
             }
         } else {
-            throw new IllegalStateException("요청 형식이 잘못되었습니다.");
+            throw new IllegalMessagingException("요청 형식이 잘못되었습니다.");
         }
     }
 
@@ -110,14 +111,14 @@ public class StompInboundInterceptor implements ChannelInterceptor {
     private Map<String, Object> getHouseInfoByAuthorizationHeader(StompHeaderAccessor headerAccessor) {
         List<String> authorization = headerAccessor.getNativeHeader("Authorization");
         if (authorization == null || authorization.size() != 1) {
-            throw new NotFoundException("인증 정보를 찾을 수 없습니다.");
+            throw new IllegalMessagingException("인증 정보를 찾을 수 없습니다.");
         }
 
         String token = authorization.get(0);
         Long accountId = jwtProvider.getAccountIdFromToken(token);
 
         Account account = accountRepository.findAccountById(accountId)
-                .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalMessagingException("계정이 존재하지 않습니다."));
         Line line = lineRepository.findById(account.getLine().getId());
         House house = houseRepository.findById(account.getHouse().getId());
 

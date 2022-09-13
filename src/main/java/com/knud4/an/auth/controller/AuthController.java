@@ -14,12 +14,14 @@ import com.knud4.an.auth.dto.profile.AddProfileResponse;
 import com.knud4.an.auth.dto.profile.SignInProfileForm;
 import com.knud4.an.auth.dto.profile.SignInProfileResponse;
 import com.knud4.an.auth.service.AuthService;
+import com.knud4.an.exception.CookieNotFoundException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.annotation.AccountRequired;
 import com.knud4.an.utils.api.ApiUtil;
 import com.knud4.an.utils.api.ApiUtil.*;
 import com.knud4.an.utils.cookie.CookieUtil;
 import com.knud4.an.security.provider.JwtProvider;
+import com.knud4.an.utils.redis.RedisUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,6 +45,8 @@ public class AuthController {
     private final JwtProvider jwtProvider;
     private final CookieUtil cookieUtil;
 
+    private final RedisUtil redisUtil;
+
     @Operation(summary = "계정 가입")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "계정 가입 성공", content = @Content(schema = @Schema(implementation = SignUpAccountResponse.class))),
@@ -65,6 +69,7 @@ public class AuthController {
     @PostMapping("/api/v1/auth/accounts/login")
     public ApiSuccessResult<SignInAccountResponse> signInAccount (
             @RequestBody @Valid SignInAccountForm form,
+            HttpServletRequest req,
             HttpServletResponse res) throws RuntimeException {
 
         Account account = authService.signInAccount(form);
@@ -75,7 +80,62 @@ public class AuthController {
         ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, refreshToken);
         res.addHeader("Set-Cookie", cookie.toString());
 
-        return ApiUtil.success(new SignInAccountResponse(account, accessToken, refreshToken));
+        ApiSuccessResult<SignInAccountResponse> result = ApiUtil
+                .success(new SignInAccountResponse(account, accessToken, refreshToken));
+
+        try {
+            String accountRefreshToken = cookieUtil.getCookie(req, JwtProvider.ACCOUNT_TOKEN_NAME).getValue();
+            redisUtil.del(accountRefreshToken);
+        } catch (CookieNotFoundException ignored) {
+        } finally {
+            cacheToken(accessToken, refreshToken);
+        }
+
+        return result;
+    }
+
+    @AccountRequired
+    @Operation(summary = "프로필 로그인", description = "account token이 필요합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "프로필 로그인 성공", content = @Content(schema = @Schema(implementation = SignInProfileResponse.class))),
+            @ApiResponse(responseCode = "400", description = "계정 정보가 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class))),
+            @ApiResponse(responseCode = "404", description = "프로필 또는 핀 번호를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
+    })
+    @PostMapping("/api/v1/auth/profiles/login")
+    public ApiSuccessResult<SignInProfileResponse> signInProfile(
+            @RequestBody @Valid SignInProfileForm form,
+            HttpServletRequest req,
+            HttpServletResponse res) throws RuntimeException {
+
+        String email = (String)req.getAttribute("email");
+
+        Profile profile = authService.signInProfile(form, email);
+
+        String accessToken = jwtProvider.generateProfileToken(
+                profile.getAccount().getEmail(),
+                profile.getAccount().getId()+"",
+                profile.getId() + "");
+
+        String refreshToken = jwtProvider.generateProfileRefreshToken(
+                profile.getAccount().getEmail(),
+                profile.getAccount().getId() + "",
+                profile.getId() + "");
+
+        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, refreshToken);
+        res.addHeader("Set-Cookie", cookie.toString());
+
+        ApiSuccessResult<SignInProfileResponse> result = ApiUtil
+                .success(new SignInProfileResponse(profile, accessToken, refreshToken));
+
+        try {
+            String profileRefreshToken = cookieUtil.getCookie(req, JwtProvider.PROFILE_TOKEN_NAME).getValue();
+            redisUtil.del(profileRefreshToken);
+        } catch (CookieNotFoundException ignored) {
+        } finally {
+            cacheToken(accessToken, refreshToken);
+        }
+
+        return result;
     }
 
     @Operation(summary = "매니저 로그인")
@@ -139,47 +199,29 @@ public class AuthController {
         return ApiUtil.success(new AddProfileResponse(profileId));
     }
 
-    @AccountRequired
-    @Operation(summary = "프로필 로그인", description = "account token이 필요합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "프로필 로그인 성공", content = @Content(schema = @Schema(implementation = SignInProfileResponse.class))),
-            @ApiResponse(responseCode = "400", description = "계정 정보가 잘못되었습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class))),
-            @ApiResponse(responseCode = "404", description = "프로필 또는 핀 번호를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
-    })
-    @PostMapping("/api/v1/auth/profiles/login")
-    public ApiSuccessResult<SignInProfileResponse> signInProfile(
-            @RequestBody @Valid SignInProfileForm form,
-            HttpServletRequest req,
-            HttpServletResponse res) throws RuntimeException {
-
-        String email = (String)req.getAttribute("email");
-
-        Profile profile = authService.signInProfile(form, email);
-
-        String accessToken = jwtProvider.generateProfileToken(
-                profile.getAccount().getEmail(),
-                profile.getAccount().getId()+"",
-                profile.getId() + "");
-
-        String refreshToken = jwtProvider.generateProfileRefreshToken(
-                profile.getAccount().getEmail(),
-                profile.getAccount().getId() + "",
-                profile.getId() + "");
-
-        ResponseCookie cookie = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, refreshToken);
-        res.addHeader("Set-Cookie", cookie.toString());
-
-        return ApiUtil.success(new SignInProfileResponse(profile, accessToken, refreshToken));
-    }
-
     @Operation(summary = "계정 로그아웃")
     @ApiResponse(responseCode = "200", description = "계정 로그아웃 성공", content = @Content(schema = @Schema(implementation = String.class)))
     @GetMapping("/api/v1/auth/accounts/logout")
     public ApiSuccessResult<String> signOutAccount(
+            HttpServletRequest req,
             HttpServletResponse res) {
-        ResponseCookie deleteCookie
+
+        try {
+            String accountRefreshToken = cookieUtil.getCookie(req, JwtProvider.ACCOUNT_TOKEN_NAME).getValue();
+            redisUtil.del(accountRefreshToken);
+
+            String profileRefreshToken = cookieUtil.getCookie(req, JwtProvider.PROFILE_TOKEN_NAME).getValue();
+            redisUtil.del(profileRefreshToken);
+        } catch (CookieNotFoundException ignored) {
+        }
+
+        ResponseCookie deleteAccountCookie
                 = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, null, 0);
-        res.addHeader("Set-Cookie", deleteCookie.toString());
+        res.addHeader("Set-Cookie", deleteAccountCookie.toString());
+
+        ResponseCookie deleteProfileCookie
+                = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, null, 0);
+        res.addHeader("Set-Cookie", deleteProfileCookie.toString());
 
         return ApiUtil.success("성공적으로 로그아웃 했습니다.");
     }
@@ -188,7 +230,15 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "프로필 로그아웃 성공", content = @Content(schema = @Schema(implementation = String.class)))
     @GetMapping("/api/v1/auth/profiles/logout")
     public ApiSuccessResult<String> signOutProfile(
+            HttpServletRequest req,
             HttpServletResponse res) {
+
+        try {
+            String profileRefreshToken = cookieUtil.getCookie(req, JwtProvider.PROFILE_TOKEN_NAME).getValue();
+            redisUtil.del(profileRefreshToken);
+        } catch (CookieNotFoundException ignored) {
+        }
+
         ResponseCookie deleteCookie
                 = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, null, 0);
         res.addHeader("Set-Cookie", deleteCookie.toString());
@@ -211,17 +261,37 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "계정 토큰 재발급 성공", content = @Content(schema = @Schema(implementation = TokenDTO.class)))
     @PostMapping("/api/v1/auth/account-token")
     public ApiSuccessResult<TokenDTO> reIssueAccountToken(HttpServletRequest req, HttpServletResponse res) {
-//      쿠키로 전달된 refresh 토큰 확인
-        String refreshToken = cookieUtil.getCookie(req, "account_refresh_token").getValue();
-//      refresh token 이 유효한 상태면 access token 발급
-        String accessToken = jwtProvider.reIssueAccountToken(refreshToken);
+        String accessToken;
+        String refreshToken;
+
+        refreshToken = cookieUtil.getCookie(req, JwtProvider.ACCOUNT_TOKEN_NAME).getValue();
 
         String reIssuedRefreshToken = jwtProvider.reIssueAccountRefreshToken(refreshToken);
+
         if (reIssuedRefreshToken != null) {
+            redisUtil.del(refreshToken);
+
+            refreshToken = reIssuedRefreshToken;
+            accessToken = jwtProvider.reIssueAccountToken(refreshToken);
+
+            cacheToken(accessToken, refreshToken);
+
             ResponseCookie refreshTokenCookie
-                    = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, reIssuedRefreshToken);
+                    = cookieUtil.createCookie(JwtProvider.ACCOUNT_TOKEN_NAME, refreshToken);
+
             res.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        } else {
+
+            String cachedToken = (String) redisUtil.get(refreshToken);
+
+            if (cachedToken == null) {
+                accessToken = jwtProvider.reIssueAccountToken(refreshToken);
+                cacheToken(accessToken, refreshToken);
+            } else {
+                accessToken = cachedToken;
+            }
         }
+
         return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));
     }
 
@@ -229,18 +299,40 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "프로필 토큰 재발급 성공", content = @Content(schema = @Schema(implementation = TokenDTO.class)))
     @PostMapping("/api/v1/auth/profile-token")
     public ApiSuccessResult<TokenDTO> reIssueProfileToken(HttpServletRequest req, HttpServletResponse res) {
-//      쿠키로 전달된 refresh 토큰 확인
-        String refreshToken = cookieUtil.getCookie(req, "profile_refresh_token").getValue();
-//      유효한 상태면 access token 발급
-        String accessToken = jwtProvider.reIssueProfileToken(refreshToken);
+
+        String accessToken;
+        String refreshToken;
+
+        refreshToken = cookieUtil.getCookie(req, JwtProvider.PROFILE_TOKEN_NAME).getValue();
 
         String reIssuedRefreshToken = jwtProvider.reIssueProfileRefreshToken(refreshToken);
-//      갱신 가능한 상태면 재발급
+
         if (reIssuedRefreshToken != null) {
+            redisUtil.del(refreshToken);
+
+            refreshToken = reIssuedRefreshToken;
+            accessToken = jwtProvider.reIssueProfileToken(refreshToken);
+            cacheToken(accessToken, refreshToken);
+
             ResponseCookie refreshTokenCookie
                     = cookieUtil.createCookie(JwtProvider.PROFILE_TOKEN_NAME, reIssuedRefreshToken);
             res.addHeader("Set-Cookie", refreshTokenCookie.toString());
+        } else {
+            String cachedToken = (String) redisUtil.get(refreshToken);
+
+            if (cachedToken == null) {
+                accessToken = jwtProvider.reIssueProfileToken(refreshToken);
+                cacheToken(accessToken, refreshToken);
+            } else {
+                accessToken = cachedToken;
+            }
         }
+
         return ApiUtil.success(new TokenDTO(accessToken, reIssuedRefreshToken));
+    }
+
+    private void cacheToken(String accessToken, String refreshToken) {
+        redisUtil.set(refreshToken, accessToken);
+        redisUtil.expire(refreshToken, JwtProvider.TOKEN_CACHING_SECOND);
     }
 }

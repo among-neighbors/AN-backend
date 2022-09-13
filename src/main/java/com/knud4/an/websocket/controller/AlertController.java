@@ -1,9 +1,9 @@
 package com.knud4.an.websocket.controller;
 
-import com.knud4.an.exception.IllegalMessagingException;
-import com.knud4.an.utils.redis.RedisUtil;
+import com.knud4.an.exception.websocket.IllegalMessagingException;
 import com.knud4.an.websocket.dto.AcceptDTO;
 import com.knud4.an.websocket.dto.MessageDTO;
+import com.knud4.an.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,6 +12,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -44,7 +46,10 @@ public class AlertController {
         redisUtil.set(line+house, true);
         redisUtil.expire(line+house, 600);
 
-        template.convertAndSend("/sub/line/" + line, result.toString());
+        Map<String, Object> header = new HashMap<>();
+        header.put("type", "alert");
+
+        template.convertAndSend("/sub/line/" + line, result.toString(), header);
     }
 
     @MessageMapping(value = "/accept")
@@ -69,6 +74,11 @@ public class AlertController {
         result.put("accept_house", house);
         result.put("target_house", acceptDTO.getTarget());
 
-        template.convertAndSend("/sub/line/" + line, result.toString());
+        Map<String, Object> header = new HashMap<>();
+        header.put("type", "accept");
+
+        template.convertAndSend("/sub/line/" + line, result.toString(), header);
+
+        redisUtil.del(line+acceptDTO.getTarget());
     }
 }

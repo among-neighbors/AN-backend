@@ -45,6 +45,11 @@ public class JwtProvider implements AuthenticationProvider {
     private static final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60 * 60 * 48;
 
     /**
+     * 인증 토큰 캐싱 유효기간
+     */
+    public static final long TOKEN_CACHING_SECOND = 1000L * 120;
+
+    /**
      * 서버 스펙 JWT 이름
      */
     public static final String ACCOUNT_TOKEN_NAME = "account_refresh_token";

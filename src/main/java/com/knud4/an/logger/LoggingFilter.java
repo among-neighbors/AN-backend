@@ -42,7 +42,7 @@ public class LoggingFilter extends OncePerRequestFilter {
     protected void doFilterWrapped(RequestWrapper request, ContentCachingResponseWrapper response, FilterChain filterChain) throws ServletException, IOException {
         String[] resource = request.getRequestURI().split("/");
         String lastResource = resource[resource.length - 1];
-        boolean isLoggable = (!lastResource.equals("account-token") && !lastResource.equals("profile-token"));
+        boolean isLoggable = (!lastResource.equals("account-token") && !lastResource.equals("profile-token") && !lastResource.equals("an-ws"));
 
         try {
             if (isLoggable) {

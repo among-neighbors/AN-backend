@@ -1,6 +1,7 @@
 package com.knud4.an.exception.handler;
 
-import com.knud4.an.exception.IllegalMessagingException;
+import com.knud4.an.exception.CookieNotFoundException;
+import com.knud4.an.exception.websocket.IllegalMessagingException;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
 import com.knud4.an.utils.api.ApiUtil;
@@ -66,6 +67,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(e.getMessage(), e);
         ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "알 수 없는 오류 서버팀에 문의해주세요");
         return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(CookieNotFoundException.class)
+    protected ResponseEntity<?> handleCookieNotFoundException(Exception e) {
+        ApiErrorResult<String> error = ApiUtil.error(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+        return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(error);
     }
 
     @MessageExceptionHandler({
