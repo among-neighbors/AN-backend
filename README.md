@@ -202,6 +202,12 @@ Redis 는 도커 브릿지 네트워크를 만들어 연결, 데이터베이스�
 | 박상현  |[PPakSang](https://github.com/PPakSang)|sanghyun-dev@naver.com|
 | 황아영  |[dkdud9261](https://github.com/dkdud9261)|ayxxng73@gmail.com|
 
+## **6. Open Source**
+
+[MIT License](LICENSE)
+
+[Contribution Guideline](CONTRIBUTING.md)
+
 
 
 
