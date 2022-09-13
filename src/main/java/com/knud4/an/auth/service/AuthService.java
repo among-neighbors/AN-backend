@@ -111,6 +111,7 @@ public class AuthService {
                 .pin(passwordEncoder.encode(form.getPin()))
                 .age(form.getAge())
                 .gender(form.getGender())
+                .idx(accountRepository.countProfilesByAccountId(account.getId()))
                 .build();
 
         accountRepository.saveProfile(profile);

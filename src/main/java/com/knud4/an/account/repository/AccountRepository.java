@@ -82,4 +82,10 @@ public class AccountRepository {
                 .setParameter("accountId", accountId)
                 .getSingleResult();
     }
+
+    public int countProfilesByAccountId(Long accountId) {
+        return em.createQuery("select count(p) from Profile p where p.account.id = :accountId", Integer.class)
+                .setParameter("accountId", accountId)
+                .getSingleResult();
+    }
 }

@@ -19,6 +19,7 @@ public class ProfileDTO {
     private String lineName;
     private String houseName;
     private LocalDateTime createdDate;
+    private Integer idx;
 
     public ProfileDTO(Profile profile) {
         this.id = profile.getId();
@@ -26,6 +27,7 @@ public class ProfileDTO {
         this.age = profile.getAge();
         this.gender = profile.getGender();
         this.createdDate = profile.getCreatedDate();
+        this.idx = profile.getIdx();
 
         this.lineName = profile.getAccount().getLineName();
         this.houseName = profile.getAccount().getHouseName();
