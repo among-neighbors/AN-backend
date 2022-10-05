@@ -28,6 +28,8 @@ public class Profile extends BaseEntity {
     private Integer age;
     private String pin;
 
+    private String imgUrl;
+
 //    @OneToMany(mappedBy = "writer")
 //    private List<CommunityComment> communityComments = new ArrayList<>();
 //
@@ -35,11 +37,16 @@ public class Profile extends BaseEntity {
 //    private List<Community> communities = new ArrayList<>();
 
     @Builder
-    public Profile(Account account, Gender gender, String name, Integer age, String pin) {
+    public Profile(Account account, Gender gender, String name, Integer age, String pin, String imgUrl) {
         this.account = account;
         this.gender = gender;
         this.name = name;
         this.age = age;
         this.pin = pin;
+        this.imgUrl = imgUrl;
+    }
+
+    public void updateImg(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }
