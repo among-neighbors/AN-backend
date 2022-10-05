@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Tag(name = "인증")
 @RestController
@@ -189,8 +190,8 @@ public class AuthController {
     })
     @PostMapping("/api/v1/auth/profiles/new")
     public ApiSuccessResult<AddProfileResponse> addProfile(
-            @RequestBody @Valid AddProfileForm form,
-            HttpServletRequest req) throws RuntimeException {
+             @Valid AddProfileForm form,
+            HttpServletRequest req) throws RuntimeException, IOException {
 
         String email = (String)req.getAttribute("email");
 

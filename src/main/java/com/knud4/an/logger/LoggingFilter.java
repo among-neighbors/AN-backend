@@ -30,6 +30,13 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        //        multipart form data 받을 때 오류
+        MediaType mediaType = MediaType.valueOf(request.getContentType() == null ? "application/json" : request.getContentType());
+        String type = mediaType.getType() + "/" + mediaType.getSubtype();
+        if (type.equals(MediaType.MULTIPART_FORM_DATA_VALUE))
+            request.getParts();
+
         MDC.put("traceId", UUID.randomUUID().toString().substring(30));
         if (isAsyncDispatch(request)) {
             filterChain.doFilter(request, response);
