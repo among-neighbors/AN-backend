@@ -64,6 +64,9 @@ dependencies {
 //    MySQL
     implementation 'mysql:mysql-connector-java'
 
+//    GCP storage
+    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.5.RELEASE'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
