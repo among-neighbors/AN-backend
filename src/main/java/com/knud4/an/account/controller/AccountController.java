@@ -1,7 +1,9 @@
 package com.knud4.an.account.controller;
 
+import com.knud4.an.account.dto.AccountDTO;
 import com.knud4.an.account.dto.ProfileDTO;
 import com.knud4.an.account.dto.ProfileListResponse;
+import com.knud4.an.account.entity.Account;
 import com.knud4.an.account.entity.Profile;
 import com.knud4.an.account.service.AccountService;
 import com.knud4.an.annotation.AccountRequired;
@@ -24,6 +26,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
+
+    @AccountRequired
+    @Operation(summary = "계정 정보 조회", description = "account token이 필요합니다.")
+    @ApiResponse(responseCode = "200", description = "프로필 목록 조회 성공", content = @Content(schema = @Schema(implementation = ProfileListResponse.class)))
+    @GetMapping("/api/v1/accounts")
+    public ApiSuccessResult<AccountDTO> myAccount(HttpServletRequest req) {
+        Account account = accountService.findAccountByAccountId((Long) req.getAttribute("accountId"));
+
+        return ApiUtil.success(new AccountDTO(account));
+    }
 
     @AccountRequired
     @Operation(summary = "프로필 목록 조회", description = "account token이 필요합니다.")
