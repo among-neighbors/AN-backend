@@ -120,13 +120,6 @@ public class CommunityService {
     }
 
     @Transactional
-    public void updateLike(Long communityId) {
-        Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
-        community.increaseLike();
-    }
-
-    @Transactional
     public void delete(Long id, Long profileId) {
         Community community = communityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("커뮤니티 글이 존재하지 않습니다."));
