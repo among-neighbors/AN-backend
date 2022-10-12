@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Set;
 
 /**
  * Redis 서버 동작 보조 클래스
@@ -31,4 +32,25 @@ public class RedisUtil {
     public void del(String key) {
         redisTemplate.delete(key);
     }
+
+    public void sAdd(String key, Object value) {
+        redisTemplate.opsForSet().add(key, value);
+    }
+
+    public void sRem(String key, Object value) {
+        redisTemplate.opsForSet().remove(key, value);
+    }
+
+    public Boolean sIsMember(String key, Object value) {
+        return redisTemplate.opsForSet().isMember(key, value);
+    }
+
+    public Long sSize(String key) {
+        return redisTemplate.opsForSet().size(key);
+    }
+
+    public Boolean exists(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
 }
