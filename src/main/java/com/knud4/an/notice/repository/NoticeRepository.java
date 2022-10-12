@@ -68,7 +68,7 @@ public class NoticeRepository {
     }
 
     public Long countAllForLine(String lineName) {
-        return em.createQuery("select n from Notice n " +
+        return em.createQuery("select count(n) from Notice n " +
                 "where n.scope = 'LINE' and n.releaseLine = :lineName",
                 Long.class)
                 .setParameter("lineName", lineName)
