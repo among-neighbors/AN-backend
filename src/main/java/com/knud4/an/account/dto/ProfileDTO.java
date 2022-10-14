@@ -19,6 +19,7 @@ public class ProfileDTO {
     private String lineName;
     private String houseName;
     private LocalDateTime createdDate;
+    private String imgUrl;
 
     public ProfileDTO(Profile profile) {
         this.id = profile.getId();
@@ -29,5 +30,6 @@ public class ProfileDTO {
 
         this.lineName = profile.getAccount().getLineName();
         this.houseName = profile.getAccount().getHouseName();
+        this.imgUrl = profile.getImgUrl();
     }
 }

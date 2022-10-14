@@ -11,6 +11,7 @@ import com.knud4.an.auth.dto.profile.SignInProfileForm;
 import com.knud4.an.auth.dto.account.SignUpAccountForm;
 import com.knud4.an.exception.NotAuthenticatedException;
 import com.knud4.an.exception.NotFoundException;
+import com.knud4.an.gcp.storage.service.FileService;
 import com.knud4.an.house.entity.House;
 import com.knud4.an.house.repository.HouseRepository;
 import com.knud4.an.line.entity.Line;
@@ -21,12 +22,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
+
+    private final FileService fileService;
 
     private final RedisUtil redisUtil;
     private final PasswordEncoder passwordEncoder;
@@ -96,7 +100,7 @@ public class AuthService {
     }
 
     @Transactional
-    public Long AddProfile(AddProfileForm form, String accountEmailFromToken) throws RuntimeException{
+    public Long AddProfile(AddProfileForm form, String accountEmailFromToken) throws RuntimeException, IOException {
 
         Account account = accountRepository.findAccountByEmail(accountEmailFromToken)
                 .orElseThrow(() -> new NotFoundException("계정이 존재하지 않습니다."));
@@ -114,6 +118,11 @@ public class AuthService {
                 .build();
 
         accountRepository.saveProfile(profile);
+
+        if (form.getImg() != null) {
+            String url = fileService.uploadPNG(profile.getId() + "", form.getImg().getBytes());
+            profile.updateImg(url);
+        }
 
         return profile.getId();
     }

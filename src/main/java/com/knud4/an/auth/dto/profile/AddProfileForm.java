@@ -4,6 +4,8 @@ import com.knud4.an.account.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,4 +21,6 @@ public class AddProfileForm {
     private String pin;
     @NotNull
     private Gender gender;
+    @Nullable
+    private MultipartFile img;
 }

@@ -117,18 +117,6 @@ public class CommunityController {
     }
 
     @ProfileRequired
-    @Operation(summary = "커뮤니티글 좋아요", description = "profile token이 필요합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "커뮤니티글 좋아요 성공", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "404", description = "커뮤니티글이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ApiErrorResult.class)))
-    })
-    @PutMapping("/api/v1/communities/{id}/like")
-    public ApiSuccessResult<String> updateLike(@PathVariable Long id) {
-        communityService.updateLike(id);
-        return ApiUtil.success("좋아요가 업데이트 되었습니다.");
-    }
-
-    @ProfileRequired
     @Operation(summary = "커뮤니티글 삭제", description = "profile token이 필요합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "커뮤니티글 삭제 성공", content = @Content(schema = @Schema(implementation = String.class))),

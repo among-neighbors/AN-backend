@@ -1,4 +1,4 @@
-package com.knud4.an.websocket.dto;
+package com.knud4.an.expression.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageDTO<T> {
-    private T text;
-    private String lat;
-    private String lng;
+public class ExpressionDTO {
+
+    private Long count;
+    private Boolean didILiked;
 }

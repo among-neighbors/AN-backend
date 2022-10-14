@@ -47,7 +47,7 @@ public class JwtProvider implements AuthenticationProvider {
     /**
      * 인증 토큰 캐싱 유효기간
      */
-    public static final long TOKEN_CACHING_SECOND = 1000L * 120;
+    public static final long TOKEN_CACHING_SECOND = 60L * 119;
 
     /**
      * 서버 스펙 JWT 이름
