@@ -27,9 +27,13 @@ $ git clone https://github.com/among-neighbors/AN-backend.git
 **application.yml**
 
 ```yaml
+gcp-bucket-name: bucket-name
+gcp-directory-name: directory-name
+gcp-storage-url: storage-url
+
 group:
-  name: name
-  email: email
+  name: group-name
+  email: group-email
 
 spring:
   security:
@@ -39,14 +43,20 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
-    
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
   redis:
-    host: host
-    port: port
+    host: localhost
+    port: 6379
 
   jpa:
-    hibernate:
-      ddl-auto: none
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
 
   mail:
     host: host
@@ -57,14 +67,34 @@ spring:
       mail:
         smtp:
           auth: true
+
   jwt:
     secret: secret
 
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 40MB
+
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: storage-secret-key
+
+
 springdoc:
   swagger-ui:
-    path: swagger.html
+    path: path
     operations-sorter: method
+  #  version: v1
   paths-to-match: /api/**
+
+server:
+  ssl:
+    key-store: key-store-path
+    key-store-type: PKCS12
+    key-store-password: 1234
 ```
 
 **Dockerfile**
