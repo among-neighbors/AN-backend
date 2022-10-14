@@ -33,15 +33,17 @@ public class AlertController {
             throw new IllegalMessagingException("세대 정보 누락");
         }
 
-        Boolean isPresent = (Boolean)redisUtil.get(line+house);
-        if (isPresent != null && isPresent) {
-            throw new IllegalMessagingException("이미 요청 하였습니다.");
-        }
+//        Boolean isPresent = (Boolean)redisUtil.get(line+house);
+//        if (isPresent != null && isPresent) {
+//            throw new IllegalMessagingException("이미 요청 하였습니다.");
+//        }
 
         JSONObject result = new JSONObject();
 
         result.put("house", house);
         result.put("text", messageDTO.getText());
+        result.put("lat", messageDTO.getLat());
+        result.put("lng", messageDTO.getLng());
 
         redisUtil.set(line+house, true);
         redisUtil.expire(line+house, 600);
