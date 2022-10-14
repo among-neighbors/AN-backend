@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MessageDTO<T> {
     private T text;
+    private String lat;
+    private String lng;
 }
