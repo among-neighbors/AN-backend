@@ -95,5 +95,6 @@ public class AlertController {
         template.convertAndSend("/sub/line/" + line, result.toString(), header);
 
         redisUtil.del(line+acceptDTO.getTarget());
+        redisUtil.del(MessageDTO.LOCATION_PREFIX + houseInfo);
     }
 }
