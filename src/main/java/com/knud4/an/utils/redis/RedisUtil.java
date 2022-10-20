@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,6 +32,14 @@ public class RedisUtil {
     }
     public void del(String key) {
         redisTemplate.delete(key);
+    }
+
+    public void rPush(String key, List<String> values) {
+        redisTemplate.opsForList().rightPushAll(key, values);
+    }
+
+    public List<Object> lRange(String key, int start, int end) {
+        return redisTemplate.opsForList().range(key, start, end);
     }
 
     public void sAdd(String key, Object value) {
