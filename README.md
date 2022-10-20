@@ -275,7 +275,7 @@ Redis 는 도커 브릿지 네트워크를 만들어 연결, 데이터베이스�
 
 ## **6. Open Source**
 
-[MIT License](LICENSE)
+[APACHE License](LICENSE)
 
 [Contribution Guideline](CONTRIBUTING.md)
 
