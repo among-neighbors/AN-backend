@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class CicdSupportApi {
+public class CICDSupportApi {
     private final Environment env;
 
     @GetMapping("/status/profile")
